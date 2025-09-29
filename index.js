@@ -2,6 +2,11 @@ import { Telegraf } from 'telegraf';
 import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load bot token from environment or config
 const botToken = "7929231471:AAGpVMENXvMCkQzz7NWgK0i2Zzhf4bhGIow"; // Set this in your environment
@@ -26,6 +31,14 @@ function createUserFolder(userId, apiId, apiHash, phone) {
 
     const credentialsPath = path.join(userDir, 'credentials.json');
     fs.writeFileSync(credentialsPath, JSON.stringify(credentials, null, 2));
+
+    const sourceSelf = path.join(__dirname, 'main', 'Self.py'); // مسیر فایل اصلی
+    const targetSelf = path.join(userDir, 'Self.py');
+    if (!fs.existsSync(targetSelf)) {
+        fs.copyFileSync(sourceSelf, targetSelf);
+        console.log(`Self.py copied to ${targetSelf}`);
+    }
+
     return userDir;
 }
 
