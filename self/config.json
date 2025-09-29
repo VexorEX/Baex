@@ -1,0 +1,8 @@
+{
+  "max_spam_count": 10,
+  "spam_time_window": 10,
+  "default_mute_duration": 60,
+  "clock_update_interval": 60,
+  "max_delete_messages": 1000,
+  "welcome_delete_delay": 30
+}

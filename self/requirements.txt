@@ -1,0 +1,10 @@
+telethon==1.36.0
+   pytz==2023.3
+   deep-translator==1.11.4
+   requests==2.32.3
+   asyncio
+   APScheduler==3.10.4
+   aiosqlite==0.20.0
+   jdatetime==5.1.0
+   filetype==1.2.0
+   PySocks==1.7.1
