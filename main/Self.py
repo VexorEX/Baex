@@ -42,6 +42,7 @@ async def save_credentials(credentials, filename='credentials.json'):
 async def init_db():
     db_path = 'sqlite:///selfbot.db'
     db = ormax.Database(db_path)
+    await db.connect()
     db.register_model(Settings)
     await db.create_tables()
 
