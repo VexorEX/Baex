@@ -1,7 +1,17 @@
 import asyncio, json,os ,sys
-import aiosqlite
+import ormax
+from ormax.fields import IntegerField, TextField, CharField
 from telethon import TelegramClient,connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
+
+# Define model before using
+class Settings(ormax.Model):
+    id = IntegerField(primary_key=True)
+    bio = TextField(default='')
+    username = CharField(max_length=100, default='')
+    first_name = CharField(max_length=100, default='')
+    last_name = CharField(max_length=100, default='')
+    profile_photo = IntegerField(default=0)
 
 current_dir = os.path.dirname(__file__)  # users/123456
 root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
@@ -30,24 +40,21 @@ async def save_credentials(credentials, filename='credentials.json'):
 
 
 async def init_db():
-    db_path = 'selfbot.db'
-    async with aiosqlite.connect(db_path) as db:
-        await db.execute('''
-                         CREATE TABLE IF NOT EXISTS settings (
-                                                                 id INTEGER PRIMARY KEY,
-                                                                 bio TEXT DEFAULT '',
-                                                                 username TEXT DEFAULT '',
-                                                                 first_name TEXT DEFAULT '',
-                                                                 last_name TEXT DEFAULT '',
-                                                                 profile_photo INTEGER DEFAULT 0
-                         )
-                         ''')
-        cursor = await db.execute('SELECT COUNT(*) FROM settings')
-        count = (await cursor.fetchone())[0]
-        if count == 0:
-            await db.execute('INSERT INTO settings (id) VALUES (1)')
-        await db.commit()
-    print("Database initialized (async).")
+    db_path = 'sqlite:///selfbot.db'
+    db = ormax.Database(db_path)
+    db.register_model(Settings)
+    await db.create_tables()
+
+    # Insert initial data if empty
+    if not await Settings.objects().count():
+        await Settings.create(
+            bio='',
+            username='',
+            first_name='',
+            last_name='',
+            profile_photo=0
+        )
+    print("Database initialized with Ormax.")
 
 
 async def main():
