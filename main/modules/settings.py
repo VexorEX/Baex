@@ -11,63 +11,7 @@ async def setup_settings(client):
     """Set up the settings component with command and event handlers."""
     messages = load_json('msg.json')
     commands = load_json('cmd.json')
-    settings = await load_settings('settings', {
-        'self_enabled': {},  # {chat_id: bool}
-        'self_global_enabled': False,
-        'poker_enabled': {},  # {chat_id: bool}
-        'poker_global_enabled': False,
-        'save_enabled': {},  # {chat_id: bool}
-        'save_pv_enabled': {},  # {chat_id: bool}
-        'save_realm': None,
-        'save_pv_realm': None,
-        'save_profile_enabled': {},  # {chat_id: bool}
-        'save_profile_realm': None,
-        'typing_enabled': {},  # {chat_id: bool}
-        'typing_global_enabled': False,
-        'action_enabled': {},  # {chat_id: bool}
-        'action_global_enabled': False,
-        'tick_enabled': {},  # {chat_id: bool}
-        'tick_global_enabled': False,
-        'tick_group_enabled': False,
-        'tick_pv_enabled': False,
-        'tick_channel_enabled': False,
-        'tag_enabled': {},  # {chat_id: bool}
-        'tag_global_enabled': False,
-        'translate_mode_enabled': {},  # {chat_id: bool}
-        'translate_mode_realm': None,
-        'translate_enabled': {},  # {chat_id: bool}
-        'language': 'fa',  # Default language
-        'languages': ['fa', 'en'],  # Supported languages
-        'hashtag_enabled': {},  # {chat_id: bool}
-        'hashtag_global_enabled': False,
-        'signature_enabled': {},  # {chat_id: bool}
-        'signature_global_enabled': False,
-        'signature_text': '',
-        'auto_approve_enabled': {},  # {chat_id: bool}
-        'anti_login_enabled': False,
-        'anti_login_realm': None,
-        'emoji_enabled': {},  # {chat_id: bool}
-        'emoji_global_enabled': False,
-        'emoji_text': '',
-        'bold_enabled': {},  # {chat_id: bool}
-        'bold_global_enabled': False,
-        'underline_enabled': {},  # {chat_id: bool}
-        'underline_global_enabled': False,
-        'code_enabled': {},  # {chat_id: bool}
-        'code_global_enabled': False,
-        'font_en_enabled': {},  # {chat_id: bool}
-        'font_en_global_enabled': False,
-        'font_fa_enabled': {},  # {chat_id: bool}
-        'font_fa_global_enabled': False,
-        'strikethrough_enabled': {},  # {chat_id: bool}
-        'strikethrough_global_enabled': False,
-        'italic_enabled': {},  # {chat_id: bool}
-        'italic_global_enabled': False,
-        'spoiler_enabled': {},  # {chat_id: bool}
-        'spoiler_global_enabled': False,
-        'reaction_enabled': {},  # {chat_id: bool}
-        'reaction_text': '👍'
-    })
+    settings = await load_settings()
 
     lang = settings.get('language', 'fa')
 
