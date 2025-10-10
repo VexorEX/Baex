@@ -33,16 +33,11 @@ async def init_ormax_db():
     await db.connect()
     db.register_model(Settings)  # Register model first
     await db.create_tables()  # No arguments for create_tables
-    # Insert default if not exists using get_or_create
-    default_setting, created = await Settings.get_or_create(id=1, defaults={
-        "bio": "",
-        "username": "",
-        "first_name": "",
-        "last_name": "",
-        "profile_photo": 0
-    })
-    if created:
-        print("Default settings created.")
+    # Insert default if not exists
+    try:
+        default_setting = await Settings.get(id=1)
+    except:
+        default_setting = await Settings.create(id=1, bio="", username="", first_name="", last_name="", profile_photo=0)
     print("Database initialized with Ormax.")
 
 from modules.profile import register_profile_handlers
