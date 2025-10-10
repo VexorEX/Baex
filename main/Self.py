@@ -1,5 +1,6 @@
 import asyncio, json,os ,sys
-from ormax import Model, fields, Database  # Import Ormax
+from ormax import Model
+from ormax.fields import IntegerField, CharField, BooleanField, JSONField  # Correct field imports
 from telethon import TelegramClient,connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
@@ -12,28 +13,25 @@ if main_path not in sys.path:
 # Define Settings model with Ormax
 class Settings(Model):
     class Meta:
-        database = Database("sqlite:///selfbot.db")
+        database = "sqlite:///selfbot.db"
         table = "settings"
 
-    id = fields.Integer(primary_key=True)
-    bio = fields.Text(default="")
-    username = fields.Text(default="")
-    first_name = fields.Text(default="")
-    last_name = fields.Text(default="")
-    profile_photo = fields.Integer(default=0)
+    id = IntegerField(primary_key=True)
+    bio = CharField(max_length=500, default="")
+    username = CharField(max_length=100, default="")
+    first_name = CharField(max_length=100, default="")
+    last_name = CharField(max_length=100, default="")
+    profile_photo = IntegerField(default=0)
 
 # Init Ormax DB (create tables)
 async def init_ormax_db():
     await Settings.Meta.database.connect()
     await Settings.Meta.database.create_tables([Settings], safe=True)
     # Insert default if not exists
-    default_setting, created = await Settings.get_or_create(id=1, defaults={
-        "bio": "",
-        "username": "",
-        "first_name": "",
-        "last_name": "",
-        "profile_photo": 0
-    })
+    try:
+        default_setting = await Settings.get(id=1)
+    except:
+        default_setting = await Settings.create(id=1, bio="", username="", first_name="", last_name="", profile_photo=0)
     print("Database initialized with Ormax.")
 
 from modules.profile import register_profile_handlers
@@ -177,5 +175,6 @@ async def main():
         await Settings.Meta.database.disconnect()
 
 
+asyncio.run(main())
 if __name__ == '__main__':
-    asyncio.run(main())
+    pass
