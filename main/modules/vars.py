@@ -31,7 +31,6 @@ from modules.enemy import register_enemy_handlers
 from modules.fresponse import register_fast_response_handlers
 from modules.fun import register_fun_handlers
 from modules.private import register_private_handlers
-from modules.vars import register_vars_handlers
 
 
 async def save_credentials(credentials, filename='credentials.json'):
