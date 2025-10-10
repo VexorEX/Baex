@@ -1,6 +1,7 @@
 import asyncio, json,os ,sys
 from ormax import Model
-from ormax.fields import IntegerField, CharField, BooleanField, JSONField  # Correct field imports
+from ormax.fields import IntegerField, CharField, BooleanField, JSONField
+from ormax import Database  # Import Database
 from telethon import TelegramClient,connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
@@ -10,10 +11,13 @@ main_path = os.path.join(root_dir, 'main')
 if main_path not in sys.path:
     sys.path.insert(0, main_path)
 
+# Create Database instance
+db = Database("sqlite:///selfbot.db")
+
 # Define Settings model with Ormax
 class Settings(Model):
     class Meta:
-        database = "sqlite:///selfbot.db"
+        database = db  # Use the Database instance
         table = "settings"
 
     id = IntegerField(primary_key=True)
@@ -25,8 +29,8 @@ class Settings(Model):
 
 # Init Ormax DB (create tables)
 async def init_ormax_db():
-    await Settings.Meta.database.connect()
-    await Settings.Meta.database.create_tables([Settings], safe=True)
+    await db.connect()
+    await db.create_tables([Settings], safe=True)
     # Insert default if not exists
     try:
         default_setting = await Settings.get(id=1)
@@ -172,9 +176,8 @@ async def main():
             await client.disconnect()
         except:
             pass
-        await Settings.Meta.database.disconnect()
+        await db.disconnect()
 
 
-asyncio.run(main())
 if __name__ == '__main__':
-    pass
+    asyncio.run(main())
