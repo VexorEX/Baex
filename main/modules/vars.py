@@ -1,212 +1,143 @@
-import asyncio
-import logging
-import random
-import re
-from datetime import datetime
-import pytz
-from telethon import events
-from telethon.errors import FloodWaitError
-from utils import load_json, send_message, get_command_pattern
-from models import get_database, load_settings, update_settings
+import asyncio, json,os ,sys
+import ormax
+from ormax.fields import IntegerField, TextField, CharField
+from telethon import TelegramClient,connection
+from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
-logger = logging.getLogger(__name__)
+# Define model before using
+class Settings(ormax.Model):
+    id = IntegerField(primary_key=True)
+    bio = TextField(default='')
+    username = CharField(max_length=100, default='')
+    first_name = CharField(max_length=100, default='')
+    last_name = CharField(max_length=100, default='')
+    profile_photo = IntegerField(default=0)
 
-async def register_vars_handlers(client, session_name, owner_id):
-    db = await get_database(session_name)
-    settings = await load_settings(db)
-    if not settings:
-        logger.error("Failed to load settings for vars handlers")
-        await db.close()
+current_dir = os.path.dirname(__file__)  # users/123456
+root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
+main_path = os.path.join(root_dir, 'main')
+if main_path not in sys.path:
+    sys.path.insert(0, main_path)
+
+from modules.profile import register_profile_handlers
+from modules.settings import setup_settings
+from modules.manage import register_manage_handlers
+from modules.group import register_group_handlers
+from modules.utils import load_json
+from modules.convert import register_convert_handlers
+from modules.download import register_download_handlers
+from modules.edit import register_edit_handlers
+from modules.enemy import register_enemy_handlers
+from modules.fresponse import register_fast_response_handlers
+from modules.fun import register_fun_handlers
+from modules.private import register_private_handlers
+from modules.vars import register_vars_handlers
+
+
+async def save_credentials(credentials, filename='credentials.json'):
+    with open(filename, 'w') as f:
+        json.dump(credentials, f, indent=2)
+
+
+async def init_db():
+    db_path = 'sqlite:///selfbot.db'
+    db = ormax.Database(db_path)
+    db.register_model(Settings)
+    await db.create_tables()
+
+    # Insert initial data if empty
+    if not await Settings.objects().count():
+        await Settings.create(
+            bio='',
+            username='',
+            first_name='',
+            last_name='',
+            profile_photo=0
+        )
+    print("Database initialized with Ormax.")
+
+
+async def main():
+    await init_db()  # Init DB first, before any module calls
+
+    credentials_file = 'credentials.json'
+    credentials = load_json(credentials_file)
+    api_id = credentials['api_id']
+    api_hash = credentials['api_hash']
+    session_name = credentials['session_name']
+    owner_id = credentials['owner_id']
+    proxy = (
+        "54.38.136.78", 4044,
+        "eeff0ce99b756ea156e1774d930f40bd21"
+    )
+    client = TelegramClient(session_name, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate, proxy=proxy)
+    phone = credentials.get("phone")
+    code = credentials.get("code")
+    phone_code_hash = credentials.get("phone_code_hash")
+
+    if not phone:
+        print("⚠️ شماره تلفن در credentials.json پیدا نشد.")
         return
 
-    lang = settings.get('lang', 'fa')
-    messages = load_json('msg.json')
-    commands = load_json('cmd.json')
-
-    def get_message(key, **kwargs):
-        return messages[lang]['vars'].get(key, '').format(**kwargs)
-
-    # ایجاد جداول برای متغیرها
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS vars_settings (
-                                                                  key TEXT PRIMARY KEY,
-                                                                  value TEXT
-                     )
-                     ''')
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS ranks (
-                                                          user_id INTEGER PRIMARY KEY,
-                                                          rank TEXT
-                     )
-                     ''')
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS warns (
-                                                          user_id INTEGER PRIMARY KEY,
-                                                          warn_count INTEGER DEFAULT 0
-                     )
-                     ''')
-    await db.commit()
-
-    # متغیرهای پیش‌فرض
-    if 'vars' not in settings:
-        settings['vars'] = {'timezone': 'Asia/Tehran'}  # منطقه زمانی پیش‌فرض
-        await update_settings(db, settings)
-
-    # لیست قلب‌های تصادفی
-    hearts = ['❤️', '🧡', '💛', '💚', '💙', '💜', '💓', '💞', '💕', '💗']
-
-    # تابع جایگزینی متغیرها
-    async def replace_vars(text, event):
+    # Use client.start to handle session automatically
+    try:
+        if code and phone_code_hash:
+            # Custom start with code
+            await client.start(phone=phone, code_callback=lambda: code, code_hash_callback=lambda: phone_code_hash)
+        else:
+            await client.start(phone=phone)
+        print("✅ لاگین با موفقیت انجام شد یا session موجود است.")
+        # Clear temp fields after successful login
+        credentials['code'] = None
+        credentials['phone_code_hash'] = None
+        await save_credentials(credentials, credentials_file)
+    except SessionPasswordNeededError:
+        print("❌ رمز عبور 2FA مورد نیاز است.")
+        password = input("Enter 2FA password: ")
+        await client.sign_in(password=password)
+        credentials['code'] = None
+        credentials['phone_code_hash'] = None
+        await save_credentials(credentials, credentials_file)
+    except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
+        print(f"⚠️ خطا در کد: {e}. پاک کردن session و ارسال کد جدید...")
+        # Delete session file to force re-login
+        session_file = f"{session_name}.session"
+        if os.path.exists(session_file):
+            os.remove(session_file)
         try:
-            user = await event.get_sender()
-            timezone = settings['vars'].get('timezone', 'Asia/Tehran')
-            tz = pytz.timezone(timezone)
-            now = datetime.now(tz)
-
-            # متغیرهای زمانی
-            replacements = {
-                'STRDAY': now.strftime('%A'),  # روز به حروف
-                'STRMONTH': now.strftime('%B'),  # ماه به حروف
-                'YEAR': str(now.year),  # سال
-                'MONTH': str(now.month).zfill(2),  # ماه به عدد
-                'DATE': now.strftime('%Y/%m/%d'),  # تاریخ کامل
-                'TIME': now.strftime('%H:%M:%S'),  # زمان کامل
-                'SEC': str(now.second).zfill(2),  # ثانیه
-                'MIN': str(now.minute).zfill(2),  # دقیقه
-                'HOUR': str(now.hour).zfill(2),  # ساعت
-                'DAY': str(now.day).zfill(2),  # روز به عدد
-                'ID': str(user.id),  # شناسه کاربر
-                'USERNAME': user.username or 'None',  # نام کاربری
-                'NAME': user.first_name or 'Unknown',  # نام کاربر
-                'HEART': random.choice(hearts),  # قلب تصادفی
-            }
-
-            # متغیر RANDNUM
-            randnum_matches = re.findall(r'RANDNUM(\d+)-(\d+)', text)
-            for start, end in randnum_matches:
-                try:
-                    num = random.randint(int(start), int(end))
-                    text = text.replace(f'RANDNUM{start}-{end}', str(num))
-                except ValueError:
-                    continue
-
-            # متغیر RANK
-            if 'RANK' in text:
-                cursor = await db.execute('SELECT rank FROM ranks WHERE user_id = ?', (user.id,))
-                rank = await cursor.fetchone()
-                await cursor.close()
-                text = text.replace('RANK', rank[0] if rank else get_message('no_rank'))
-
-            # متغیر WARNS
-            if 'WARNS' in text:
-                cursor = await db.execute('SELECT warn_count FROM warns WHERE user_id = ?', (user.id,))
-                warn_count = await cursor.fetchone()
-                await cursor.close()
-                text = text.replace('WARNS', str(warn_count[0] if warn_count else 0))
-
-            # جایگزینی سایر متغیرها
-            for key, value in replacements.items():
-                text = text.replace(key, value)
-
-            return text
+            result = await client.send_code_request(phone)
+            credentials['phone_code_hash'] = result.phone_code_hash
+            await save_credentials(credentials, credentials_file)
+            print("✅ کد جدید ارسال شد. لطفاً کد جدید را از ربات وارد کنید.")
+            return  # Exit to wait for restart
         except Exception as e:
-            logger.error(f"Error replacing vars: {e}")
-            return text
+            print(f"خطا در ارسال کد: {e}")
+            return
+    except Exception as e:
+        print(f"خطا در لاگین: {e}")
+        return
 
-    # نمایش لیست مناطق زمانی
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_timezones', lang['vars'])))
-    async def handle_list_timezones(event):
-        try:
-            if event.sender_id != owner_id:
-                await send_message(event, get_message('unauthorized'))
-                return
-            timezones = pytz.all_timezones
-            response = get_message('timezone_list') + '\n'.join(timezones[:50])  # محدود به 50 مورد برای جلوگیری از پیام طولانی
-            await send_message(event, response)
-        except Exception as e:
-            logger.error(f"Error listing timezones: {e}")
-            await send_message(event, get_message('error_occurred'))
+    me = await client.get_me()
+    print(f"Credentials loaded: {json.dumps(credentials, indent=2, ensure_ascii=False)}")
+    print("🚀 سلف ربات با موفقیت راه‌اندازی شد!")
+    print(f"📱 اکانت: {me.first_name}")
 
-    # تنظیم منطقه زمانی
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_timezone', lang['vars'])))
-    async def handle_set_timezone(event):
-        try:
-            if event.sender_id != owner_id:
-                await send_message(event, get_message('unauthorized'))
-                return
-            timezone = event.pattern_match.group(1)
-            if not timezone or timezone not in pytz.all_timezones:
-                await send_message(event, get_message('invalid_timezone'))
-                return
-            settings['vars']['timezone'] = timezone
-            await update_settings(db, settings)
-            await db.execute('INSERT OR REPLACE INTO vars_settings (key, value) VALUES (?, ?)', ('timezone', timezone))
-            await db.commit()
-            await send_message(event, get_message('timezone_set', timezone=timezone))
-        except Exception as e:
-            logger.error(f"Error setting timezone: {e}")
-            await send_message(event, get_message('error_occurred'))
+    # ثبت هندلرها
+    await register_profile_handlers(client, session_name, owner_id)
+    await setup_settings(client)
+    await register_manage_handlers(client, session_name, owner_id)
+    await register_group_handlers(client, session_name, owner_id)
+    await register_vars_handlers(client, session_name, owner_id)
+    await register_private_handlers(client, session_name, owner_id)
+    await register_fun_handlers(client, session_name, owner_id)
+    await register_fast_response_handlers(client, session_name, owner_id)
+    await register_enemy_handlers(client, session_name, owner_id)
+    await register_edit_handlers(client, session_name, owner_id)
+    await register_download_handlers(client, session_name, owner_id)
+    await register_convert_handlers(client, session_name, owner_id)
 
-    # تنظیم مقام
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_rank', lang['vars'])))
-    async def handle_set_rank(event):
-        try:
-            if event.sender_id != owner_id:
-                await send_message(event, get_message('unauthorized'))
-                return
-            if not event.message.is_reply:
-                await send_message(event, get_message('reply_required'))
-                return
-            rank = event.pattern_match.group(1)
-            if not rank:
-                await send_message(event, get_message('no_rank_provided'))
-                return
-            reply_msg = await event.get_reply_message()
-            user_id = reply_msg.sender_id
-            await db.execute('INSERT OR REPLACE INTO ranks (user_id, rank) VALUES (?, ?)', (user_id, rank))
-            await db.commit()
-            await send_message(event, get_message('rank_set', user_id=user_id, rank=rank))
-        except FloodWaitError as e:
-            await send_message(event, get_message('flood_wait', seconds=e.seconds))
-        except Exception as e:
-            logger.error(f"Error setting rank: {e}")
-            await send_message(event, get_message('error_occurred'))
+    await client.run_until_disconnected()
 
-    # نمایش لیست مقام‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_ranks', lang['vars'])))
-    async def handle_list_ranks(event):
-        try:
-            if event.sender_id != owner_id:
-                await send_message(event, get_message('unauthorized'))
-                return
-            cursor = await db.execute('SELECT user_id, rank FROM ranks')
-            ranks = await cursor.fetchall()
-            await cursor.close()
-            if not ranks:
-                await send_message(event, get_message('no_ranks'))
-                return
-            response = get_message('rank_list') + '\n'
-            for user_id, rank in ranks:
-                user = await client.get_entity(user_id)
-                response += f"@{user.username or user_id}: {rank}\n"
-            await send_message(event, response)
-        except FloodWaitError as e:
-            await send_message(event, get_message('flood_wait', seconds=e.seconds))
-        except Exception as e:
-            logger.error(f"Error listing ranks: {e}")
-            await send_message(event, get_message('error_occurred'))
 
-    # تابع عمومی برای پردازش متغیرها در پیام‌ها
-    @client.on(events.NewMessage)
-    async def handle_message_with_vars(event):
-        try:
-            if event.sender_id != owner_id:
-                return
-            text = event.text
-            if any(var in text for var in ['STRDAY', 'STRMONTH', 'YEAR', 'MONTH', 'DATE', 'TIME', 'SEC', 'MIN', 'HOUR', 'DAY', 'ID', 'USERNAME', 'NAME', 'HEART', 'RANDNUM', 'RANK', 'WARNS']):
-                processed_text = await replace_vars(text, event)
-                await send_message(event, processed_text)
-        except Exception as e:
-            logger.error(f"Error processing message with vars: {e}")
-
-    await db.close()
+if __name__ == '__main__':
+    asyncio.run(main())
