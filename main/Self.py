@@ -1,4 +1,5 @@
 import asyncio, json,os ,sys
+import sqlite3  # Sync for init
 import aiosqlite
 from telethon import TelegramClient,connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
@@ -8,6 +9,28 @@ root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
 main_path = os.path.join(root_dir, 'main')
 if main_path not in sys.path:
     sys.path.insert(0, main_path)
+
+# Sync DB init before any async or imports that might load DB
+db_path = 'selfbot.db'
+conn = sqlite3.connect(db_path)
+cursor = conn.cursor()
+cursor.execute('''
+               CREATE TABLE IF NOT EXISTS settings (
+                                                       id INTEGER PRIMARY KEY,
+                                                       bio TEXT DEFAULT '',
+                                                       username TEXT DEFAULT '',
+                                                       first_name TEXT DEFAULT '',
+                                                       last_name TEXT DEFAULT '',
+                                                       profile_photo INTEGER DEFAULT 0
+               )
+               ''')
+cursor.execute('SELECT COUNT(*) FROM settings')
+count = cursor.fetchone()[0]
+if count == 0:
+    cursor.execute('INSERT INTO settings (id) VALUES (1)')
+conn.commit()
+conn.close()
+print("Database initialized (sync).")
 
 from modules.profile import register_profile_handlers
 from modules.settings import setup_settings
@@ -92,24 +115,10 @@ async def main():
     print("🚀 سلف ربات با موفقیت راه‌اندازی شد!")
     print(f"📱 اکانت: {me.first_name}")
 
-    # Initialize database
-    async with aiosqlite.connect('selfbot.db') as db:
-        await db.execute('''
-                         CREATE TABLE IF NOT EXISTS settings (
-                                                                 id INTEGER PRIMARY KEY,
-                                                                 bio TEXT DEFAULT '',
-                                                                 username TEXT DEFAULT '',
-                                                                 first_name TEXT DEFAULT '',
-                                                                 last_name TEXT DEFAULT '',
-                                                                 profile_photo INTEGER DEFAULT 0
-                         )
-                         ''')
-        cursor = await db.execute('SELECT COUNT(*) FROM settings')
-        count = (await cursor.fetchone())[0]
-        if count == 0:
-            await db.execute('INSERT INTO settings (id) VALUES (1)')
-        await db.commit()
-    print("Database initialized.")
+    # Async DB check (optional, since sync init done)
+    async with aiosqlite.connect(db_path) as db:
+        await db.commit()  # Ensure
+    print("Database ready.")
 
     # ثبت هندلرها
     await register_profile_handlers(client, session_name, owner_id)
