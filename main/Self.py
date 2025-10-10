@@ -1,6 +1,4 @@
 import asyncio, json, os, sys
-import sqlite3  # Sync for init
-import aiosqlite
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
@@ -11,7 +9,7 @@ main_path = os.path.join(root_dir, 'main')
 if main_path not in sys.path:
     sys.path.insert(0, main_path)
 
-# ابزارها
+# ابزارها و هندلرها
 from modules.utils import load_json
 from modules.profile import register_profile_handlers
 from modules.settings import setup_settings
@@ -26,52 +24,18 @@ from modules.fun import register_fun_handlers
 from modules.private import register_private_handlers
 from modules.vars import register_vars_handlers
 
-# ORM
-from ormax.models import Settings  # فرض بر اینه که مدل Settings در ormax تعریف شده
+# مدل ORM
+from ormax.models import Settings  # مسیر دقیق مدل Settings
 
 # ذخیره credentials
 async def save_credentials(credentials, filename='credentials.json'):
     with open(filename, 'w') as f:
         json.dump(credentials, f, indent=2)
 
-# مقداردهی اولیه دیتابیس SQLite (sync)
-def init_sqlite_db(session_name):
-    db_path = f'selfbot_{session_name}.db'
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS settings (
-                                                           id INTEGER PRIMARY KEY,
-                                                           lang TEXT DEFAULT 'fa',
-                                                           welcome_enabled BOOLEAN DEFAULT 0,
-                                                           welcome_text TEXT DEFAULT '',
-                                                           welcome_delete_time INTEGER DEFAULT 0,
-                                                           clock_enabled BOOLEAN DEFAULT 0,
-                                                           clock_location TEXT DEFAULT 'name',
-                                                           clock_bio_text TEXT DEFAULT '',
-                                                           clock_fonts TEXT DEFAULT '[1]',
-                                                           clock_timezone TEXT DEFAULT 'Asia/Tehran',
-                                                           action_enabled BOOLEAN DEFAULT 0,
-                                                           action_types TEXT DEFAULT '{}',
-                                                           text_format_enabled BOOLEAN DEFAULT 0,
-                                                           text_formats TEXT DEFAULT '{}',
-                                                           locks TEXT DEFAULT '{}',
-                                                           antilog_enabled BOOLEAN DEFAULT 0,
-                                                           first_comment_enabled BOOLEAN DEFAULT 0,
-                                                           first_comment_text TEXT DEFAULT ''
-                   )
-                   ''')
-    cursor.execute('SELECT COUNT(*) FROM settings')
-    if cursor.fetchone()[0] == 0:
-        cursor.execute('INSERT INTO settings (id) VALUES (1)')
-    conn.commit()
-    conn.close()
-    print("✅ دیتابیس SQLite مقداردهی شد.")
-
 # مقداردهی اولیه ORM
 async def init_ormax_db():
-    existing = await Settings.get_or_none(id=1)
-    if not existing:
+    exists = await Settings.get_or_none(id=1)
+    if not exists:
         await Settings.create(
             id=1,
             bio="",
@@ -80,7 +44,7 @@ async def init_ormax_db():
             last_name="",
             profile_photo=0
         )
-    print("✅ دیتابیس ORM مقداردهی شد.")
+    print("✅ دیتابیس Ormax مقداردهی شد.")
 
 # تابع اصلی
 async def main():
@@ -98,11 +62,8 @@ async def main():
         print("⚠️ شماره تلفن در credentials.json پیدا نشد.")
         return
 
-    # مقداردهی دیتابیس‌ها
-    init_sqlite_db(session_name)
     await init_ormax_db()
 
-    # لاگین با Telethon
     client = TelegramClient(session_name, api_id, api_hash)
     try:
         if code and phone_code_hash:
@@ -139,10 +100,6 @@ async def main():
 
     me = await client.get_me()
     print(f"🚀 سلف‌بات راه‌اندازی شد برای: {me.first_name}")
-
-    # اتصال async به دیتابیس
-    async with aiosqlite.connect(f'selfbot_{session_name}.db') as db:
-        await db.commit()
 
     # ثبت هندلرها
     await register_profile_handlers(client, session_name, owner_id)
