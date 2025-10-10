@@ -1,7 +1,9 @@
-from ormax import Model, fields
+from ormax import Model
+from ormax.fields import CharField, IntegerField, BooleanField, JSONField
 from typing import Dict, Any, List, Optional
 import json
 from datetime import datetime
+import asyncio
 
 # Ormax Database setup
 class BaseModel(Model):
@@ -12,64 +14,64 @@ class Settings(BaseModel):
     class Meta:
         table = "settings"
 
-    id = fields.Integer(primary_key=True)
-    lang = fields.Text(default="fa")
-    welcome_enabled = fields.Boolean(default=False)
-    welcome_text = fields.Text(default="")
-    welcome_delete_time = fields.Integer(default=0)
-    clock_enabled = fields.Boolean(default=False)
-    clock_location = fields.Text(default="name")
-    clock_bio_text = fields.Text(default="")
-    clock_fonts = fields.JSON(default=lambda: [1])  # List of fonts
-    clock_timezone = fields.Text(default="Asia/Tehran")
-    action_enabled = fields.Boolean(default=False)
-    action_types = fields.JSON(default=lambda: {})  # Dict of action types
-    text_format_enabled = fields.Boolean(default=False)
-    text_formats = fields.JSON(default=lambda: {})  # Dict of formats
-    locks = fields.JSON(default=lambda: {})  # Dict of locks
-    antilog_enabled = fields.Boolean(default=False)
-    first_comment_enabled = fields.Boolean(default=False)
-    first_comment_text = fields.Text(default="")
+    id = IntegerField(primary_key=True)
+    lang = CharField(max_length=10, default="fa")
+    welcome_enabled = BooleanField(default=False)
+    welcome_text = CharField(max_length=500, default="")
+    welcome_delete_time = IntegerField(default=0)
+    clock_enabled = BooleanField(default=False)
+    clock_location = CharField(max_length=20, default="name")
+    clock_bio_text = CharField(max_length=500, default="")
+    clock_fonts = JSONField(default=list)  # List of fonts
+    clock_timezone = CharField(max_length=50, default="Asia/Tehran")
+    action_enabled = BooleanField(default=False)
+    action_types = JSONField(default=dict)  # Dict of action types
+    text_format_enabled = BooleanField(default=False)
+    text_formats = JSONField(default=dict)  # Dict of formats
+    locks = JSONField(default=dict)  # Dict of locks
+    antilog_enabled = BooleanField(default=False)
+    first_comment_enabled = BooleanField(default=False)
+    first_comment_text = CharField(max_length=500, default="")
 
 class MuteList(BaseModel):
     class Meta:
         table = "mute_list"
 
-    id = fields.Integer(primary_key=True, auto_increment=True)
-    user_id = fields.Integer(unique=True)
-    mute_until = fields.Integer(default=0)
-    reason = fields.Text(default="")
+    id = IntegerField(primary_key=True, auto_increment=True)
+    user_id = IntegerField(unique=True)
+    mute_until = IntegerField(default=0)
+    reason = CharField(max_length=255, default="")
 
 class SpamProtection(BaseModel):
     class Meta:
         table = "spam_protection"
 
-    id = fields.Integer(primary_key=True, auto_increment=True)
-    user_id = fields.Integer(unique=True)
-    messages = fields.JSON(default=lambda: [])  # List of message IDs/timestamps
-    mute_until = fields.Integer(default=0)
-    violations = fields.Integer(default=0)
-    last_violation = fields.DateTime(default=datetime.now)
+    id = IntegerField(primary_key=True, auto_increment=True)
+    user_id = IntegerField(unique=True)
+    messages = JSONField(default=list)  # List of message IDs/timestamps
+    mute_until = IntegerField(default=0)
+    violations = IntegerField(default=0)
+    last_violation = CharField(max_length=50, default=str(datetime.now()))  # As string for simplicity
 
 class AutoReplies(BaseModel):
     class Meta:
         table = "auto_replies"
 
-    id = fields.Integer(primary_key=True, auto_increment=True)
-    trigger = fields.Text(unique=True)
-    response = fields.Text()
+    id = IntegerField(primary_key=True, auto_increment=True)
+    trigger = CharField(max_length=255, unique=True)
+    response = CharField(max_length=1000)
 
 class Enemies(BaseModel):
     class Meta:
         table = "enemies"
 
-    id = fields.Integer(primary_key=True, auto_increment=True)
-    user_id = fields.Integer(unique=True)
-    type = fields.Text(default="pv")  # pv or group
-    group_id = fields.Integer(default=0)
-    reason = fields.Text(default="")
+    id = IntegerField(primary_key=True, auto_increment=True)
+    user_id = IntegerField(unique=True)
+    type = CharField(max_length=10, default="pv")  # pv or group
+    group_id = IntegerField(default=0)
+    reason = CharField(max_length=255, default="")
 
-# Global DB instance (connect once)
+# Global DB instance
 db = BaseModel.Meta.database
 
 async def init_db():
