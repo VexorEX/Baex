@@ -1,7 +1,7 @@
 import asyncio, json,os ,sys
 import aiosqlite
 from telethon import TelegramClient,connection
-from telethon.errors import SessionPasswordNeededError
+from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
 current_dir = os.path.dirname(__file__)  # users/123456
 root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
@@ -40,8 +40,7 @@ async def main():
         "54.38.136.78", 4044,
         "eeff0ce99b756ea156e1774d930f40bd21"
     )
-    # client = TelegramClient(session_name, api_id, api_hash,connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,proxy=proxy)
-    TelegramClient(session_name, api_id, api_hash)
+    client = TelegramClient(session_name, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate, proxy=proxy)
     phone = credentials.get("phone")
     code = credentials.get("code")
     phone_code_hash = credentials.get("phone_code_hash")
@@ -50,43 +49,43 @@ async def main():
         print("⚠️ شماره تلفن در credentials.json پیدا نشد.")
         return
 
-    await client.connect()
-
-    if not await client.is_user_authorized():
+    # Use client.start to handle session automatically
+    try:
         if code and phone_code_hash:
-            try:
-                await client.sign_in(phone=phone, code=code, phone_code_hash=phone_code_hash)
-                print("✅ لاگین با موفقیت انجام شد.")
-                # Clear code and hash after successful login
-                credentials['code'] = None
-                credentials['phone_code_hash'] = None
-                await save_credentials(credentials, credentials_file)
-            except SessionPasswordNeededError:
-                print("❌ رمز عبور 2FA مورد نیاز است. لطفاً رمز را وارد کنید.")
-                password = input("Enter 2FA password: ")  # For now, input; later handle via bot
-                await client.sign_in(password=password)
-                credentials['code'] = None
-                credentials['phone_code_hash'] = None
-                await save_credentials(credentials, credentials_file)
-            except Exception as e:
-                print(f"خطا در ورود: {e}")
-                await client.disconnect()
-                return
+            # Custom start with code
+            await client.start(phone=phone, code_callback=lambda: code, code_hash_callback=lambda: phone_code_hash)
         else:
-            print("⚠️ کد لاگین یا phone_code_hash در credentials.json وجود ندارد. لطفاً با ربات کد را وارد کنید.")
-            try:
-                result = await client.send_code_request(phone)
-                print("✅ کد SMS ارسال شد.")
-                # Save phone_code_hash
-                credentials['phone_code_hash'] = result.phone_code_hash
-                await save_credentials(credentials, credentials_file)
-            except Exception as e:
-                print(f"خطا در ارسال کد: {e}")
-            finally:
-                await client.disconnect()
+            await client.start(phone=phone)
+        print("✅ لاگین با موفقیت انجام شد یا session موجود است.")
+        # Clear temp fields after successful login
+        credentials['code'] = None
+        credentials['phone_code_hash'] = None
+        await save_credentials(credentials, credentials_file)
+    except SessionPasswordNeededError:
+        print("❌ رمز عبور 2FA مورد نیاز است.")
+        password = input("Enter 2FA password: ")
+        await client.sign_in(password=password)
+        credentials['code'] = None
+        credentials['phone_code_hash'] = None
+        await save_credentials(credentials, credentials_file)
+    except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
+        print(f"⚠️ خطا در کد: {e}. پاک کردن session و ارسال کد جدید...")
+        # Delete session file to force re-login
+        session_file = f"{session_name}.session"
+        if os.path.exists(session_file):
+            os.remove(session_file)
+        try:
+            result = await client.send_code_request(phone)
+            credentials['phone_code_hash'] = result.phone_code_hash
+            await save_credentials(credentials, credentials_file)
+            print("✅ کد جدید ارسال شد. لطفاً کد جدید را از ربات وارد کنید.")
+            return  # Exit to wait for restart
+        except Exception as e:
+            print(f"خطا در ارسال کد: {e}")
             return
-    else:
-        print("✅ اکانت قبلاً لاگین شده است.")
+    except Exception as e:
+        print(f"خطا در لاگین: {e}")
+        return
 
     me = await client.get_me()
     print(f"Credentials loaded: {json.dumps(credentials, indent=2, ensure_ascii=False)}")
