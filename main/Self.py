@@ -1,4 +1,6 @@
 import asyncio, json, os, sys
+import sqlite3
+import aiosqlite
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
@@ -24,27 +26,44 @@ from modules.fun import register_fun_handlers
 from modules.private import register_private_handlers
 from modules.vars import register_vars_handlers
 
-# مدل ORM
-from ormax.models import Settings  # مسیر دقیق مدل Settings
-
 # ذخیره credentials
 async def save_credentials(credentials, filename='credentials.json'):
     with open(filename, 'w') as f:
         json.dump(credentials, f, indent=2)
 
-# مقداردهی اولیه ORM
-async def init_ormax_db():
-    exists = await Settings.get_or_none(id=1)
-    if not exists:
-        await Settings.create(
-            id=1,
-            bio="",
-            username="",
-            first_name="",
-            last_name="",
-            profile_photo=0
-        )
-    print("✅ دیتابیس Ormax مقداردهی شد.")
+# مقداردهی اولیه دیتابیس SQLite (sync)
+def init_sqlite_db(db_path):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('''
+                   CREATE TABLE IF NOT EXISTS settings (
+                                                           id INTEGER PRIMARY KEY,
+                                                           lang TEXT DEFAULT 'fa',
+                                                           welcome_enabled BOOLEAN DEFAULT 0,
+                                                           welcome_text TEXT DEFAULT '',
+                                                           welcome_delete_time INTEGER DEFAULT 0,
+                                                           clock_enabled BOOLEAN DEFAULT 0,
+                                                           clock_location TEXT DEFAULT 'name',
+                                                           clock_bio_text TEXT DEFAULT '',
+                                                           clock_fonts TEXT DEFAULT '[1]',
+                                                           clock_timezone TEXT DEFAULT 'Asia/Tehran',
+                                                           action_enabled BOOLEAN DEFAULT 0,
+                                                           action_types TEXT DEFAULT '{}',
+                                                           text_format_enabled BOOLEAN DEFAULT 0,
+                                                           text_formats TEXT DEFAULT '{}',
+                                                           locks TEXT DEFAULT '{}',
+                                                           antilog_enabled BOOLEAN DEFAULT 0,
+                                                           first_comment_enabled BOOLEAN DEFAULT 0,
+                                                           first_comment_text TEXT DEFAULT ''
+                   )
+                   ''')
+    # بررسی وجود رکورد با id=1
+    cursor.execute('SELECT id FROM settings WHERE id = 1')
+    if cursor.fetchone() is None:
+        cursor.execute('INSERT INTO settings (id) VALUES (1)')
+    conn.commit()
+    conn.close()
+    print("✅ دیتابیس SQLite مقداردهی شد.")
 
 # تابع اصلی
 async def main():
@@ -62,7 +81,8 @@ async def main():
         print("⚠️ شماره تلفن در credentials.json پیدا نشد.")
         return
 
-    await init_ormax_db()
+    db_path = f'selfbot_{session_name}.db'
+    init_sqlite_db(db_path)
 
     client = TelegramClient(session_name, api_id, api_hash)
     try:
@@ -100,6 +120,10 @@ async def main():
 
     me = await client.get_me()
     print(f"🚀 سلف‌بات راه‌اندازی شد برای: {me.first_name}")
+
+    # اتصال async به دیتابیس
+    async with aiosqlite.connect(db_path) as db:
+        await db.commit()
 
     # ثبت هندلرها
     await register_profile_handlers(client, session_name, owner_id)
