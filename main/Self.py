@@ -1,6 +1,7 @@
 import asyncio, json,os ,sys
 import aiosqlite
 from telethon import TelegramClient,connection
+from telethon.errors import SessionPasswordNeededError
 
 current_dir = os.path.dirname(__file__)  # users/123456
 root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
@@ -23,8 +24,14 @@ from modules.private import register_private_handlers
 from modules.vars import register_vars_handlers
 
 
+async def save_credentials(credentials, filename='credentials.json'):
+    with open(filename, 'w') as f:
+        json.dump(credentials, f, indent=2)
+
+
 async def main():
-    credentials = load_json('credentials.json')
+    credentials_file = 'credentials.json'
+    credentials = load_json(credentials_file)
     api_id = credentials['api_id']
     api_hash = credentials['api_hash']
     session_name = credentials['session_name']
@@ -33,10 +40,11 @@ async def main():
         "54.38.136.78", 4044,
         "eeff0ce99b756ea156e1774d930f40bd21"
     )
-    client = TelegramClient(session_name, api_id, api_hash,connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,proxy=proxy)
-
+    # client = TelegramClient(session_name, api_id, api_hash,connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,proxy=proxy)
+    TelegramClient(session_name, api_id, api_hash)
     phone = credentials.get("phone")
     code = credentials.get("code")
+    phone_code_hash = credentials.get("phone_code_hash")
 
     if not phone:
         print("⚠️ شماره تلفن در credentials.json پیدا نشد.")
@@ -45,26 +53,33 @@ async def main():
     await client.connect()
 
     if not await client.is_user_authorized():
-        if code:
+        if code and phone_code_hash:
             try:
-                await client.sign_in(phone=phone, code=code)
+                await client.sign_in(phone=phone, code=code, phone_code_hash=phone_code_hash)
                 print("✅ لاگین با موفقیت انجام شد.")
-                await client.session.save()
-
-                credentials["authorized"] = True
-                with open('credentials.json', 'w') as f:
-                    json.dump(credentials, f, indent=2, ensure_ascii=False)
-
-
+                # Clear code and hash after successful login
+                credentials['code'] = None
+                credentials['phone_code_hash'] = None
+                await save_credentials(credentials, credentials_file)
+            except SessionPasswordNeededError:
+                print("❌ رمز عبور 2FA مورد نیاز است. لطفاً رمز را وارد کنید.")
+                password = input("Enter 2FA password: ")  # For now, input; later handle via bot
+                await client.sign_in(password=password)
+                credentials['code'] = None
+                credentials['phone_code_hash'] = None
+                await save_credentials(credentials, credentials_file)
             except Exception as e:
                 print(f"خطا در ورود: {e}")
                 await client.disconnect()
                 return
         else:
-            print("⚠️ کد لاگین هنوز در credentials.json وجود ندارد. لطفاً با ربات کد را وارد کنید.")
+            print("⚠️ کد لاگین یا phone_code_hash در credentials.json وجود ندارد. لطفاً با ربات کد را وارد کنید.")
             try:
-                await client.send_code_request(phone)
+                result = await client.send_code_request(phone)
                 print("✅ کد SMS ارسال شد.")
+                # Save phone_code_hash
+                credentials['phone_code_hash'] = result.phone_code_hash
+                await save_credentials(credentials, credentials_file)
             except Exception as e:
                 print(f"خطا در ارسال کد: {e}")
             finally:
@@ -112,10 +127,6 @@ async def main():
     await register_convert_handlers(client, session_name, owner_id)
 
     await client.run_until_disconnected()
-    print("📴 ارتباط با تلگرام قطع شد. در حال خروج از برنامه...")
-    await client.disconnect()
-    sys.exit(0)
-
 
 
 if __name__ == '__main__':

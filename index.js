@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 
 // Load bot token from environment or config
 const botToken = "7929231471:AAGpVMENXvMCkQzz7NWgK0i2Zzhf4bhGIow"; // Set this in your environment
-const bot = new Telegraf(botToken,{telegram:{apiRoot:"http://46.38.138.55:808/"}});
+const bot = new Telegraf(botToken);
 
 // Map to keep track of running processes per user
 const userProcesses = new Map();
