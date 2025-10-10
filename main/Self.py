@@ -1,17 +1,7 @@
 import asyncio, json,os ,sys
-import ormax
-from ormax.fields import IntegerField, TextField, CharField
+import aiosqlite
 from telethon import TelegramClient,connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
-
-# Define model before using
-class Settings(ormax.Model):
-    id = IntegerField(primary_key=True)
-    bio = TextField(default='')
-    username = CharField(max_length=100, default='')
-    first_name = CharField(max_length=100, default='')
-    last_name = CharField(max_length=100, default='')
-    profile_photo = IntegerField(default=0)
 
 current_dir = os.path.dirname(__file__)  # users/123456
 root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
@@ -40,22 +30,24 @@ async def save_credentials(credentials, filename='credentials.json'):
 
 
 async def init_db():
-    db_path = 'sqlite:///selfbot.db'
-    db = ormax.Database(db_path)
-    await db.connect()
-    db.register_model(Settings)
-    await db.create_tables()
-
-    # Insert initial data if empty
-    if not await Settings.objects().count():
-        await Settings.create(
-            bio='',
-            username='',
-            first_name='',
-            last_name='',
-            profile_photo=0
-        )
-    print("Database initialized with Ormax.")
+    db_path = 'selfbot.db'
+    async with aiosqlite.connect(db_path) as db:
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS settings (
+                                                                 id INTEGER PRIMARY KEY,
+                                                                 bio TEXT DEFAULT '',
+                                                                 username TEXT DEFAULT '',
+                                                                 first_name TEXT DEFAULT '',
+                                                                 last_name TEXT DEFAULT '',
+                                                                 profile_photo INTEGER DEFAULT 0
+                         )
+                         ''')
+        cursor = await db.execute('SELECT COUNT(*) FROM settings')
+        count = (await cursor.fetchone())[0]
+        if count == 0:
+            await db.execute('INSERT INTO settings (id) VALUES (1)')
+        await db.commit()
+    print("Database initialized (async).")
 
 
 async def main():
@@ -80,43 +72,58 @@ async def main():
         print("⚠️ شماره تلفن در credentials.json پیدا نشد.")
         return
 
-    # Use client.start to handle session automatically
-    try:
+    await client.connect()
+
+    if not await client.is_user_authorized():
         if code and phone_code_hash:
-            # Custom start with code
-            await client.start(phone=phone, code_callback=lambda: code, code_hash_callback=lambda: phone_code_hash)
+            try:
+                await client.sign_in(phone=phone, code=code, phone_code_hash=phone_code_hash)
+                print("✅ لاگین با موفقیت انجام شد.")
+                # Clear temp fields after successful login
+                credentials['code'] = None
+                credentials['phone_code_hash'] = None
+                await save_credentials(credentials, credentials_file)
+            except SessionPasswordNeededError:
+                print("❌ رمز عبور 2FA مورد نیاز است.")
+                password = input("Enter 2FA password: ")
+                await client.sign_in(password=password)
+                credentials['code'] = None
+                credentials['phone_code_hash'] = None
+                await save_credentials(credentials, credentials_file)
+            except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
+                print(f"⚠️ خطا در کد: {e}. پاک کردن session و ارسال کد جدید...")
+                session_file = f"{session_name}.session"
+                if os.path.exists(session_file):
+                    os.remove(session_file)
+                try:
+                    result = await client.send_code_request(phone)
+                    credentials['phone_code_hash'] = result.phone_code_hash
+                    await save_credentials(credentials, credentials_file)
+                    print("✅ کد جدید ارسال شد. لطفاً کد جدید را از ربات وارد کنید.")
+                    await client.disconnect()
+                    return
+                except Exception as e:
+                    print(f"خطا در ارسال کد: {e}")
+                    await client.disconnect()
+                    return
+            except Exception as e:
+                print(f"خطا در ورود: {e}")
+                await client.disconnect()
+                return
         else:
-            await client.start(phone=phone)
-        print("✅ لاگین با موفقیت انجام شد یا session موجود است.")
-        # Clear temp fields after successful login
-        credentials['code'] = None
-        credentials['phone_code_hash'] = None
-        await save_credentials(credentials, credentials_file)
-    except SessionPasswordNeededError:
-        print("❌ رمز عبور 2FA مورد نیاز است.")
-        password = input("Enter 2FA password: ")
-        await client.sign_in(password=password)
-        credentials['code'] = None
-        credentials['phone_code_hash'] = None
-        await save_credentials(credentials, credentials_file)
-    except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
-        print(f"⚠️ خطا در کد: {e}. پاک کردن session و ارسال کد جدید...")
-        # Delete session file to force re-login
-        session_file = f"{session_name}.session"
-        if os.path.exists(session_file):
-            os.remove(session_file)
-        try:
-            result = await client.send_code_request(phone)
-            credentials['phone_code_hash'] = result.phone_code_hash
-            await save_credentials(credentials, credentials_file)
-            print("✅ کد جدید ارسال شد. لطفاً کد جدید را از ربات وارد کنید.")
-            return  # Exit to wait for restart
-        except Exception as e:
-            print(f"خطا در ارسال کد: {e}")
+            print("⚠️ کد لاگین یا phone_code_hash در credentials.json وجود ندارد. لطفاً با ربات کد را وارد کنید.")
+            try:
+                result = await client.send_code_request(phone)
+                print("✅ کد SMS ارسال شد.")
+                credentials['phone_code_hash'] = result.phone_code_hash
+                await save_credentials(credentials, credentials_file)
+            except Exception as e:
+                print(f"خطا در ارسال کد: {e}")
+            finally:
+                await client.disconnect()
             return
-    except Exception as e:
-        print(f"خطا در لاگین: {e}")
-        return
+    else:
+        print("✅ اکانت قبلاً لاگین شده است.")
 
     me = await client.get_me()
     print(f"Credentials loaded: {json.dumps(credentials, indent=2, ensure_ascii=False)}")
