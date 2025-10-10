@@ -30,7 +30,7 @@ class Settings(Model):
 # Init Ormax DB (create tables)
 async def init_ormax_db():
     await db.connect()
-    await db.create_tables([Settings], safe=True)
+    await db.create_tables([Settings])  # Remove 'safe=True' as it's not supported
     # Insert default if not exists
     try:
         default_setting = await Settings.get(id=1)
