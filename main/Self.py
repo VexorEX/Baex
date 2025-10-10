@@ -1,7 +1,6 @@
 import asyncio, json,os ,sys
-import sqlite3  # Sync for init
 import aiosqlite
-from telethon import TelegramClient
+from telethon import TelegramClient,connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
 current_dir = os.path.dirname(__file__)  # users/123456
@@ -9,45 +8,6 @@ root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
 main_path = os.path.join(root_dir, 'main')
 if main_path not in sys.path:
     sys.path.insert(0, main_path)
-
-# Import load_json function
-from modules.utils import load_json
-
-# Load credentials first to get session_name
-credentials = load_json('credentials.json')
-session_name = credentials['session_name']
-db_path = f'selfbot_{session_name}.db'
-conn = sqlite3.connect(db_path)
-cursor = conn.cursor()
-cursor.execute('''
-               CREATE TABLE IF NOT EXISTS settings (
-                                                       id INTEGER PRIMARY KEY,
-                                                       lang TEXT DEFAULT 'fa',
-                                                       welcome_enabled BOOLEAN DEFAULT 0,
-                                                       welcome_text TEXT DEFAULT '',
-                                                       welcome_delete_time INTEGER DEFAULT 0,
-                                                       clock_enabled BOOLEAN DEFAULT 0,
-                                                       clock_location TEXT DEFAULT 'name',
-                                                       clock_bio_text TEXT DEFAULT '',
-                                                       clock_fonts TEXT DEFAULT '[1]',
-                                                       clock_timezone TEXT DEFAULT 'Asia/Tehran',
-                                                       action_enabled BOOLEAN DEFAULT 0,
-                                                       action_types TEXT DEFAULT '{}',
-                                                       text_format_enabled BOOLEAN DEFAULT 0,
-                                                       text_formats TEXT DEFAULT '{}',
-                                                       locks TEXT DEFAULT '{}',
-                                                       antilog_enabled BOOLEAN DEFAULT 0,
-                                                       first_comment_enabled BOOLEAN DEFAULT 0,
-                                                       first_comment_text TEXT DEFAULT ''
-               )
-               ''')
-cursor.execute('SELECT COUNT(*) FROM settings')
-count = cursor.fetchone()[0]
-if count == 0:
-    cursor.execute('INSERT INTO settings (id) VALUES (1)')
-conn.commit()
-conn.close()
-print("Database initialized (sync).")
 
 from modules.profile import register_profile_handlers
 from modules.settings import setup_settings
@@ -69,14 +29,41 @@ async def save_credentials(credentials, filename='credentials.json'):
         json.dump(credentials, f, indent=2)
 
 
+async def init_db():
+    db_path = 'selfbot.db'
+    async with aiosqlite.connect(db_path) as db:
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS settings (
+                                                                 id INTEGER PRIMARY KEY,
+                                                                 bio TEXT DEFAULT '',
+                                                                 username TEXT DEFAULT '',
+                                                                 first_name TEXT DEFAULT '',
+                                                                 last_name TEXT DEFAULT '',
+                                                                 profile_photo INTEGER DEFAULT 0
+                         )
+                         ''')
+        cursor = await db.execute('SELECT COUNT(*) FROM settings')
+        count = (await cursor.fetchone())[0]
+        if count == 0:
+            await db.execute('INSERT INTO settings (id) VALUES (1)')
+        await db.commit()
+    print("Database initialized (async).")
+
+
 async def main():
+    await init_db()  # Init DB first, before any module calls
+
     credentials_file = 'credentials.json'
     credentials = load_json(credentials_file)
     api_id = credentials['api_id']
     api_hash = credentials['api_hash']
     session_name = credentials['session_name']
     owner_id = credentials['owner_id']
-    client = TelegramClient(session_name, api_id, api_hash)
+    proxy = (
+        "54.38.136.78", 4044,
+        "eeff0ce99b756ea156e1774d930f40bd21"
+    )
+    client = TelegramClient(session_name, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate, proxy=proxy)
     phone = credentials.get("phone")
     code = credentials.get("code")
     phone_code_hash = credentials.get("phone_code_hash")
@@ -127,11 +114,6 @@ async def main():
     print(f"Credentials loaded: {json.dumps(credentials, indent=2, ensure_ascii=False)}")
     print("🚀 سلف ربات با موفقیت راه‌اندازی شد!")
     print(f"📱 اکانت: {me.first_name}")
-
-    # Async DB check (optional, since sync init done)
-    async with aiosqlite.connect(db_path) as db:
-        await db.commit()  # Ensure
-    print("Database ready.")
 
     # ثبت هندلرها
     await register_profile_handlers(client, session_name, owner_id)
