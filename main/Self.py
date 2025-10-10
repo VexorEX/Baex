@@ -1,5 +1,5 @@
 import asyncio, json,os ,sys
-import aiosqlite
+from ormax import Model, fields, Database  # Import Ormax
 from telethon import TelegramClient,connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
@@ -8,6 +8,33 @@ root_dir = os.path.abspath(os.path.join(current_dir, '../../'))  # root/
 main_path = os.path.join(root_dir, 'main')
 if main_path not in sys.path:
     sys.path.insert(0, main_path)
+
+# Define Settings model with Ormax
+class Settings(Model):
+    class Meta:
+        database = Database("sqlite:///selfbot.db")
+        table = "settings"
+
+    id = fields.Integer(primary_key=True)
+    bio = fields.Text(default="")
+    username = fields.Text(default="")
+    first_name = fields.Text(default="")
+    last_name = fields.Text(default="")
+    profile_photo = fields.Integer(default=0)
+
+# Init Ormax DB (create tables)
+async def init_ormax_db():
+    await Settings.Meta.database.connect()
+    await Settings.Meta.database.create_tables([Settings], safe=True)
+    # Insert default if not exists
+    default_setting, created = await Settings.get_or_create(id=1, defaults={
+        "bio": "",
+        "username": "",
+        "first_name": "",
+        "last_name": "",
+        "profile_photo": 0
+    })
+    print("Database initialized with Ormax.")
 
 from modules.profile import register_profile_handlers
 from modules.settings import setup_settings
@@ -29,29 +56,8 @@ async def save_credentials(credentials, filename='credentials.json'):
         json.dump(credentials, f, indent=2)
 
 
-async def init_db():
-    db_path = 'selfbot.db'
-    async with aiosqlite.connect(db_path) as db:
-        await db.execute('''
-                         CREATE TABLE IF NOT EXISTS settings (
-                                                                 id INTEGER PRIMARY KEY,
-                                                                 bio TEXT DEFAULT '',
-                                                                 username TEXT DEFAULT '',
-                                                                 first_name TEXT DEFAULT '',
-                                                                 last_name TEXT DEFAULT '',
-                                                                 profile_photo INTEGER DEFAULT 0
-                         )
-                         ''')
-        cursor = await db.execute('SELECT COUNT(*) FROM settings')
-        count = (await cursor.fetchone())[0]
-        if count == 0:
-            await db.execute('INSERT INTO settings (id) VALUES (1)')
-        await db.commit()
-    print("Database initialized (async).")
-
-
 async def main():
-    await init_db()  # Init DB first, before any module calls
+    await init_ormax_db()  # Init Ormax first
 
     credentials_file = 'credentials.json'
     credentials = load_json(credentials_file)
@@ -83,6 +89,11 @@ async def main():
                 credentials['code'] = None
                 credentials['phone_code_hash'] = None
                 await save_credentials(credentials, credentials_file)
+                # Fix readonly session file
+                session_file = f"{session_name}.session"
+                if os.path.exists(session_file):
+                    os.chmod(session_file, 0o666)
+                    print("Session file permissions fixed.")
             except SessionPasswordNeededError:
                 print("❌ رمز عبور 2FA مورد نیاز است.")
                 password = input("Enter 2FA password: ")
@@ -90,6 +101,10 @@ async def main():
                 credentials['code'] = None
                 credentials['phone_code_hash'] = None
                 await save_credentials(credentials, credentials_file)
+                # Fix readonly
+                session_file = f"{session_name}.session"
+                if os.path.exists(session_file):
+                    os.chmod(session_file, 0o666)
             except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
                 print(f"⚠️ خطا در کد: {e}. پاک کردن session و ارسال کد جدید...")
                 session_file = f"{session_name}.session"
@@ -108,7 +123,10 @@ async def main():
                     return
             except Exception as e:
                 print(f"خطا در ورود: {e}")
-                await client.disconnect()
+                try:
+                    await client.disconnect()
+                except:
+                    pass
                 return
         else:
             print("⚠️ کد لاگین یا phone_code_hash در credentials.json وجود ندارد. لطفاً با ربات کد را وارد کنید.")
@@ -120,7 +138,10 @@ async def main():
             except Exception as e:
                 print(f"خطا در ارسال کد: {e}")
             finally:
-                await client.disconnect()
+                try:
+                    await client.disconnect()
+                except:
+                    pass
             return
     else:
         print("✅ اکانت قبلاً لاگین شده است.")
@@ -144,7 +165,16 @@ async def main():
     await register_download_handlers(client, session_name, owner_id)
     await register_convert_handlers(client, session_name, owner_id)
 
-    await client.run_until_disconnected()
+    try:
+        await client.run_until_disconnected()
+    except KeyboardInterrupt:
+        print("Shutting down...")
+    finally:
+        try:
+            await client.disconnect()
+        except:
+            pass
+        await Settings.Meta.database.disconnect()
 
 
 if __name__ == '__main__':
