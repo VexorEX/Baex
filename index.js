@@ -21,6 +21,9 @@ const pendingNewSelf = new Map();
 // Map for users waiting for code
 const pendingCode = new Map();
 
+// Map for users needing password
+const pendingPassword = new Map();
+
 // Helper function to create user folder and credentials.json
 function createUserFolder(userId, apiId, apiHash, phone) {
     const userDir = path.join(__dirname, 'users', userId.toString());
@@ -32,7 +35,10 @@ function createUserFolder(userId, apiId, apiHash, phone) {
         session_name: `selfbot_${userId}`,
         owner_id: userId,
         phone: phone,
-        code: null
+        code: null,
+        phone_code_hash: null,
+        needs_password: false,
+        password: null
     };
 
     const credentialsPath = path.join(userDir, 'credentials.json');
@@ -118,6 +124,25 @@ function saveCodeAndRestart(userId, code) {
     return { success: true, message: 'کد ذخیره شد و self-bot دوباره راه‌اندازی شد.' };
 }
 
+// Function to save password and restart
+function savePasswordAndRestart(userId, password) {
+    const userDir = path.join(__dirname, 'users', userId.toString());
+    const credPath = path.join(userDir, 'credentials.json');
+
+    if (!fs.existsSync(credPath)) {
+        return { success: false, message: 'No self-bot found.' };
+    }
+
+    const credentials = JSON.parse(fs.readFileSync(credPath, 'utf-8'));
+    credentials.password = password;
+    fs.writeFileSync(credPath, JSON.stringify(credentials, null, 2));
+
+    // Restart selfbot
+    const userDirFull = path.join(__dirname, 'users', userId.toString());
+    const result = startSelfBot(userId, userDirFull);
+    return { success: true, message: 'رمز ذخیره شد و self-bot دوباره راه‌اندازی شد.' };
+}
+
 // Bot commands
 bot.start((ctx) => {
     ctx.reply('Welcome! Use /newself <api_id> <api_hash> to create your self-bot and then share your contact.');
@@ -133,7 +158,7 @@ bot.command('newself', (ctx) => {
 
     pendingNewSelf.set(userId, { apiId, apiHash });
     const keyboard = Markup.keyboard([Markup.button.contactRequest('📱 Share My Contact')]).oneTime().resize();
-    ctx.reply('لطفاً شماره تلفن خود را با دکمه زیر به اشتراک بگذارید: 📱', keyboard);
+    ctx.reply('لطفاً شماره تلفن خود را با دکمه زیر به اشتراک بگذارید: 📱', keyboard.reply_markup);
 });
 
 bot.on('contact', (ctx) => {
@@ -160,19 +185,23 @@ bot.on('contact', (ctx) => {
     if (result.success) {
         pendingCode.set(userId, true);
         const codeKeyboard = Markup.keyboard([Markup.button.text('🔑 Send Code')]).oneTime().resize();
-        ctx.reply('✅ self-bot راه‌اندازی شد. حالا کد SMS را مستقیماً ارسال کنید. 🔑', codeKeyboard);
+        ctx.reply('✅ self-bot راه‌اندازی شد. حالا کد SMS را مستقیماً ارسال کنید. 🔑', codeKeyboard.reply_markup);
     }
 });
 
 bot.on('text', (ctx) => {
     const userId = ctx.from.id;
     const text = ctx.message.text.trim();
-    if (pendingCode.has(userId) && /^\d{5}$/.test(text)) {
-        pendingCode.delete(userId);
-        // Format code to avoid expiration
-        const formattedCode = text.split('').join('.');  // e.g., "12345" -> "1.2.3.4.5"
-        const result = saveCodeAndRestart(userId, text);  // Save original
-        ctx.reply(`✅ کد ذخیره شد (فرمت امن: ${formattedCode}). self-bot restart شد.`);
+    if (pendingCode.has(userId)) {
+        // Parse formatted code (remove dots, dashes, spaces)
+        let cleanCode = text.replace(/[\.\-\s]/g, '');  // Remove dots, dashes, spaces
+        if (/^\d{5}$/.test(cleanCode)) {
+            pendingCode.delete(userId);
+            const result = saveCodeAndRestart(userId, cleanCode);  // Save clean code
+            ctx.reply(`✅ کد ذخیره شد (فرمت امن: ${text}). self-bot restart شد.`);
+        } else {
+            ctx.reply('❌ کد نامعتبر است. 5 رقم بفرستید (مثل 12345 یا 1.2.3.4.5).');
+        }
     } else if (pendingPassword.has(userId)) {
         pendingPassword.delete(userId);
         const result = savePasswordAndRestart(userId, text);
