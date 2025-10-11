@@ -1,7 +1,7 @@
 import asyncio, json, os, sys
 import sqlite3
 import aiosqlite
-from telethon import TelegramClient
+from telethon import TelegramClient, connection
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
 # مسیرها
@@ -11,20 +11,8 @@ main_path = os.path.join(root_dir, 'main')
 if main_path not in sys.path:
     sys.path.insert(0, main_path)
 
-# ابزارها و هندلرها
+# ابزارها و هندلرها (بعد از init DB import می‌شن تا DB آماده باشه)
 from modules.utils import load_json
-from modules.profile import register_profile_handlers
-from modules.settings import setup_settings
-from modules.manage import register_manage_handlers
-from modules.group import register_group_handlers
-from modules.convert import register_convert_handlers
-from modules.download import register_download_handlers
-from modules.edit import register_edit_handlers
-from modules.enemy import register_enemy_handlers
-from modules.fun import register_fun_handlers
-from modules.private import register_private_handlers
-from modules.vars import register_vars_handlers
-from modules.fresponse import register_fast_response_handlers
 
 # ذخیره credentials
 async def save_credentials(credentials, filename='credentials.json'):
@@ -84,38 +72,61 @@ async def main():
     db_path = f'selfbot_{session_name}.db'
     init_sqlite_db(db_path)
 
-    client = TelegramClient(session_name, api_id, api_hash)
+    proxy = ("54.38.136.78", 4044, "eeff0ce99b756ea156e1774d930f40bd21")
+    client = TelegramClient(session_name, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate, proxy=proxy)
+
     try:
-        if code and phone_code_hash:
-            await client.start(phone=phone, code_callback=lambda: code, code_hash_callback=lambda: phone_code_hash)
+        await client.connect()
+        if not await client.is_user_authorized():
+            if code and phone_code_hash:
+                try:
+                    await client.sign_in(phone=phone, code=code, phone_code_hash=phone_code_hash)
+                    print("✅ لاگین موفق.")
+                    credentials['code'] = None
+                    credentials['phone_code_hash'] = None
+                    await save_credentials(credentials, credentials_file)
+                except SessionPasswordNeededError:
+                    password = input("رمز 2FA را وارد کنید: ")
+                    await client.sign_in(password=password)
+                    credentials['code'] = None
+                    credentials['phone_code_hash'] = None
+                    await save_credentials(credentials, credentials_file)
+                except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
+                    print(f"⚠️ خطا در کد: {e}")
+                    session_file = f"{session_name}.session"
+                    if os.path.exists(session_file):
+                        os.remove(session_file)
+                    try:
+                        result = await client.send_code_request(phone)
+                        credentials['phone_code_hash'] = result.phone_code_hash
+                        await save_credentials(credentials, credentials_file)
+                        print("✅ کد جدید ارسال شد.")
+                        await client.disconnect()
+                        return
+                    except Exception as e:
+                        print(f"خطا در ارسال کد: {e}")
+                        await client.disconnect()
+                        return
+                except Exception as e:
+                    print(f"خطا در لاگین: {e}")
+                    await client.disconnect()
+                    return
+            else:
+                print("⚠️ کد لاگین یا phone_code_hash در credentials.json وجود ندارد. لطفاً با ربات کد را وارد کنید.")
+                try:
+                    result = await client.send_code_request(phone)
+                    print("✅ کد SMS ارسال شد.")
+                    credentials['phone_code_hash'] = result.phone_code_hash
+                    await save_credentials(credentials, credentials_file)
+                except Exception as e:
+                    print(f"خطا در ارسال کد: {e}")
+                finally:
+                    await client.disconnect()
+                return
         else:
-            await client.start(phone=phone)
-        print("✅ لاگین موفق.")
-        credentials['code'] = None
-        credentials['phone_code_hash'] = None
-        await save_credentials(credentials, credentials_file)
-    except SessionPasswordNeededError:
-        password = input("رمز 2FA را وارد کنید: ")
-        await client.sign_in(password=password)
-        credentials['code'] = None
-        credentials['phone_code_hash'] = None
-        await save_credentials(credentials, credentials_file)
-    except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
-        print(f"⚠️ خطا در کد: {e}")
-        session_file = f"{session_name}.session"
-        if os.path.exists(session_file):
-            os.remove(session_file)
-        try:
-            result = await client.send_code_request(phone)
-            credentials['phone_code_hash'] = result.phone_code_hash
-            await save_credentials(credentials, credentials_file)
-            print("✅ کد جدید ارسال شد.")
-            return
-        except Exception as e:
-            print(f"خطا در ارسال کد: {e}")
-            return
+            print("✅ اکانت قبلاً لاگین شده است.")
     except Exception as e:
-        print(f"خطا در لاگین: {e}")
+        print(f"خطا در اتصال: {e}")
         return
 
     me = await client.get_me()
@@ -125,9 +136,23 @@ async def main():
     async with aiosqlite.connect(db_path) as db:
         await db.commit()
 
+    # import modules بعد از init DB
+    from modules.profile import register_profile_handlers
+    from modules.settings import setup_settings
+    from modules.manage import register_manage_handlers
+    from modules.group import register_group_handlers
+    from modules.convert import register_convert_handlers
+    from modules.download import register_download_handlers
+    from modules.edit import register_edit_handlers
+    from modules.enemy import register_enemy_handlers
+    from modules.fresponse import register_fast_response_handlers
+    from modules.fun import register_fun_handlers
+    from modules.private import register_private_handlers
+    from modules.vars import register_vars_handlers
+
     # ثبت هندلرها
     await register_profile_handlers(client, session_name, owner_id)
-    await setup_settings(client,db_path)
+    await setup_settings(client, db_path)
     await register_manage_handlers(client, session_name, owner_id)
     await register_group_handlers(client, session_name, owner_id)
     await register_vars_handlers(client, session_name, owner_id)
@@ -139,7 +164,15 @@ async def main():
     await register_download_handlers(client, session_name, owner_id)
     await register_convert_handlers(client, session_name, owner_id)
 
-    await client.run_until_disconnected()
+    try:
+        await client.run_until_disconnected()
+    except KeyboardInterrupt:
+        print("Shutting down...")
+    finally:
+        try:
+            await client.disconnect()
+        except:
+            pass
 
 # اجرای برنامه
 if __name__ == '__main__':
