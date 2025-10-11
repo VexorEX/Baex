@@ -74,8 +74,6 @@ function startSelfBot(userId, userDir) {
                 const credentials = JSON.parse(fs.readFileSync(credPath, 'utf-8'));
                 if (!credentials.code || !credentials.phone_code_hash) {
                     bot.telegram.sendMessage(userId, '⚠️ کد جدید ارسال شد. لطفاً کد SMS جدید را بفرستید. 🔑');
-                } else if (credentials.code) {
-                    bot.telegram.sendMessage(userId, '❌ کد اشتباه یا منقضی شد. self-bot restart شد، کد جدید بفرستید. 🔄');
                 }
             }
         }

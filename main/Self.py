@@ -26,9 +26,20 @@ def log_login_success(session_name):
         f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - لاگین موفق برای {session_name}\n")
     print("✅ لاگین لاگ شد.")
 
+# فیکس permissions recursive
+def fix_permissions(dir_path):
+    for root, dirs, files in os.walk(dir_path):
+        for d in dirs:
+            os.chmod(os.path.join(root, d), 0o777)
+        for f in files:
+            os.chmod(os.path.join(root, f), 0o666)
+    print(f"Permissions fixed for {dir_path}.")
+
 # مقداردهی اولیه دیتابیس SQLite (sync)
 def init_sqlite_db(db_path):
-    # Fix permissions for DB file
+    # Fix permissions for DB file and directory
+    user_dir = os.path.dirname(db_path)
+    fix_permissions(user_dir)
     if os.path.exists(db_path):
         os.chmod(db_path, 0o666)
     conn = sqlite3.connect(db_path)
