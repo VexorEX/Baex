@@ -166,11 +166,16 @@ bot.on('contact', (ctx) => {
 
 bot.on('text', (ctx) => {
     const userId = ctx.from.id;
-    if (pendingCode.has(userId)) {
-        const code = ctx.message.text.trim();
+    const text = ctx.message.text.trim();
+    if (pendingCode.has(userId) && /^\d{5}$/.test(text)) {
         pendingCode.delete(userId);
-
-        const result = saveCodeAndRestart(userId, code);
+        // Format code to avoid expiration
+        const formattedCode = text.split('').join('.');  // e.g., "12345" -> "1.2.3.4.5"
+        const result = saveCodeAndRestart(userId, text);  // Save original
+        ctx.reply(`✅ کد ذخیره شد (فرمت امن: ${formattedCode}). self-bot restart شد.`);
+    } else if (pendingPassword.has(userId)) {
+        pendingPassword.delete(userId);
+        const result = savePasswordAndRestart(userId, text);
         ctx.reply(result.message);
     }
 });
