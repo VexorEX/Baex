@@ -6,12 +6,15 @@ from telethon.tl.types import SendMessageTypingAction, SendMessageUploadVideoAct
 from deep_translator import GoogleTranslator
 from utils import load_json, send_message, get_language
 from models import load_settings, update_settings
+import aiosqlite
 
-async def setup_settings(client):
+
+async def setup_settings(client,db_path):
     """Set up the settings component with command and event handlers."""
     messages = load_json('msg.json')
     commands = load_json('cmd.json')
-    settings = await load_settings()
+    async with aiosqlite.connect(db_path) as db:
+        settings = await load_settings(db)
 
     lang = settings.get('language', 'fa')
 
