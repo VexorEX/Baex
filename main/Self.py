@@ -19,6 +19,11 @@ async def save_credentials(credentials, filename='credentials.json'):
     with open(filename, 'w') as f:
         json.dump(credentials, f, indent=2)
 
+# ذخیره لاگ لاگین
+def log_login_success():
+    with open('login_log.txt', 'a') as f:
+        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - لاگین موفق برای {session_name}\n")
+
 # مقداردهی اولیه دیتابیس SQLite (sync)
 def init_sqlite_db(db_path):
     conn = sqlite3.connect(db_path)
@@ -85,32 +90,57 @@ async def main():
                     credentials['code'] = None
                     credentials['phone_code_hash'] = None
                     await save_credentials(credentials, credentials_file)
+                    log_login_success()  # لاگ لاگین موفق
+                    # Fix readonly session file
+                    session_file = f"{session_name}.session"
+                    if os.path.exists(session_file):
+                        os.chmod(session_file, 0o666)
+                        print("Session file permissions fixed.")
                 except SessionPasswordNeededError:
                     password = input("رمز 2FA را وارد کنید: ")
                     await client.sign_in(password=password)
                     credentials['code'] = None
                     credentials['phone_code_hash'] = None
                     await save_credentials(credentials, credentials_file)
+                    log_login_success()
+                    # Fix readonly
+                    session_file = f"{session_name}.session"
+                    if os.path.exists(session_file):
+                        os.chmod(session_file, 0o666)
                 except (PhoneCodeExpiredError, PhoneCodeInvalidError) as e:
-                    print(f"⚠️ خطا در کد: {e}")
+                    print(f"⚠️ خطا در کد: {e}. پاک کردن session و ارسال کد جدید...")
                     session_file = f"{session_name}.session"
                     if os.path.exists(session_file):
                         os.remove(session_file)
                     try:
                         result = await client.send_code_request(phone)
                         credentials['phone_code_hash'] = result.phone_code_hash
+                        credentials['code'] = None  # Reset code for new one
                         await save_credentials(credentials, credentials_file)
-                        print("✅ کد جدید ارسال شد.")
+                        print("✅ کد جدید ارسال شد. لطفاً کد جدید را از ربات وارد کنید.")
                         await client.disconnect()
                         return
                     except Exception as e:
-                        print(f"خطا در ارسال کد: {e}")
+                        print(f"خطا در ارسال کد جدید: {e}")
                         await client.disconnect()
                         return
                 except Exception as e:
-                    print(f"خطا در لاگین: {e}")
-                    await client.disconnect()
-                    return
+                    print(f"خطا در لاگین: {e}. پاک کردن session و ارسال کد جدید...")
+                    session_file = f"{session_name}.session"
+                    if os.path.exists(session_file):
+                        os.remove(session_file)
+                    try:
+                        result = await client.send_code_request(phone)
+                        credentials['phone_code_hash'] = result.phone_code_hash
+                        credentials['code'] = None
+                        await save_credentials(credentials, credentials_file)
+                        print("✅ کد جدید ارسال شد. لطفاً کد جدید را از ربات وارد کنید.")
+                        await client.disconnect()
+                        return
+                    except Exception as e:
+                        print(f"خطا در ارسال کد جدید: {e}")
+                        await client.disconnect()
+                        return
             else:
                 print("⚠️ کد لاگین یا phone_code_hash در credentials.json وجود ندارد. لطفاً با ربات کد را وارد کنید.")
                 try:
