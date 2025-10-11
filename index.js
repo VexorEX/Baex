@@ -67,6 +67,16 @@ function startSelfBot(userId, userDir) {
     selfProcess.on('close', (code) => {
         console.log(`Self-bot for user ${userId} exited with code ${code}`);
         userProcesses.delete(userId);
+        if (code === 0) {  // Normal exit, check if needs new code
+            const userDirFull = path.join(__dirname, 'users', userId.toString());
+            const credPath = path.join(userDirFull, 'credentials.json');
+            if (fs.existsSync(credPath)) {
+                const credentials = JSON.parse(fs.readFileSync(credPath, 'utf-8'));
+                if (!credentials.code || !credentials.phone_code_hash) {
+                    bot.telegram.sendMessage(userId, '⚠️ کد جدید ارسال شد. لطفاً کد SMS جدید را بفرستید. 🔑');
+                }
+            }
+        }
     });
 
     userProcesses.set(userId, selfProcess);
