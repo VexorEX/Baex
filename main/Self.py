@@ -28,6 +28,9 @@ def log_login_success(session_name):
 
 # مقداردهی اولیه دیتابیس SQLite (sync)
 def init_sqlite_db(db_path):
+    # Fix permissions for DB file
+    if os.path.exists(db_path):
+        os.chmod(db_path, 0o666)
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
@@ -58,6 +61,7 @@ def init_sqlite_db(db_path):
         cursor.execute('INSERT INTO settings (id) VALUES (1)')
     conn.commit()
     conn.close()
+    os.chmod(db_path, 0o666)  # Ensure writable
     print("✅ دیتابیس SQLite مقداردهی شد.")
 
 # تابع اصلی
