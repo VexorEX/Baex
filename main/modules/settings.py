@@ -11,8 +11,8 @@ import aiosqlite
 
 async def setup_settings(client,db_path):
     """Set up the settings component with command and event handlers."""
-    messages = load_json('msg.json')
-    commands = load_json('cmd.json')
+    messages = load_json('main/modules/msg.json')
+    commands = load_json('main/modules/cmd.json')
     print(commands)
     async with aiosqlite.connect(db_path) as db:
         settings = await load_settings(db)
