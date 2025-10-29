@@ -16,7 +16,7 @@ if main_path not in sys.path:
 from modules.utils import load_json
 
 # ذخیره credentials
-async def save_credentials(credentials, filename='credentials.json'):
+async def save_credentials(credentials, filename):
     with open(filename, 'w') as f:
         json.dump(credentials, f, indent=2)
 
@@ -77,12 +77,23 @@ def init_sqlite_db(db_path):
 
 # تابع اصلی
 async def main():
-    credentials_file = 'credentials.json'
-    credentials = load_json(credentials_file)
-    api_id = credentials['api_id']
-    api_hash = credentials['api_hash']
-    session_name = credentials['session_name']
-    owner_id = credentials['owner_id']
+    # Fix: absolute path for credentials
+    credentials_file = os.path.join(os.path.dirname(__file__), 'credentials.json')
+    if not os.path.exists(credentials_file):
+        print(f"❌ credentials.json یافت نشد در {credentials_file}")
+        return
+
+    try:
+        with open(credentials_file, 'r') as f:
+            credentials = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"❌ خطا در خواندن credentials.json: {e}")
+        return
+
+    api_id = credentials.get('api_id')
+    api_hash = credentials.get('api_hash')
+    session_name = credentials.get('session_name')
+    owner_id = credentials.get('owner_id')
     phone = credentials.get("phone")
     code = credentials.get("code")
     phone_code_hash = credentials.get("phone_code_hash")
@@ -91,7 +102,11 @@ async def main():
         print("⚠️ شماره تلفن در credentials.json پیدا نشد.")
         return
 
-    db_path = f'selfbot_{session_name}.db'
+    if not api_id or not api_hash:
+        print("❌ api_id یا api_hash در credentials.json موجود نیست.")
+        return
+
+    db_path = os.path.join(os.path.dirname(__file__), f'selfbot_{session_name}.db')  # Absolute for DB
     init_sqlite_db(db_path)
 
     proxy = ("54.38.136.78", 4044, "eeff0ce99b756ea156e1774d930f40bd21")
@@ -109,14 +124,14 @@ async def main():
                     await save_credentials(credentials, credentials_file)
                     log_login_success(session_name)  # لاگ لاگین
                     # Fix readonly session file
-                    session_file = f"{session_name}.session"
+                    session_file = os.path.join(os.path.dirname(__file__), f"{session_name}.session")
                     if os.path.exists(session_file):
                         os.chmod(session_file, 0o666)
                         print("Session file permissions fixed.")
                 except (PhoneCodeExpiredError, PhoneCodeInvalidError, SessionPasswordNeededError) as e:
                     print(f"⚠️ خطا در کد/رمز: {e}. ارسال کد جدید...")
                     # پاک کردن session
-                    session_file = f"{session_name}.session"
+                    session_file = os.path.join(os.path.dirname(__file__), f"{session_name}.session")
                     if os.path.exists(session_file):
                         os.remove(session_file)
                     # ارسال کد جدید
@@ -135,7 +150,7 @@ async def main():
                 except Exception as e:
                     print(f"خطا در لاگین: {e}. ارسال کد جدید...")
                     # پاک کردن session
-                    session_file = f"{session_name}.session"
+                    session_file = os.path.join(os.path.dirname(__file__), f"{session_name}.session")
                     if os.path.exists(session_file):
                         os.remove(session_file)
                     # ارسال کد جدید

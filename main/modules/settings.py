@@ -9,22 +9,34 @@ from models import load_settings, update_settings
 import aiosqlite
 
 
-async def setup_settings(client,db_path):
+async def setup_settings(client, db_path):
     """Set up the settings component with command and event handlers."""
-    messages = load_json(filename="main/modules/msg.json")
-    commands = load_json(filename="main/modules/cmd.json")
-    print(commands)
+    messages = load_json('msg.json')
+    commands = load_json('cmd.json')
+    print(f"Debug: Loaded commands: {len(commands.get('fa', {}))} keys for lang fa")  # Debug
     async with aiosqlite.connect(db_path) as db:
         settings = await load_settings(db)
 
     lang = settings.get('lang', 'fa')
+    if lang not in commands:
+        lang = 'en'  # Fallback to English
+        print(f"Debug: Fallback to lang 'en' (original: {lang})")
 
     def get_message(key, **kwargs):
         """Get formatted message for the current language."""
+        # Fallback if lang or key missing
+        if lang not in messages or 'settings' not in messages[lang] or key not in messages[lang]['settings']:
+            return f"[Message {key} not found]"
         return messages[lang]['settings'].get(key, '').format(**kwargs)
+
+    def get_pattern(key):
+        """Safe get for command pattern with fallback."""
+        return commands.get(lang, {}).get('settings', {}).get(key, '')
 
     # Helper function to toggle settings
     async def toggle_setting(event, setting_key, chat_id, status):
+        if setting_key not in settings:
+            settings[setting_key] = {}
         settings[setting_key][chat_id] = (status == 'روشن' or status == 'on')
         await update_settings('settings', settings)
         emoji = '✅' if settings[setting_key][chat_id] else '❌'
@@ -36,42 +48,42 @@ async def setup_settings(client,db_path):
         emoji = '✅' if settings[setting_key] else '❌'
         await send_message(event, get_message(f'{setting_key}_toggle', status=status, emoji=emoji))
 
-    # Command handlers
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['self_toggle']))
+    # Command handlers (all with get_pattern)
+    @client.on(events.NewMessage(pattern=get_pattern('self_toggle')))
     async def handle_self_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'self_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['self_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('self_global_toggle')))
     async def handle_self_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'self_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['poker_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('poker_toggle')))
     async def handle_poker_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'poker_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['poker_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('poker_global_toggle')))
     async def handle_poker_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'poker_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['save_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('save_toggle')))
     async def handle_save_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'save_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['save_pv_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('save_pv_toggle')))
     async def handle_save_pv_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'save_pv_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['save_realm_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('save_realm_set')))
     async def handle_save_realm_set(event):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
@@ -81,7 +93,7 @@ async def setup_settings(client,db_path):
         else:
             await send_message(event, get_message('reply_to_message'))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['save_pv_realm_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('save_pv_realm_set')))
     async def handle_save_pv_realm_set(event):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
@@ -91,13 +103,13 @@ async def setup_settings(client,db_path):
         else:
             await send_message(event, get_message('reply_to_message'))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['save_profile_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('save_profile_toggle')))
     async def handle_save_profile_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'save_profile_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['save_profile_realm_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('save_profile_realm_set')))
     async def handle_save_profile_realm_set(event):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
@@ -107,72 +119,72 @@ async def setup_settings(client,db_path):
         else:
             await send_message(event, get_message('reply_to_message'))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['typing_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('typing_toggle')))
     async def handle_typing_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'typing_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['typing_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('typing_global_toggle')))
     async def handle_typing_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'typing_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['action_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('action_toggle')))
     async def handle_action_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'action_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['action_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('action_global_toggle')))
     async def handle_action_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'action_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['tick_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('tick_toggle')))
     async def handle_tick_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'tick_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['tick_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('tick_global_toggle')))
     async def handle_tick_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'tick_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['tick_group_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('tick_group_toggle')))
     async def handle_tick_group_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'tick_group_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['tick_pv_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('tick_pv_toggle')))
     async def handle_tick_pv_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'tick_pv_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['tick_channel_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('tick_channel_toggle')))
     async def handle_tick_channel_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'tick_channel_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['tag_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('tag_toggle')))
     async def handle_tag_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'tag_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['tag_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('tag_global_toggle')))
     async def handle_tag_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'tag_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['translate_mode_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('translate_mode_toggle')))
     async def handle_translate_mode_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'translate_mode_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['translate_mode_realm_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('translate_mode_realm_set')))
     async def handle_translate_mode_realm_set(event):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
@@ -182,68 +194,65 @@ async def setup_settings(client,db_path):
         else:
             await send_message(event, get_message('reply_to_message'))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['translate_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('translate_toggle')))
     async def handle_translate_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'translate_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['set_language']))
+    @client.on(events.NewMessage(pattern=get_pattern('set_language')))
     async def handle_set_language(event):
         lang_code = event.pattern_match.group(1)
-        if lang_code in settings['languages']:
-            settings['lang'] = lang_code
-            await update_settings('settings', settings)
-            await send_message(event, get_message('set_language', lang=lang_code))
-        else:
-            await send_message(event, get_message('invalid_input'))
+        settings['lang'] = lang_code
+        await update_settings('settings', settings)
+        await send_message(event, get_message('set_language', lang=lang_code))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['list_languages']))
+    @client.on(events.NewMessage(pattern=get_pattern('list_languages')))
     async def handle_list_languages(event):
-        languages = '\n'.join(settings['languages'])
+        languages = '\n'.join([f"🌐 {k}: {v}" for k, v in settings.get('languages', {}).items()])
         await send_message(event, get_message('list_languages', languages=languages))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['hashtag_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('hashtag_toggle')))
     async def handle_hashtag_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'hashtag_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['hashtag_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('hashtag_global_toggle')))
     async def handle_hashtag_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'hashtag_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['signature_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('signature_toggle')))
     async def handle_signature_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'signature_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['signature_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('signature_global_toggle')))
     async def handle_signature_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'signature_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['signature_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('signature_set')))
     async def handle_signature_set(event):
         signature = event.pattern_match.group(1)
         settings['signature_text'] = signature
         await update_settings('settings', settings)
         await send_message(event, get_message('signature_set', signature=signature))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['auto_approve_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('auto_approve_toggle')))
     async def handle_auto_approve_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'auto_approve_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['anti_login_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('anti_login_toggle')))
     async def handle_anti_login_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'anti_login_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['anti_login_realm_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('anti_login_realm_set')))
     async def handle_anti_login_realm_set(event):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
@@ -253,124 +262,124 @@ async def setup_settings(client,db_path):
         else:
             await send_message(event, get_message('reply_to_message'))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['emoji_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('emoji_toggle')))
     async def handle_emoji_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'emoji_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['emoji_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('emoji_global_toggle')))
     async def handle_emoji_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'emoji_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['emoji_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('emoji_set')))
     async def handle_emoji_set(event):
         emoji = event.pattern_match.group(1)
         settings['emoji_text'] = emoji
         await update_settings('settings', settings)
         await send_message(event, get_message('emoji_set', emoji=emoji))
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['bold_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('bold_toggle')))
     async def handle_bold_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'bold_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['bold_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('bold_global_toggle')))
     async def handle_bold_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'bold_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['underline_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('underline_toggle')))
     async def handle_underline_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'underline_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['underline_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('underline_global_toggle')))
     async def handle_underline_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'underline_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['code_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('code_toggle')))
     async def handle_code_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'code_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['code_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('code_global_toggle')))
     async def handle_code_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'code_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['font_en_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('font_en_toggle')))
     async def handle_font_en_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'font_en_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['font_en_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('font_en_global_toggle')))
     async def handle_font_en_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'font_en_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['font_fa_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('font_fa_toggle')))
     async def handle_font_fa_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'font_fa_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['font_fa_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('font_fa_global_toggle')))
     async def handle_font_fa_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'font_fa_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['strikethrough_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('strikethrough_toggle')))
     async def handle_strikethrough_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'strikethrough_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['strikethrough_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('strikethrough_global_toggle')))
     async def handle_strikethrough_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'strikethrough_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['italic_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('italic_toggle')))
     async def handle_italic_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'italic_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['italic_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('italic_global_toggle')))
     async def handle_italic_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'italic_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['spoiler_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('spoiler_toggle')))
     async def handle_spoiler_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'spoiler_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['spoiler_global_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('spoiler_global_toggle')))
     async def handle_spoiler_global_toggle(event):
         status = event.pattern_match.group(1)
         await toggle_global_setting(event, 'spoiler_global_enabled', status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['reaction_toggle']))
+    @client.on(events.NewMessage(pattern=get_pattern('reaction_toggle')))
     async def handle_reaction_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
         await toggle_setting(event, 'reaction_enabled', chat_id, status)
 
-    @client.on(events.NewMessage(pattern=commands[lang]['settings']['reaction_set']))
+    @client.on(events.NewMessage(pattern=get_pattern('reaction_set')))
     async def handle_reaction_set(event):
         reaction = event.pattern_match.group(1)
         settings['reaction_text'] = reaction
         await update_settings('settings', settings)
-        await send_message(event, get_message('reaction_set', reaction=reaction))
+        await send_message(event, get_message('reaction_set', reaction=reactions))
 
     # Event handlers
     @client.on(events.NewMessage)

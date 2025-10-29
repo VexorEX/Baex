@@ -28,13 +28,17 @@ def load_data(filename, default=None):
         print(f"Error loading {filename}: {e}")
         return default or {}
 
-def load_json(filename, default=None):
-    try:
-        with open(filename, 'r', encoding='utf-8') as f:
+def load_json(filename):
+    # Absolute path from main folder
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    file_path = os.path.join(main_dir, filename)
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        return data if data else (default or {})
-    except Exception as e:
-        return default or {}
+        print(f"Loaded {filename}: {len(data)} keys")  # Debug
+        return data
+    print(f"Warning: {file_path} not found, returning null")
+    return {}
 
 def get_message(key, lang='fa', **kwargs):
     messages = load_json('msg.json', {})
