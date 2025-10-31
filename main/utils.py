@@ -41,12 +41,12 @@ def load_json(filename):
     return {}
 
 def get_message(key, lang='fa', **kwargs):
-    messages = load_json('msg.json', {})
+    messages = load_json('msg.json')
     text = messages.get(lang, {}).get(key, key)
     return text.format(**kwargs)
 
 def get_command_pattern(key, lang='fa'):
-    commands = load_json('cmd.json', {})
+    commands = load_json('cmd.json')
     return commands.get(lang, {}).get(key, '')
 
 def get_persian_date():
@@ -67,7 +67,7 @@ def format_duration(seconds):
 
 def translate_text(text, dest='fa'):
     try:
-        translator = GoogleTranslator(source='auto', target=dest)
+        translator= GoogleTranslator(source='auto', target=dest)
         return translator.translate(text)
     except:
         return get_message('error_occurred', lang='fa')
@@ -88,13 +88,13 @@ async def send_message(event, text, parse_mode=None, reply_markup=None, **kwargs
 
 def get_language(settings, default='fa'):
     """
-    دریافت زبان از تنظیمات یا مقدار پیش‌فرض
+    دریافت زبان از تنظیماتیا مقدار پیش‌فرض
     """
     return settings.get('lang', default)
 
 async def upload_to_backup_channel(client, channel_id, file_path, caption=None):
     """
-    آپلود فایل به کانال پشتیبان و برگرداندن ID فایل
+    آپلود فایل به کانال پشتیبان و برگرداندن IDفایل
     """
     try:
         if caption:
