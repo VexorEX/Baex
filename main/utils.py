@@ -37,7 +37,7 @@ def load_json(filename):
             data = json.load(f)
         print(f"Loaded {filename}: {len(data)} keys")  # Debug
         return data
-    print(f"Warning: {file_path} not found, returning null")
+    print(f"Warning: {file_path}not found, returning null")
     return {}
 
 def get_message(key, lang='fa', **kwargs):
@@ -72,7 +72,7 @@ def translate_text(text, dest='fa'):
     except:
         return get_message('error_occurred', lang='fa')
 
-async def send_message(event, text, parse_mode=None, reply_markup=None, **kwargs):
+async def send_message(event, text, parse_mode=None, reply_markup=None,**kwargs):
     """
     ارسال پیام با پشتیبانی از parse_mode و reply_markup
     """
@@ -94,7 +94,7 @@ def get_language(settings, default='fa'):
 
 async def upload_to_backup_channel(client, channel_id, file_path, caption=None):
     """
-    آپلود فایل به کانال پشتیبان و برگرداندن IDفایل
+    آپلود فایلبه کانال پشتیبان و برگرداندن IDفایل
     """
     try:
         if caption:
