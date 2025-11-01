@@ -31,6 +31,10 @@ async def register_manage_handlers(client, session_name, owner_id):
     messages = load_json('msg.json')
     commands = load_json('cmd.json')
 
+    # Check if language exists in commands, otherwise fallback to 'en'
+    if lang not in commands:
+        lang = 'en'  # Fallback
+
     def get_message(key, **kwargs):
         return messages[lang]['manage'].get(key, '').format(**kwargs)
 
@@ -178,7 +182,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             return 0
 
     # Expiration check
-    @client.on(events.NewMessage(pattern=get_command_pattern('expiration', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('expiration', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_expiration(event):
         try:
             if event.sender_id != owner_id:
@@ -190,7 +195,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             logger.error(f"Error handling expiration: {e}")
 
     # Create channel
-    @client.on(events.NewMessage(pattern=get_command_pattern('create_channel', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('create_channel', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_create_channel(event):
         try:
             if event.sender_id != owner_id:
@@ -211,7 +217,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Set channel for forwarding
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_channel', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('set_channel', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_channel(event):
         try:
             if event.sender_id != owner_id:
@@ -228,7 +235,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete channel settings
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_channel', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_channel', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_channel(event):
         try:
             if event.sender_id != owner_id:
@@ -246,7 +254,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Forward to channel
-    @client.on(events.NewMessage(pattern=get_command_pattern('forward_to_channel', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('forward_to_channel', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_forward_to_channel(event):
         try:
             if event.sender_id != owner_id:
@@ -270,7 +279,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Reset self
-    @client.on(events.NewMessage(pattern=get_command_pattern('reset_self', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('reset_self', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_reset_self(event):
         try:
             if event.sender_id != owner_id:
@@ -283,7 +293,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete message
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_message', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_message', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_message(event):
         try:
             if event.sender_id != owner_id:
@@ -303,7 +314,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete multiple messages
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_message_count', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_message_count', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_message_count(event):
         try:
             if event.sender_id != owner_id:
@@ -324,7 +336,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Self status
-    @client.on(events.NewMessage(pattern=get_command_pattern('self_status', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('self_status', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_self_status(event):
         try:
             if event.sender_id != owner_id:
@@ -345,7 +358,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # User info
-    @client.on(events.NewMessage(pattern=get_command_pattern('user_info', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('user_info', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_user_info(event):
         try:
             if event.is_reply:
@@ -363,7 +377,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # User ID
-    @client.on(events.NewMessage(pattern=get_command_pattern('user_id', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('user_id', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_user_id(event):
         try:
             if event.is_reply:
@@ -379,7 +394,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Mention user
-    @client.on(events.NewMessage(pattern=get_command_pattern('mention_user', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('mention_user', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_mention_user(event):
         try:
             user_id = int(event.pattern_match.group(1))
@@ -391,7 +407,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Chat ID
-    @client.on(events.NewMessage(pattern=get_command_pattern('chat_id', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('chat_id', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_chat_id(event):
         try:
             await send_message(event, get_message('chat_id', id=event.chat_id), parse_mode='html')
@@ -400,7 +417,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Channel info
-    @client.on(events.NewMessage(pattern=get_command_pattern('channel_info', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('channel_info', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_channel_info(event):
         try:
             channel_id = int(event.pattern_match.group(1))
@@ -412,7 +430,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Add contact
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_contact', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('add_contact', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_add_contact(event):
         try:
             if event.is_reply:
@@ -427,7 +446,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Share phone
-    @client.on(events.NewMessage(pattern=get_command_pattern('share_phone', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('share_phone', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_share_phone(event):
         try:
             me = await client.get_me()
@@ -438,7 +458,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Panel
-    @client.on(events.NewMessage(pattern=get_command_pattern('panel', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('panel', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_panel(event):
         try:
             if event.sender_id != owner_id:
@@ -456,7 +477,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Panel PV
-    @client.on(events.NewMessage(pattern=get_command_pattern('panel_pv', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('panel_pv', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_panel_pv(event):
         try:
             if event.sender_id != owner_id:
@@ -476,7 +498,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Manage user
-    @client.on(events.NewMessage(pattern=get_command_pattern('manage_user', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('manage_user', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_manage_user(event):
         try:
             if event.is_reply:
@@ -495,7 +518,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # List all
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_all', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('list_all', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_list_all(event):
         try:
             if event.sender_id != owner_id:
@@ -515,7 +539,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Save message
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_message', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('save_message', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_save_message(event):
         try:
             if event.is_reply:
@@ -529,7 +554,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Message to user
-    @client.on(events.NewMessage(pattern=get_command_pattern('message_to_user', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('message_to_user', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_message_to_user(event):
         try:
             user_id = int(event.pattern_match.group(1))
@@ -541,7 +567,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Bot mode toggle
-    @client.on(events.NewMessage(pattern=get_command_pattern('bot_mode_toggle', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('bot_mode_toggle', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_bot_mode_toggle(event):
         try:
             if event.sender_id != owner_id:
@@ -557,7 +584,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Set API token
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_api_token', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('set_api_token', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_api_token(event):
         try:
             if event.sender_id != owner_id:
@@ -572,7 +600,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Add white list
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_white_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('add_white_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_add_white_list(event):
         try:
             if event.sender_id != owner_id:
@@ -594,7 +623,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete white list
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_white_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_white_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_white_list(event):
         try:
             if event.sender_id != owner_id:
@@ -616,7 +646,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # List white list
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_white_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('list_white_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_list_white_list(event):
         try:
             if event.sender_id != owner_id:
@@ -634,7 +665,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Clear white list
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_white_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('clear_white_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clear_white_list(event):
         try:
             if event.sender_id != owner_id:
@@ -648,7 +680,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Add black list
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_black_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('add_black_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_add_black_list(event):
         try:
             if event.sender_id != owner_id:
@@ -670,7 +703,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete black list
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_black_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_black_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_black_list(event):
         try:
             if event.sender_id != owner_id:
@@ -692,7 +726,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # List black list
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_black_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('list_black_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_list_black_list(event):
         try:
             if event.sender_id != owner_id:
@@ -710,7 +745,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Clear black list
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_black_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('clear_black_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clear_black_list(event):
         try:
             if event.sender_id != owner_id:
@@ -724,7 +760,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Set reaction
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_reaction', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('set_reaction', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_reaction(event):
         try:
             if event.sender_id != owner_id:
@@ -744,7 +781,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Remove reaction
-    @client.on(events.NewMessage(pattern=get_command_pattern('remove_reaction', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('remove_reaction', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_remove_reaction(event):
         try:
             if event.sender_id != owner_id:
@@ -766,7 +804,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Set global reaction
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_global_reaction', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('set_global_reaction', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_global_reaction(event):
         try:
             if event.sender_id != owner_id:
@@ -786,7 +825,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Remove global reaction
-    @client.on(events.NewMessage(pattern=get_command_pattern('remove_global_reaction', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('remove_global_reaction', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_remove_global_reaction(event):
         try:
             if event.sender_id != owner_id:
@@ -808,7 +848,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Set command prefix
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_command_prefix', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('set_command_prefix', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_command_prefix(event):
         try:
             if event.sender_id != owner_id:
@@ -823,7 +864,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Remove command prefix
-    @client.on(events.NewMessage(pattern=get_command_pattern('remove_command_prefix', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('remove_command_prefix', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_remove_command_prefix(event):
         try:
             if event.sender_id != owner_id:
@@ -837,7 +879,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Toggle comment
-    @client.on(events.NewMessage(pattern=get_command_pattern('toggle_comment', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('toggle_comment', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_toggle_comment(event):
         try:
             if event.sender_id != owner_id:
@@ -854,7 +897,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Add comment
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_comment', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('add_comment', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_add_comment(event):
         try:
             if event.sender_id != owner_id:
@@ -869,7 +913,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete comment
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_comment', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_comment', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_comment(event):
         try:
             if event.sender_id != owner_id:
@@ -887,7 +932,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Clear comments
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_comments', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('clear_comments', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clear_comments(event):
         try:
             if event.sender_id != owner_id:
@@ -901,7 +947,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # List comments
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_comments', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('list_comments', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_list_comments(event):
         try:
             if event.sender_id != owner_id:
@@ -918,7 +965,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Get request list
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_request_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('get_request_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_get_request_list(event):
         try:
             if event.sender_id != owner_id:
@@ -931,7 +979,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Get join list
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_join_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('get_join_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_get_join_list(event):
         try:
             if event.sender_id != owner_id:
@@ -944,7 +993,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Get leave list
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_leave_list', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('get_leave_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_get_leave_list(event):
         try:
             if event.sender_id != owner_id:
@@ -957,7 +1007,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Approve requests
-    @client.on(events.NewMessage(pattern=get_command_pattern('approve_requests', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('approve_requests', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_approve_requests(event):
         try:
             if event.sender_id != owner_id:
@@ -970,7 +1021,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Monitor user
-    @client.on(events.NewMessage(pattern=get_command_pattern('monitor_user', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('monitor_user', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_monitor_user(event):
         try:
             if event.sender_id != owner_id:
@@ -998,10 +1050,10 @@ async def register_manage_handlers(client, session_name, owner_id):
                 await send_message(event, get_message('already_monitored'), parse_mode='html')
         except Exception as e:
             logger.error(f"Error monitoring user: {e}")
-            await send_message(event, get_message('error_occurred'))
 
     # Save reads
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_reads', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('save_reads', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_save_reads(event):
         try:
             if event.sender_id != owner_id:
@@ -1018,7 +1070,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Save stories
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_stories', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('save_stories', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_save_stories(event):
         try:
             if event.sender_id != owner_id:
@@ -1035,7 +1088,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Add timer
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_timer', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('add_timer', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_add_timer(event):
         try:
             if event.sender_id != owner_id:
@@ -1050,7 +1104,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete timer
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_timer', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_timer', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_timer(event):
         try:
             if event.sender_id != owner_id:
@@ -1068,7 +1123,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Clear timers
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_timers', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('clear_timers', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clear_timers(event):
         try:
             if event.sender_id != owner_id:
@@ -1082,7 +1138,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # List timers
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_timers', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('list_timers', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_list_timers(event):
         try:
             if event.sender_id != owner_id:
@@ -1099,7 +1156,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Add time
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_time', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('add_time', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_add_time(event):
         try:
             if event.sender_id != owner_id:
@@ -1115,7 +1173,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Delete time
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_time', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('delete_time', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_delete_time(event):
         try:
             if event.sender_id != owner_id:
@@ -1133,7 +1192,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # Clear times
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_times', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('clear_times', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clear_times(event):
         try:
             if event.sender_id != owner_id:
@@ -1147,7 +1207,8 @@ async def register_manage_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # List times
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_times', lang['manage'])))
+    pattern = commands.get(lang, {}).get('manage', {}).get('list_times', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_list_times(event):
         try:
             if event.sender_id != owner_id:
