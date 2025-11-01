@@ -35,15 +35,18 @@ def fix_permissions(dir_path):
             os.chmod(os.path.join(root, f), 0o666)
     print(f"Permissions fixed for {dir_path}.")
 
-# مقداردهی اولیه دیتابیس SQLite (sync)
+# مقداردهی اولیه دیتابیس SQLite (sync) with WAL mode for concurrency
 def init_sqlite_db(db_path):
     # Fix permissions for DB file and directory
     user_dir = os.path.dirname(db_path)
     fix_permissions(user_dir)
     if os.path.exists(db_path):
         os.chmod(db_path, 0o666)
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
+    # Enable WAL mode for concurrent access (prevents lock)
+    cursor.execute("PRAGMA journal_mode=WAL;")
     cursor.execute('''
                    CREATE TABLE IF NOT EXISTS settings (
                                                            id INTEGER PRIMARY KEY,
@@ -71,9 +74,9 @@ def init_sqlite_db(db_path):
     if cursor.fetchone() is None:
         cursor.execute('INSERT INTO settings (id) VALUES (1)')
     conn.commit()
-    conn.close()
+    conn.close()  # Ensure closed
     os.chmod(db_path, 0o666)  # Ensure writable
-    print("✅ دیتابیس SQLite مقداردهی شد.")
+    print("✅ دیتابیس SQLite مقداردهی شد (WAL mode enabled).")
 
 # تابع اصلی
 async def main():
