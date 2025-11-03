@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 async def register_group_handlers(client, session_name, owner_id):
     db = await get_database(session_name)
-    settings = await load_settings(db)
+    settings = await load_settings()
     if not settings:
         logger.error("Failed to load settings for group handlers")
         await db.close()
@@ -23,6 +23,10 @@ async def register_group_handlers(client, session_name, owner_id):
     lang = settings.get('lang', 'fa')
     messages = load_json('msg.json')
     commands = load_json('cmd.json')
+
+    # Check if language exists in commands, otherwise fallback to 'en'
+    if lang not in commands:
+        lang = 'en'  # Fallback
 
     def get_message(key, **kwargs):
         return messages[lang]['group'].get(key, '').format(**kwargs)
@@ -72,7 +76,8 @@ async def register_group_handlers(client, session_name, owner_id):
             return None
 
     # قفل عکس گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('lock_chat_photo_on', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('lock_chat_photo_on', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_lock_chat_photo_on(event):
         try:
             if event.sender_id != owner_id:
@@ -88,7 +93,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error locking chat photo: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('lock_chat_photo_off', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('lock_chat_photo_off', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_lock_chat_photo_off(event):
         try:
             if event.sender_id != owner_id:
@@ -112,7 +118,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error handling photo change: {e}")
 
     # قفل عنوان گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('lock_title_on', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('lock_title_on', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_lock_title_on(event):
         try:
             if event.sender_id != owner_id:
@@ -129,7 +136,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error locking title: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('lock_title_off', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('lock_title_off', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_lock_title_off(event):
         try:
             if event.sender_id != owner_id:
@@ -154,7 +162,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error handling title change: {e}")
 
     # خروج خودکار
-    @client.on(events.NewMessage(pattern=get_command_pattern('auto_leave_on', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('auto_leave_on', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_auto_leave_on(event):
         try:
             if event.sender_id != owner_id:
@@ -167,7 +176,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling auto leave: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('auto_leave_off', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('auto_leave_off', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_auto_leave_off(event):
         try:
             if event.sender_id != owner_id:
@@ -204,7 +214,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error handling new member: {e}")
 
     # سکوت گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('silence_on', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('silence_on', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_silence_on(event):
         try:
             if event.sender_id != owner_id:
@@ -217,7 +228,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling silence: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('silence_off', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('silence_off', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_silence_off(event):
         try:
             if event.sender_id != owner_id:
@@ -264,7 +276,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error handling silence messages: {e}")
 
     # سکوت همگانی
-    @client.on(events.NewMessage(pattern=get_command_pattern('silence_all', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('silence_all', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_silence_all(event):
         try:
             if event.sender_id != owner_id:
@@ -279,7 +292,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling silence all: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cancel_silence_all', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cancel_silence_all', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cancel_silence_all(event):
         try:
             if event.sender_id != owner_id:
@@ -294,7 +308,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تگ اعضا
-    @client.on(events.NewMessage(pattern=get_command_pattern('tag', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('tag', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_tag_members(event):
         try:
             if event.sender_id != owner_id:
@@ -318,7 +333,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error tagging members: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cancel_tag', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cancel_tag', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cancel_tag(event):
         try:
             if event.sender_id != owner_id:
@@ -330,7 +346,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تگ مدیران
-    @client.on(events.NewMessage(pattern=get_command_pattern('tag_admins', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('tag_admins', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_tag_admins(event):
         try:
             if event.sender_id != owner_id:
@@ -353,7 +370,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تگ ربات‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('tag_bots', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('tag_bots', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_tag_bots(event):
         try:
             if event.sender_id != owner_id:
@@ -376,7 +394,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دعوت به گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('invite', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('invite', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_invite(event):
         try:
             if event.sender_id != owner_id:
@@ -401,7 +420,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # افزودن ربات‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_bots', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('add_bots', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_add_bots(event):
         try:
             if event.sender_id != owner_id:
@@ -423,7 +443,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # سنجاق پیام
-    @client.on(events.NewMessage(pattern=get_command_pattern('pin', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('pin', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_pin_message(event):
         try:
             if event.sender_id != owner_id:
@@ -439,7 +460,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error pinning message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('unpin', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('unpin', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_unpin_message(event):
         try:
             if event.sender_id != owner_id:
@@ -455,7 +477,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error unpinning message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('repin', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('repin', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_repin_message(event):
         try:
             if event.sender_id != owner_id:
@@ -471,7 +494,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error repinning message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('unpin_all', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('unpin_all', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_unpin_all(event):
         try:
             if event.sender_id != owner_id:
@@ -484,7 +508,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # درباره گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('group_info', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('group_info', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_group_info(event):
         try:
             if event.sender_id != owner_id:
@@ -498,7 +523,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # شناسه گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('group_id', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('group_id', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_group_id(event):
         try:
             if event.sender_id != owner_id:
@@ -510,7 +536,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # خروج از گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('leave', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('leave', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_leave_group(event):
         try:
             if event.sender_id != owner_id:
@@ -524,7 +551,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # لینک گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('group_link', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('group_link', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_group_link(event):
         try:
             if event.sender_id != owner_id:
@@ -538,7 +566,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم لقب
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_nickname', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('set_nickname', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_nickname(event):
         try:
             if event.sender_id != owner_id:
@@ -559,7 +588,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # لفت از همه گروه‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('leave_all_groups', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('leave_all_groups', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_leave_all_groups(event):
         try:
             if event.sender_id != owner_id:
@@ -577,7 +607,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت زمان عضویت
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_join_time', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('get_join_time', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_get_join_time(event):
         try:
             if event.sender_id != owner_id:
@@ -597,7 +628,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت مالک گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_owner', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('get_owner', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_get_owner(event):
         try:
             if event.sender_id != owner_id:
@@ -614,7 +646,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تایپینگ گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('group_typing_on', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('group_typing_on', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_group_typing_on(event):
         try:
             if event.sender_id != owner_id:
@@ -627,7 +660,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling group typing: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('group_typing_off', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('group_typing_off', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_group_typing_off(event):
         try:
             if event.sender_id != owner_id:
@@ -641,7 +675,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # ساخت گروه
-    @client.on(events.NewMessage(pattern=get_command_pattern('create_group', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('create_group', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_create_group(event):
         try:
             if event.sender_id != owner_id:
@@ -660,7 +695,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی پیام‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_messages', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_messages', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_messages(event):
         try:
             if event.sender_id != owner_id:
@@ -676,7 +712,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning messages: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_gifs', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_gifs', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_gifs(event):
         try:
             if event.sender_id != owner_id:
@@ -692,7 +729,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning gifs: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_photos', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_photos', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_photos(event):
         try:
             if event.sender_id != owner_id:
@@ -708,7 +746,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning photos: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_videos', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_videos', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_videos(event):
         try:
             if event.sender_id != owner_id:
@@ -724,7 +763,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning videos: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_audios', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_audios', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_audios(event):
         try:
             if event.sender_id != owner_id:
@@ -740,7 +780,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning audios: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_voices', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_voices', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_voices(event):
         try:
             if event.sender_id != owner_id:
@@ -756,7 +797,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning voices: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_user', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_user', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_user(event):
         try:
             if event.sender_id != owner_id:
@@ -776,7 +818,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning user messages: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_block_list', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_block_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_block_list(event):
         try:
             if event.sender_id != owner_id:
@@ -789,7 +832,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning block list: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_deleted_accounts', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_deleted_accounts', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_deleted_accounts(event):
         try:
             if event.sender_id != owner_id:
@@ -806,7 +850,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning deleted accounts: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_bots', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_bots', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_bots(event):
         try:
             if event.sender_id != owner_id:
@@ -822,7 +867,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning bots: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_members', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_members', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_members(event):
         try:
             if event.sender_id != owner_id:
@@ -839,7 +885,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning members: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_all', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_all', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_all(event):
         try:
             if event.sender_id != owner_id:
@@ -856,7 +903,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning messages by keyword: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_between', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('cleanup_between', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_cleanup_between(event):
         try:
             if event.sender_id != owner_id:
@@ -873,7 +921,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حالت عضویت
-    @client.on(events.NewMessage(pattern=get_command_pattern('join_mode_on', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('join_mode_on', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_join_mode_on(event):
         try:
             if event.sender_id != owner_id:
@@ -886,7 +935,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling join mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('join_mode_off', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('join_mode_off', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_join_mode_off(event):
         try:
             if event.sender_id != owner_id:
@@ -899,7 +949,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling join mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('join_mode_ban', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('join_mode_ban', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_join_mode_ban(event):
         try:
             if event.sender_id != owner_id:
@@ -912,7 +963,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error setting join mode to ban: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('join_mode_mute', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('join_mode_mute', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_join_mode_mute(event):
         try:
             if event.sender_id != owner_id:
@@ -926,7 +978,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # فیلتر کردن
-    @client.on(events.NewMessage(pattern=get_command_pattern('filter_add', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('filter_add', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_filter_add(event):
         try:
             if event.sender_id != owner_id:
@@ -942,7 +995,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error adding filter: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('filter_remove', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('filter_remove', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_filter_remove(event):
         try:
             if event.sender_id != owner_id:
@@ -959,7 +1013,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error removing filter: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('filter_list', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('filter_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_filter_list(event):
         try:
             if event.sender_id != owner_id:
@@ -975,7 +1030,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error listing filters: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('filter_clear', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('filter_clear', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_filter_clear(event):
         try:
             if event.sender_id != owner_id:
@@ -989,7 +1045,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # کلمات مجاز
-    @client.on(events.NewMessage(pattern=get_command_pattern('sallow', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('sallow', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_sallow(event):
         try:
             if event.sender_id != owner_id:
@@ -1005,7 +1062,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error adding allow list: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('sdelallow', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('sdelallow', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_sdelallow(event):
         try:
             if event.sender_id != owner_id:
@@ -1022,7 +1080,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error removing allow list: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('sallowlist', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('sallowlist', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_sallowlist(event):
         try:
             if event.sender_id != owner_id:
@@ -1038,7 +1097,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error listing allow list: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('clean_sallowlist', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('clean_sallowlist', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clean_sallowlist(event):
         try:
             if event.sender_id != owner_id:
@@ -1052,7 +1112,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حالت آرام
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_slow_mode', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('set_slow_mode', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_slow_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -1066,7 +1127,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error setting slow mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('remove_slow_mode', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('remove_slow_mode', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_remove_slow_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -1080,7 +1142,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # اخراج کاربر
-    @client.on(events.NewMessage(pattern=get_command_pattern('kick', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('kick', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_kick(event):
         try:
             if event.sender_id != owner_id:
@@ -1103,7 +1166,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # لغو مسدودیت
-    @client.on(events.NewMessage(pattern=get_command_pattern('unban', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('unban', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_unban(event):
         try:
             if event.sender_id != owner_id:
@@ -1124,7 +1188,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # سکوت کاربر
-    @client.on(events.NewMessage(pattern=get_command_pattern('mute', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('mute', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_mute(event):
         try:
             if event.sender_id != owner_id:
@@ -1142,7 +1207,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error muting user: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('unmute', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('unmute', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_unmute(event):
         try:
             if event.sender_id != owner_id:
@@ -1163,7 +1229,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error unmuting user: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('mute_list', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('mute_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_mute_list(event):
         try:
             if event.sender_id != owner_id:
@@ -1180,7 +1247,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error listing muted users: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_mute_list', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('clear_mute_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clear_mute_list(event):
         try:
             if event.sender_id != owner_id:
@@ -1194,7 +1262,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # خوش‌آمدگویی
-    @client.on(events.NewMessage(pattern=get_command_pattern('welcome_on', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('welcome_on', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_welcome_on(event):
         try:
             if event.sender_id != owner_id:
@@ -1207,7 +1276,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling welcome: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('welcome_off', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('welcome_off', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_welcome_off(event):
         try:
             if event.sender_id != owner_id:
@@ -1220,7 +1290,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling welcome: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_welcome', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('set_welcome', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_set_welcome(event):
         try:
             if event.sender_id != owner_id:
@@ -1238,7 +1309,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # بن کردن در همه گروه‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('ban_all', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('ban_all', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_ban_all(event):
         try:
             if event.sender_id != owner_id:
@@ -1264,7 +1336,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error banning user in all groups: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('unban_all', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('unban_all', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_unban_all(event):
         try:
             if event.sender_id != owner_id:
@@ -1291,7 +1364,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error unbanning user in all groups: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('ban_all_list', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('ban_all_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_ban_all_list(event):
         try:
             if event.sender_id != owner_id:
@@ -1308,7 +1382,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error listing banned users: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_ban_all_list', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('clear_ban_all_list', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_clear_ban_all_list(event):
         try:
             if event.sender_id != owner_id:
@@ -1323,7 +1398,8 @@ async def register_group_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دعوت به ویس چت
-    @client.on(events.NewMessage(pattern=get_command_pattern('invite_voice_chat', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('invite_voice_chat', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_invite_voice_chat(event):
         try:
             if event.sender_id != owner_id:
@@ -1344,7 +1420,8 @@ async def register_group_handlers(client, session_name, owner_id):
             logger.error(f"Error inviting to voice chat: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('invite_all_voice_chat', lang['group'])))
+    pattern = commands.get(lang, {}).get('group', {}).get('invite_all_voice_chat', '')
+    @client.on(events.NewMessage(pattern=pattern))
     async def handle_invite_all_voice_chat(event):
         try:
             if event.sender_id != owner_id:

@@ -83,6 +83,14 @@ async def register_profile_handlers(client, session_name, owner_id):
     if settings['profile_settings']['name_enabled'] or settings['profile_settings']['bio_enabled'] or settings['profile_settings']['title_enabled']:
         asyncio.create_task(update_profile_loop(db, settings))
 
+
+    @client.on(events.NewMessage(pattern=get_command_pattern('check', lang)))
+    async def check(event):
+        try:
+            await event.reply("checked")
+        except Exception as e:
+            logger.error(f"Error toggling name: {e}")
+
     @client.on(events.NewMessage(pattern=get_command_pattern('name_toggle', lang)))
     async def toggle_name(event):
         try:
@@ -117,6 +125,7 @@ async def register_profile_handlers(client, session_name, owner_id):
             await db.close()
         except Exception as e:
             logger.error(f"Error adding name: {e}")
+
 
     @client.on(events.NewMessage(pattern=get_command_pattern('delete_name', lang)))
     async def delete_name(event):

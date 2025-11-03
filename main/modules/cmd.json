@@ -1,6 +1,7 @@
 {
   "fa": {
     "profile":{
+      "check": "check",
       "set_lang": "^[/!]lang\\s+(fa|en)$",
       "welcome_toggle": "^[/!]welcome\\s+(روشن|خاموش)$",
       "set_welcome_text": "^[/!]setwelcome\\s+(.+)$",
@@ -503,6 +504,7 @@
   },
   "en": {
     "profile": {
+      "check": "check",
       "set_lang": "^[/!]lang\\s+(fa|en)$",
       "welcome_toggle": "^[/!]welcome\\s+(on|off)$",
       "set_welcome_text": "^[/!]setwelcome\\s+(.+)$",
