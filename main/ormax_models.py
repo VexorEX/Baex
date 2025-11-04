@@ -7,7 +7,8 @@ import aiosqlite
 import os
 
 # Initialize database
-DB_PATH = "selfbot.db"
+import os
+DB_PATH = os.path.join(os.getcwd(), "selfbot.db")
 db = Database(f"sqlite:///{DB_PATH}")
 
 class Settings(Model):
@@ -19,13 +20,13 @@ class Settings(Model):
     clock_enabled = BooleanField(default=False)
     clock_location = CharField(max_length=50, default='name')
     clock_bio_text = TextField(default='')
-    clock_fonts = JSONField(default=lambda: [1])
+    clock_fonts = JSONField(default=[1])
     clock_timezone = CharField(max_length=50, default='Asia/Tehran')
     action_enabled = BooleanField(default=False)
-    action_types = JSONField(default=dict)
+    action_types = JSONField(default={})
     text_format_enabled = BooleanField(default=False)
-    text_formats = JSONField(default=dict)
-    locks = JSONField(default=dict)
+    text_formats = JSONField(default={})
+    locks = JSONField(default={})
     antilog_enabled = BooleanField(default=False)
     first_comment_enabled = BooleanField(default=False)
     first_comment_text = TextField(default='')
@@ -44,7 +45,7 @@ class MuteList(Model):
 class SpamProtection(Model):
     id = AutoField()
     user_id = IntegerField()
-    messages = JSONField(default=list)
+    messages = JSONField(default=[])
     mute_until = IntegerField(default=0)
     violations = IntegerField(default=0)
 
