@@ -8,7 +8,8 @@ import os
 
 # Initialize database
 import os
-DB_PATH = os.path.join(os.getcwd(), "selfbot.db")
+# Use a path in the /tmp directory which should be writable
+DB_PATH = "/tmp/selfbot.db"
 db = Database(f"sqlite:///{DB_PATH}")
 
 class Settings(Model):
@@ -54,11 +55,20 @@ class SpamProtection(Model):
 
 async def init_db():
     """Initialize the database and create tables"""
-    await db.connect()
-    db.register_model(Settings)
-    db.register_model(MuteList)
-    db.register_model(SpamProtection)
-    await db.create_tables()
+    try:
+        # Ensure the directory exists
+        db_dir = os.path.dirname(DB_PATH)
+        if db_dir and not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
+        
+        await db.connect()
+        db.register_model(Settings)
+        db.register_model(MuteList)
+        db.register_model(SpamProtection)
+        await db.create_tables()
+    except Exception as e:
+        print(f"Error initializing database: {e}")
+        raise
     
     # Create default settings if not exists
     try:
