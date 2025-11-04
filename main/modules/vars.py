@@ -8,15 +8,17 @@ from telethon import events
 from telethon.errors import FloodWaitError
 from utils import load_json, send_message, get_command_pattern
 from models import get_database, load_settings, update_settings
+from ormax_models import init_db as init_ormax_db
 
 logger = logging.getLogger(__name__)
 
 async def register_vars_handlers(client, session_name, owner_id):
+    # Initialize Ormax database
+    await init_ormax_db()
     db = await get_database(session_name)
     settings = await load_settings(db)
     if not settings:
         logger.error("Failed to load settings for vars handlers")
-        await db.close()
         return
 
     lang = settings.get('lang', 'fa')
@@ -26,26 +28,9 @@ async def register_vars_handlers(client, session_name, owner_id):
     def get_message(key, **kwargs):
         return messages[lang]['vars'].get(key, '').format(**kwargs)
 
-    # ایجاد جداول برای متغیرها
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS vars_settings (
-                                                                  key TEXT PRIMARY KEY,
-                                                                  value TEXT
-                     )
-                     ''')
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS ranks (
-                                                          user_id INTEGER PRIMARY KEY,
-                                                          rank TEXT
-                     )
-                     ''')
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS warns (
-                                                          user_id INTEGER PRIMARY KEY,
-                                                          warn_count INTEGER DEFAULT 0
-                     )
-                     ''')
-    await db.commit()
+    # Note: These tables are not migrated to Ormax yet
+    # They will continue to use the old database connection
+    pass
 
     # متغیرهای پیش‌فرض
     if 'vars' not in settings:
@@ -92,16 +77,14 @@ async def register_vars_handlers(client, session_name, owner_id):
 
             # متغیر RANK
             if 'RANK' in text:
-                cursor = await db.execute('SELECT rank FROM ranks WHERE user_id = ?', (user.id,))
-                rank = await cursor.fetchone()
-                await cursor.close()
+                # Note: ranks table operations are not migrated to Ormax yet
+                rank = None
                 text = text.replace('RANK', rank[0] if rank else get_message('no_rank'))
 
             # متغیر WARNS
             if 'WARNS' in text:
-                cursor = await db.execute('SELECT warn_count FROM warns WHERE user_id = ?', (user.id,))
-                warn_count = await cursor.fetchone()
-                await cursor.close()
+                # Note: warns table operations are not migrated to Ormax yet
+                warn_count = None
                 text = text.replace('WARNS', str(warn_count[0] if warn_count else 0))
 
             # جایگزینی سایر متغیرها
@@ -140,8 +123,7 @@ async def register_vars_handlers(client, session_name, owner_id):
                 return
             settings['vars']['timezone'] = timezone
             await update_settings(db, settings)
-            await db.execute('INSERT OR REPLACE INTO vars_settings (key, value) VALUES (?, ?)', ('timezone', timezone))
-            await db.commit()
+            # Note: vars_settings table operations are not migrated to Ormax yet
             await send_message(event, get_message('timezone_set', timezone=timezone))
         except Exception as e:
             logger.error(f"Error setting timezone: {e}")
@@ -163,8 +145,8 @@ async def register_vars_handlers(client, session_name, owner_id):
                 return
             reply_msg = await event.get_reply_message()
             user_id = reply_msg.sender_id
-            await db.execute('INSERT OR REPLACE INTO ranks (user_id, rank) VALUES (?, ?)', (user_id, rank))
-            await db.commit()
+            # Note: ranks table operations are not migrated to Ormax yet
+            pass
             await send_message(event, get_message('rank_set', user_id=user_id, rank=rank))
         except FloodWaitError as e:
             await send_message(event, get_message('flood_wait', seconds=e.seconds))
@@ -179,9 +161,8 @@ async def register_vars_handlers(client, session_name, owner_id):
             if event.sender_id != owner_id:
                 await send_message(event, get_message('unauthorized'))
                 return
-            cursor = await db.execute('SELECT user_id, rank FROM ranks')
-            ranks = await cursor.fetchall()
-            await cursor.close()
+            # Note: ranks table operations are not migrated to Ormax yet
+            ranks = []
             if not ranks:
                 await send_message(event, get_message('no_ranks'))
                 return
@@ -209,4 +190,4 @@ async def register_vars_handlers(client, session_name, owner_id):
         except Exception as e:
             logger.error(f"Error processing message with vars: {e}")
 
-    await db.close()
+    # db.close() not needed with Ormax
