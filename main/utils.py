@@ -34,6 +34,7 @@ def load_json(filename):
     # First try to load from modules directory
     modules_dir = os.path.join(main_dir, 'modules')
     file_path = os.path.join(modules_dir, filename)
+    print(f"DEBUG: Looking for {filename} at {file_path}")
     if os.path.exists(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -41,6 +42,7 @@ def load_json(filename):
         return data
     # Fallback to main directory
     file_path = os.path.join(main_dir, filename)
+    print(f"DEBUG: Fallback looking for {filename} at {file_path}")
     if os.path.exists(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
