@@ -30,7 +30,16 @@ def load_data(filename, default=None):
 
 def load_json(filename):
     # Absolute path from main folder
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+    # First try to load from modules directory
+    modules_dir = os.path.join(main_dir, 'modules')
+    file_path = os.path.join(modules_dir, filename)
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        print(f"Loaded {filename}: {len(data)} keys")  # Debug
+        return data
+    # Fallback to main directory
     file_path = os.path.join(main_dir, filename)
     if os.path.exists(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
