@@ -20,13 +20,13 @@ class Settings(Model):
     clock_enabled = BooleanField(default=False)
     clock_location = CharField(max_length=50, default='name')
     clock_bio_text = TextField(default='')
-    clock_fonts = JSONField(default=[1])
+    clock_fonts = JSONField(default=None)
     clock_timezone = CharField(max_length=50, default='Asia/Tehran')
     action_enabled = BooleanField(default=False)
-    action_types = JSONField(default={})
+    action_types = JSONField(default=None)
     text_format_enabled = BooleanField(default=False)
-    text_formats = JSONField(default={})
-    locks = JSONField(default={})
+    text_formats = JSONField(default=None)
+    locks = JSONField(default=None)
     antilog_enabled = BooleanField(default=False)
     first_comment_enabled = BooleanField(default=False)
     first_comment_text = TextField(default='')
@@ -45,7 +45,7 @@ class MuteList(Model):
 class SpamProtection(Model):
     id = AutoField()
     user_id = IntegerField()
-    messages = JSONField(default=[])
+    messages = JSONField(default=None)
     mute_until = IntegerField(default=0)
     violations = IntegerField(default=0)
 
@@ -113,13 +113,13 @@ async def init_db():
             clock_enabled=False,
             clock_location='name',
             clock_bio_text='',
-            clock_fonts=[1],
+            clock_fonts='[1]',
             clock_timezone='Asia/Tehran',
             action_enabled=False,
-            action_types={},
+            action_types='{}',
             text_format_enabled=False,
-            text_formats={},
-            locks={},
+            text_formats='{}',
+            locks='{}',
             antilog_enabled=False,
             first_comment_enabled=False,
             first_comment_text=''
@@ -140,13 +140,13 @@ async def load_settings() -> Dict[str, Any]:
             'clock_enabled': settings.clock_enabled,
             'clock_location': settings.clock_location,
             'clock_bio_text': settings.clock_bio_text,
-            'clock_fonts': settings.clock_fonts,
+            'clock_fonts': settings.clock_fonts if settings.clock_fonts is not None else [1],
             'clock_timezone': settings.clock_timezone,
             'action_enabled': settings.action_enabled,
-            'action_types': settings.action_types,
+            'action_types': settings.action_types if settings.action_types is not None else {},
             'text_format_enabled': settings.text_format_enabled,
-            'text_formats': settings.text_formats,
-            'locks': settings.locks,
+            'text_formats': settings.text_formats if settings.text_formats is not None else {},
+            'locks': settings.locks if settings.locks is not None else {},
             'antilog_enabled': settings.antilog_enabled,
             'first_comment_enabled': settings.first_comment_enabled,
             'first_comment_text': settings.first_comment_text
@@ -187,13 +187,13 @@ async def update_settings(settings_data: Dict[str, Any]):
         settings.clock_enabled = settings_data['clock_enabled']
         settings.clock_location = settings_data['clock_location']
         settings.clock_bio_text = settings_data['clock_bio_text']
-        settings.clock_fonts = settings_data['clock_fonts']
+        settings.clock_fonts = json.dumps(settings_data['clock_fonts'])
         settings.clock_timezone = settings_data['clock_timezone']
         settings.action_enabled = settings_data['action_enabled']
-        settings.action_types = settings_data['action_types']
+        settings.action_types = json.dumps(settings_data['action_types'])
         settings.text_format_enabled = settings_data['text_format_enabled']
-        settings.text_formats = settings_data['text_formats']
-        settings.locks = settings_data['locks']
+        settings.text_formats = json.dumps(settings_data['text_formats'])
+        settings.locks = json.dumps(settings_data['locks'])
         settings.antilog_enabled = settings_data['antilog_enabled']
         settings.first_comment_enabled = settings_data['first_comment_enabled']
         settings.first_comment_text = settings_data['first_comment_text']
@@ -211,7 +211,7 @@ async def load_spam_protection(user_id: int) -> Dict[str, Any]:
         return {
             'id': spam_data.id,
             'user_id': spam_data.user_id,
-            'messages': spam_data.messages,
+            'messages': spam_data.messages if spam_data.messages is not None else [],
             'mute_until': spam_data.mute_until,
             'violations': spam_data.violations
         }
@@ -219,7 +219,7 @@ async def load_spam_protection(user_id: int) -> Dict[str, Any]:
         # Create new spam protection entry
         spam_data = await SpamProtection.create(
             user_id=user_id,
-            messages=[],
+            messages='[]',
             mute_until=0,
             violations=0
         )
@@ -236,7 +236,7 @@ async def update_spam_protection(spam_data: Dict[str, Any]):
     try:
         # Try to get existing record
         spam_record = await SpamProtection.objects().get(user_id=spam_data['user_id'])
-        spam_record.messages = spam_data['messages']
+        spam_record.messages = json.dumps(spam_data['messages'])
         spam_record.mute_until = spam_data['mute_until']
         spam_record.violations = spam_data['violations']
         await spam_record.save()
@@ -244,7 +244,7 @@ async def update_spam_protection(spam_data: Dict[str, Any]):
         # Create new record
         await SpamProtection.create(
             user_id=spam_data['user_id'],
-            messages=spam_data['messages'],
+            messages=json.dumps(spam_data['messages']),
             mute_until=spam_data['mute_until'],
             violations=spam_data['violations']
         )
