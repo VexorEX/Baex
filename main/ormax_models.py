@@ -7,9 +7,8 @@ import aiosqlite
 import os
 
 # Initialize database
-import os
-# Use a path in the /tmp directory which should be writable
-DB_PATH = "/tmp/selfbot.db"
+# Use a relative path in the current directory
+DB_PATH = "selfbot.db"
 db = Database(f"sqlite:///{DB_PATH}")
 
 class Settings(Model):
@@ -56,18 +55,49 @@ class SpamProtection(Model):
 async def init_db():
     """Initialize the database and create tables"""
     try:
-        # Ensure the directory exists
-        db_dir = os.path.dirname(DB_PATH)
-        if db_dir and not os.path.exists(db_dir):
-            os.makedirs(db_dir, exist_ok=True)
+        # Try multiple approaches to create a writable database path
         
+        # Approach 1: Try current directory
+        final_db_path = DB_PATH
+        db_dir = os.path.dirname(final_db_path)
+        
+        # If directory doesn't exist, try to create it
+        if db_dir and not os.path.exists(db_dir):
+            try:
+                print(f"Creating database directory: {db_dir}")
+                os.makedirs(db_dir, mode=0o755, exist_ok=True)
+            except Exception as e:
+                print(f"Failed to create directory {db_dir}: {e}")
+                # Fallback to current directory
+                final_db_path = os.path.basename(DB_PATH)
+                db_dir = "."
+        
+        # Check if we can write to the directory
+        if db_dir and not os.access(db_dir, os.W_OK):
+            print(f"Cannot write to database directory: {db_dir}")
+            # Try fallback to current directory
+            final_db_path = os.path.basename(DB_PATH)
+            if not os.access(".", os.W_OK):
+                raise PermissionError("Cannot write to current directory")
+        
+        # If we changed the path, update the database connection
+        if final_db_path != DB_PATH:
+            print(f"Using fallback database path: {final_db_path}")
+            # Create new database connection with fallback path
+            global db
+            db = Database(f"sqlite:///{final_db_path}")
+        
+        print(f"Connecting to database: {final_db_path}")
         await db.connect()
         db.register_model(Settings)
         db.register_model(MuteList)
         db.register_model(SpamProtection)
         await db.create_tables()
+        print("Database initialized successfully")
     except Exception as e:
         print(f"Error initializing database: {e}")
+        import traceback
+        traceback.print_exc()
         raise
     
     # Create default settings if not exists
