@@ -21,12 +21,13 @@ async def register_vars_handlers(client, session_name, owner_id):
         logger.error("Failed to load settings for vars handlers")
         return
 
+
     lang = settings.get('lang', 'fa')
     messages = load_json('msg.json')
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
-        return messages[lang]['vars'].get(key, '').format(**kwargs)
+        return messages.get(lang, {}).get('vars', {}).get(key, key).format(**kwargs)
 
     # Note: These tables are not migrated to Ormax yet
     # They will continue to use the old database connection
@@ -79,13 +80,13 @@ async def register_vars_handlers(client, session_name, owner_id):
             if 'RANK' in text:
                 # Note: ranks table operations are not migrated to Ormax yet
                 rank = None
-                text = text.replace('RANK', rank[0] if rank else get_message('no_rank'))
+                text = text.replace('RANK', rank if rank else get_message('no_rank'))
 
             # متغیر WARNS
             if 'WARNS' in text:
                 # Note: warns table operations are not migrated to Ormax yet
                 warn_count = None
-                text = text.replace('WARNS', str(warn_count[0] if warn_count else 0))
+                text = text.replace('WARNS', str(warn_count if warn_count else 0))
 
             # جایگزینی سایر متغیرها
             for key, value in replacements.items():
@@ -97,7 +98,7 @@ async def register_vars_handlers(client, session_name, owner_id):
             return text
 
     # نمایش لیست مناطق زمانی
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_timezones', lang['vars'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_timezones', lang)))
     async def handle_list_timezones(event):
         try:
             if event.sender_id != owner_id:
@@ -111,7 +112,7 @@ async def register_vars_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم منطقه زمانی
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_timezone', lang['vars'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_timezone', lang)))
     async def handle_set_timezone(event):
         try:
             if event.sender_id != owner_id:
@@ -130,7 +131,7 @@ async def register_vars_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم مقام
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_rank', lang['vars'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_rank', lang)))
     async def handle_set_rank(event):
         try:
             if event.sender_id != owner_id:
@@ -155,7 +156,7 @@ async def register_vars_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # نمایش لیست مقام‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_ranks', lang['vars'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_ranks', lang)))
     async def handle_list_ranks(event):
         try:
             if event.sender_id != owner_id:
