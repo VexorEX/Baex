@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 async def register_profile_handlers(client, session_name, owner_id):
     db = await get_database(session_name)
+    # Initialize the Ormax database
+    from models import init_db
+    await init_db(None)
     settings = await load_settings(db)
     if not settings:
         logger.error("Failed to load settings, cannot register profile handlers")

@@ -2,7 +2,11 @@ from ormax_models import init_db as ormax_init_db, load_settings as ormax_load_s
 
 async def get_database(session_name):
     # For compatibility with existing code, but not used with Ormax
-    pass
+    # Return a mock object with a close method to prevent AttributeError
+    class MockDB:
+        async def close(self):
+            pass
+    return MockDB()
 
 async def init_db(db):
     # Initialize Ormax database

@@ -5,12 +5,15 @@ from telethon.tl.functions.account import UpdateStatusRequest
 from telethon.tl.types import SendMessageTypingAction, SendMessageUploadVideoAction
 from deep_translator import GoogleTranslator
 from utils import load_json, send_message, get_language
-from models import load_settings, update_settings
+from models import load_settings, update_settings, init_db
 import aiosqlite
 
 
 async def setup_settings(client, db_path):
     """Set up the settings component with command and event handlers."""
+    # Initialize Ormax database
+    await init_db(None)
+    
     messages = load_json('msg.json')
     commands = load_json('cmd.json')
     print(f"Debug: Loaded commands: {len(commands.get('fa', {}))} keys for lang fa")  # Debug
