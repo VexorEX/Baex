@@ -94,7 +94,7 @@ async def register_private_handlers(client, session_name, owner_id):
             return None
 
     # وضعیت منشی
-    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_status', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_status', lang)))
     async def handle_secretary_status(event):
         try:
             if event.sender_id != owner_id:
@@ -133,7 +133,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # منشی عادی
-    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_on', 'private', lang)))
     async def handle_secretary_on(event):
         try:
             if event.sender_id != owner_id:
@@ -146,7 +146,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling secretary: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_off', 'private', lang)))
     async def handle_secretary_off(event):
         try:
             if event.sender_id != owner_id:
@@ -159,7 +159,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling secretary: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_secretary', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_secretary', 'private', lang)))
     async def handle_set_secretary(event):
         try:
             if event.sender_id != owner_id:
@@ -176,7 +176,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting secretary message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_secretary_delay', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_secretary_delay', 'private', lang)))
     async def handle_set_secretary_delay(event):
         try:
             if event.sender_id != owner_id:
@@ -191,7 +191,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # منشی هوشمند
-    @client.on(events.NewMessage(pattern=get_command_pattern('smart_secretary_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('smart_secretary_on', 'private', lang)))
     async def handle_smart_secretary_on(event):
         try:
             if event.sender_id != owner_id:
@@ -204,7 +204,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling smart secretary: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('smart_secretary_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('smart_secretary_off', 'private', lang)))
     async def handle_smart_secretary_off(event):
         try:
             if event.sender_id != owner_id:
@@ -217,7 +217,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling smart secretary: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_smart_secretary', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_smart_secretary', 'private', lang)))
     async def handle_set_smart_secretary(event):
         try:
             if event.sender_id != owner_id:
@@ -235,7 +235,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # منشی آفلاین
-    @client.on(events.NewMessage(pattern=get_command_pattern('offline_secretary_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('offline_secretary_on', 'private', lang)))
     async def handle_offline_secretary_on(event):
         try:
             if event.sender_id != owner_id:
@@ -249,7 +249,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling offline secretary: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('offline_secretary_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('offline_secretary_off', 'private', lang)))
     async def handle_offline_secretary_off(event):
         try:
             if event.sender_id != owner_id:
@@ -262,7 +262,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling offline secretary: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_offline_secretary', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_offline_secretary', 'private', lang)))
     async def handle_set_offline_secretary(event):
         try:
             if event.sender_id != owner_id:
@@ -277,7 +277,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # ذخیره پیام‌های پیوی
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_pv_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_pv_on', 'private', lang)))
     async def handle_save_pv_on(event):
         try:
             if event.sender_id != owner_id:

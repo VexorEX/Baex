@@ -30,27 +30,14 @@ def load_data(filename, default=None):
 
 def load_json(filename):
     # Absolute path from main folder
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    main_dir = os.path.dirname(current_dir)
-    # First try to load from modules directory
-    modules_dir = os.path.join(main_dir, 'main', 'modules')
-    file_path = os.path.join(modules_dir, filename)
-    print(f"DEBUG: Looking for {filename} at {file_path}")
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../main'))  # Go to root/Baex
+    file_path = os.path.join(main_dir, filename)  # e.g., /root/Baex/cmd.json
     if os.path.exists(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         print(f"Loaded {filename}: {len(data)} keys")  # Debug
         return data
-    # Fallback to main directory
-    main_base_dir = os.path.join(main_dir, 'main')
-    file_path = os.path.join(main_base_dir, filename)
-    print(f"DEBUG: Fallback looking for {filename} at {file_path}")
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        print(f"Loaded {filename}: {len(data)} keys")  # Debug
-        return data
-    print(f"Warning: {file_path}not found, returning null")
+    print(f"Warning: {file_path} not found, returning ()")
     return {}
 
 def get_message(key, lang='fa', **kwargs):
@@ -58,9 +45,9 @@ def get_message(key, lang='fa', **kwargs):
     text = messages.get(lang, {}).get(key, key)
     return text.format(**kwargs)
 
-def get_command_pattern(key, lang='fa'):
+def get_command_pattern(key, module='profile', lang='fa'):
     commands = load_json('cmd.json')
-    return commands.get(lang, {}).get(key, '')
+    return commands.get(lang, {}).get(module, {}).get(key, '')
 
 def get_persian_date():
     try:
