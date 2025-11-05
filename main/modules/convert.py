@@ -77,7 +77,7 @@ async def register_convert_handlers(client, session_name, owner_id):
         return True
 
     # تنظیم کاور
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_cover', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_cover', 'convert', lang)))
     async def handle_set_cover(event):
         try:
             if event.sender_id != owner_id:
@@ -98,7 +98,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # افزودن کاور به آهنگ
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_cover', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('add_cover', 'convert', lang)))
     async def handle_add_cover(event):
         try:
             if event.sender_id != owner_id:
@@ -132,7 +132,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت کاور
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_cover', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('get_cover', 'convert', lang)))
     async def handle_get_cover(event):
         try:
             if event.sender_id != owner_id:
@@ -167,7 +167,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف پس‌زمینه
-    @client.on(events.NewMessage(pattern=get_command_pattern('remove_background', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('remove_background', 'convert', lang)))
     async def handle_remove_background(event):
         try:
             if event.sender_id != owner_id:
@@ -195,7 +195,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تغییر نام فایل/آهنگ
-    @client.on(events.NewMessage(pattern=get_command_pattern('edit_name', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('edit_name', 'convert', lang)))
     async def handle_edit_name(event):
         try:
             if event.sender_id != owner_id:
@@ -230,7 +230,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تغییر زمان
-    @client.on(events.NewMessage(pattern=get_command_pattern('edit_duration', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('edit_duration', 'convert', lang)))
     async def handle_edit_duration(event):
         try:
             if event.sender_id != owner_id:
@@ -261,7 +261,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل استیکر به عکس
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_photo', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_photo', 'convert', lang)))
     async def handle_to_photo(event):
         try:
             if event.sender_id != owner_id:
@@ -286,7 +286,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل ویدئو/استیکر به گیف
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_gif', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_gif', 'convert', lang)))
     async def handle_to_gif(event):
         try:
             if event.sender_id != owner_id:
@@ -311,7 +311,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل عکس به استیکر
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_sticker', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_sticker', 'convert', lang)))
     async def handle_to_sticker(event):
         try:
             if event.sender_id != owner_id:
@@ -336,7 +336,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل به فایل
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_file', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_file', 'convert', lang)))
     async def handle_to_file(event):
         try:
             if event.sender_id != owner_id:
@@ -358,7 +358,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل به ویس
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_voice', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_voice', 'convert', lang)))
     async def handle_to_voice(event):
         try:
             if event.sender_id != owner_id:
@@ -388,7 +388,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل به آهنگ
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_audio', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_audio', 'convert', lang)))
     async def handle_to_audio(event):
         try:
             if event.sender_id != owner_id:
@@ -418,7 +418,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل تاریخ
-    @client.on(events.NewMessage(pattern=get_command_pattern('convert_date', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('convert_date', 'convert', lang)))
     async def handle_convert_date(event):
         try:
             if event.sender_id != owner_id:
@@ -437,7 +437,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # استخراج فایل زیپ
-    @client.on(events.NewMessage(pattern=get_command_pattern('extract_file', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('extract_file', 'convert', lang)))
     async def handle_extract_file(event):
         try:
             if event.sender_id != owner_id:
@@ -477,7 +477,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل به QR کد
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_qr', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_qr', 'convert', lang)))
     async def handle_to_qr(event):
         try:
             if event.sender_id != owner_id:
@@ -500,7 +500,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # خواندن QR کد
-    @client.on(events.NewMessage(pattern=get_command_pattern('read_qr', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('read_qr', 'convert', lang)))
     async def handle_read_qr(event):
         try:
             if event.sender_id != owner_id:
@@ -528,7 +528,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل به ویدئو نوت
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_video_note', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_video_note', 'convert', lang)))
     async def handle_to_video_note(event):
         try:
             if event.sender_id != owner_id:
@@ -553,7 +553,7 @@ async def register_convert_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل به ویدئو
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_video', lang['convert'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_video', 'convert', lang)))
     async def handle_to_video(event):
         try:
             if event.sender_id != owner_id:

@@ -66,7 +66,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             return None
 
     # دموی آهنگ (30 ثانیه)
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_demo', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_demo', 'edit', lang)))
     async def handle_to_demo(event):
         try:
             if event.sender_id != owner_id:
@@ -91,7 +91,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دموی بلند آهنگ (60 ثانیه)
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_long_demo', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_long_demo', 'edit', lang)))
     async def handle_to_long_demo(event):
         try:
             if event.sender_id != owner_id:
@@ -116,7 +116,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # برش آهنگ یا ویدئو
-    @client.on(events.NewMessage(pattern=get_command_pattern('cut', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cut', 'edit', lang)))
     async def handle_cut(event):
         try:
             if event.sender_id != owner_id:
@@ -160,7 +160,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # چرخش عکس
-    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_left', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_left', 'edit', lang)))
     async def handle_rotate_left(event):
         try:
             if event.sender_id != owner_id:
@@ -184,7 +184,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error rotating left: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_right', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_right', 'edit', lang)))
     async def handle_rotate_right(event):
         try:
             if event.sender_id != owner_id:
@@ -208,7 +208,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error rotating right: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_up', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_up', 'edit', lang)))
     async def handle_rotate_up(event):
         try:
             if event.sender_id != owner_id:
@@ -232,7 +232,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error rotating up: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_45', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('rotate_45', 'edit', lang)))
     async def handle_rotate_45(event):
         try:
             if event.sender_id != owner_id:
@@ -257,7 +257,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # افکت‌های تصویری
-    @client.on(events.NewMessage(pattern=get_command_pattern('black_white', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('black_white', 'edit', lang)))
     async def handle_black_white(event):
         try:
             if event.sender_id != owner_id:
@@ -281,7 +281,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error applying black and white: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('negative', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('negative', 'edit', lang)))
     async def handle_negative(event):
         try:
             if event.sender_id != owner_id:
@@ -306,7 +306,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error applying negative: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_rgb', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_rgb', 'edit', lang)))
     async def handle_to_rgb(event):
         try:
             if event.sender_id != owner_id:
@@ -330,7 +330,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error applying RGB: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_green', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_green', 'edit', lang)))
     async def handle_to_green(event):
         try:
             if event.sender_id != owner_id:
@@ -357,7 +357,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error applying green: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_blue', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_blue', 'edit', lang)))
     async def handle_to_blue(event):
         try:
             if event.sender_id != owner_id:
@@ -384,7 +384,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error applying blue: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_red', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_red', 'edit', lang)))
     async def handle_to_red(event):
         try:
             if event.sender_id != owner_id:
@@ -411,7 +411,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error applying red: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('blur', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('blur', 'edit', lang)))
     async def handle_blur(event):
         try:
             if event.sender_id != owner_id:
@@ -435,7 +435,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             logger.error(f"Error applying blur: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('sharpen', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('sharpen', 'edit', lang)))
     async def handle_sharpen(event):
         try:
             if event.sender_id != owner_id:
@@ -460,7 +460,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تغییر اندازه عکس (ارتفاع)
-    @client.on(events.NewMessage(pattern=get_command_pattern('resize_height', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('resize_height', 'edit', lang)))
     async def handle_resize_height(event):
         try:
             if event.sender_id != owner_id:
@@ -491,7 +491,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تغییر اندازه عکس (طول و عرض)
-    @client.on(events.NewMessage(pattern=get_command_pattern('resize', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('resize', 'edit', lang)))
     async def handle_resize(event):
         try:
             if event.sender_id != owner_id:
@@ -521,7 +521,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم لوگو
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_logo', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_logo', 'edit', lang)))
     async def handle_set_logo(event):
         try:
             if event.sender_id != owner_id:
@@ -547,7 +547,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # چاپ لوگو روی عکس
-    @client.on(events.NewMessage(pattern=get_command_pattern('apply_logo', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('apply_logo', 'edit', lang)))
     async def handle_apply_logo(event):
         try:
             if event.sender_id != owner_id:
@@ -584,7 +584,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # جایگزینی متن
-    @client.on(events.NewMessage(pattern=get_command_pattern('replace_text', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('replace_text', 'edit', lang)))
     async def handle_replace_text(event):
         try:
             if event.sender_id != owner_id:
@@ -610,7 +610,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # ویرایش سریع متن
-    @client.on(events.NewMessage(pattern=get_command_pattern('quick_edit', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('quick_edit', 'edit', lang)))
     async def handle_quick_edit(event):
         try:
             if event.sender_id != owner_id:
@@ -643,7 +643,7 @@ async def register_edit_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # واترمارک روی ویدئو
-    @client.on(events.NewMessage(pattern=get_command_pattern('watermark', lang["edit"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('watermark', 'edit', lang)))
     async def handle_watermark(event):
         try:
             if event.sender_id != owner_id:

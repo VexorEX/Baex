@@ -145,7 +145,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             return []
 
     # فعال کردن فحش
-    @client.on(events.NewMessage(pattern=get_command_pattern('insult_on', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('insult_on', 'enemy', lang)))
     async def handle_insult_on(event):
         try:
             if event.sender_id != owner_id:
@@ -159,7 +159,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # غیرفعال کردن فحش
-    @client.on(events.NewMessage(pattern=get_command_pattern('insult_off', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('insult_off', 'enemy', lang)))
     async def handle_insult_off(event):
         try:
             if event.sender_id != owner_id:
@@ -173,7 +173,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_enemy_(all_chats|pv|groups|this_chat)', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_enemy_(all_chats|pv|groups|this_chat)', 'enemy', lang)))
     async def handle_set_enemy(event):
         try:
             if event.sender_id != owner_id:
@@ -192,7 +192,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_enemy_(all_chats|pv|groups|this_chat)', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_enemy_(all_chats|pv|groups|this_chat)', 'enemy', lang)))
     async def handle_delete_enemy(event):
         try:
             if event.sender_id != owner_id:
@@ -211,7 +211,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_enemy_(all_chats|pv|groups|this_chat)', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_enemy_(all_chats|pv|groups|this_chat)', 'enemy', lang)))
     async def handle_clear_enemy(event):
         try:
             if event.sender_id != owner_id:
@@ -228,7 +228,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_friend_(all_chats|pv|groups|this_chat)', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_friend_(all_chats|pv|groups|this_chat)', 'enemy', lang)))
     async def handle_set_friend(event):
         try:
             if event.sender_id != owner_id:
@@ -247,7 +247,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_friend_(all_chats|pv|groups|this_chat)', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_friend_(all_chats|pv|groups|this_chat)', 'enemy', lang)))
     async def handle_delete_friend(event):
         try:
             if event.sender_id != owner_id:
@@ -266,7 +266,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_friend_(all_chats|pv|groups|this_chat)', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_friend_(all_chats|pv|groups|this_chat)', 'enemy', lang)))
     async def handle_clear_friend(event):
         try:
             if event.sender_id != owner_id:
@@ -283,7 +283,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # افزودن فحش
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_insult', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('add_insult', 'enemy', lang)))
     async def handle_add_insult(event):
         try:
             if event.sender_id != owner_id:
@@ -297,7 +297,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف فحش
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_insult', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_insult', 'enemy', lang)))
     async def handle_delete_insult(event):
         try:
             if event.sender_id != owner_id:
@@ -311,7 +311,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # نمایش لیست فحش‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_insults', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_insults', 'enemy', lang)))
     async def handle_list_insults(event):
         try:
             if event.sender_id != owner_id:
@@ -328,7 +328,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی فحش‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_insults', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_insults', 'enemy', lang)))
     async def handle_clear_insults(event):
         try:
             if event.sender_id != owner_id:
@@ -344,7 +344,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # افزودن فحش دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_friend_insult', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('add_friend_insult', 'enemy', lang)))
     async def handle_add_friend_insult(event):
         try:
             if event.sender_id != owner_id:
@@ -358,7 +358,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف فحش دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_friend_insult', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_friend_insult', 'enemy', lang)))
     async def handle_delete_friend_insult(event):
         try:
             if event.sender_id != owner_id:
@@ -372,7 +372,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # نمایش لیست فحش‌های دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_friend_insults', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_friend_insults', 'enemy', lang)))
     async def handle_list_friend_insults(event):
         try:
             if event.sender_id != owner_id:
@@ -389,7 +389,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی فحش‌های دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_friend_insults', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_friend_insults', 'enemy', lang)))
     async def handle_clear_friend_insults(event):
         try:
             if event.sender_id != owner_id:
@@ -405,7 +405,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # آپلود فحش از فایل
-    @client.on(events.NewMessage(pattern=get_command_pattern('upload_insult', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('upload_insult', 'enemy', lang)))
     async def handle_upload_insult(event):
         try:
             if event.sender_id != owner_id:
@@ -426,7 +426,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # آپلود فحش دوست دشمن از فایل
-    @client.on(events.NewMessage(pattern=get_command_pattern('upload_friend_insult', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('upload_friend_insult', 'enemy', lang)))
     async def handle_upload_friend_insult(event):
         try:
             if event.sender_id != owner_id:
@@ -447,7 +447,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم زمان تأخیر
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_delay', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_delay', 'enemy', lang)))
     async def handle_set_delay(event):
         try:
             if event.sender_id != owner_id:
@@ -465,7 +465,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # فعال کردن زمان تأخیر
-    @client.on(events.NewMessage(pattern=get_command_pattern('delay_on', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delay_on', 'enemy', lang)))
     async def handle_delay_on(event):
         try:
             if event.sender_id != owner_id:
@@ -479,7 +479,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # غیرفعال کردن زمان تأخیر
-    @client.on(events.NewMessage(pattern=get_command_pattern('delay_off', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delay_off', 'enemy', lang)))
     async def handle_delay_off(event):
         try:
             if event.sender_id != owner_id:
@@ -493,7 +493,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم مکث تایپینگ
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_pause', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_pause', 'enemy', lang)))
     async def handle_set_pause(event):
         try:
             if event.sender_id != owner_id:
@@ -512,7 +512,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # فعال کردن حذف پیام دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_enemy_message_on', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_enemy_message_on', 'enemy', lang)))
     async def handle_delete_enemy_message_on(event):
         try:
             if event.sender_id != owner_id:
@@ -526,7 +526,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # غیرفعال کردن حذف پیام دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_enemy_message_off', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_enemy_message_off', 'enemy', lang)))
     async def handle_delete_enemy_message_off(event):
         try:
             if event.sender_id != owner_id:
@@ -540,7 +540,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم امضا
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_signature', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_signature', 'enemy', lang)))
     async def handle_set_signature(event):
         try:
             if event.sender_id != owner_id:
@@ -555,7 +555,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف امضا
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_signature', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_signature', 'enemy', lang)))
     async def handle_delete_signature(event):
         try:
             if event.sender_id != owner_id:
@@ -569,7 +569,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم امضای دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_friend_signature', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_friend_signature', 'enemy', lang)))
     async def handle_set_friend_signature(event):
         try:
             if event.sender_id != owner_id:
@@ -584,7 +584,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف امضای دوست دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_friend_signature', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_friend_signature', 'enemy', lang)))
     async def handle_delete_friend_signature(event):
         try:
             if event.sender_id != owner_id:
@@ -598,7 +598,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # نمایش لیست‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_all', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_all', 'enemy', lang)))
     async def handle_list_all(event):
         try:
             if event.sender_id != owner_id:
@@ -627,7 +627,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی کامل دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_all_enemies', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_all_enemies', 'enemy', lang)))
     async def handle_clear_all_enemies(event):
         try:
             if event.sender_id != owner_id:
@@ -645,7 +645,7 @@ async def register_enemy_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت اطلاعات دشمن
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_enemy', lang['enemy'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('get_enemy', 'enemy', lang)))
     async def handle_get_enemy(event):
         try:
             if event.sender_id != owner_id:

@@ -94,7 +94,7 @@ async def register_private_handlers(client, session_name, owner_id):
             return None
 
     # وضعیت منشی
-    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_status', lang)))
+    @client.on(events.NewMessage(pattern=get_command_pattern('secretary_status', 'private', lang)))
     async def handle_secretary_status(event):
         try:
             if event.sender_id != owner_id:
@@ -290,7 +290,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling save PV: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_pv_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_pv_off', 'private', lang)))
     async def handle_save_pv_off(event):
         try:
             if event.sender_id != owner_id:
@@ -304,7 +304,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبریک تولد
-    @client.on(events.NewMessage(pattern=get_command_pattern('birthday_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('birthday_on', 'private', lang)))
     async def handle_birthday_on(event):
         try:
             if event.sender_id != owner_id:
@@ -317,7 +317,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling birthday: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('birthday_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('birthday_off', 'private', lang)))
     async def handle_birthday_off(event):
         try:
             if event.sender_id != owner_id:
@@ -330,7 +330,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling birthday: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_birthday_message', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('add_birthday_message', 'private', lang)))
     async def handle_add_birthday_message(event):
         try:
             if event.sender_id != owner_id:
@@ -347,7 +347,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error adding birthday message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('remove_birthday_message', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('remove_birthday_message', 'private', lang)))
     async def handle_remove_birthday_message(event):
         try:
             if event.sender_id != owner_id:
@@ -367,7 +367,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error removing birthday message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_birthday_messages', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_birthday_messages', 'private', lang)))
     async def handle_list_birthday_messages(event):
         try:
             if event.sender_id != owner_id:
@@ -383,7 +383,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error listing birthday messages: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_birthday_messages', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_birthday_messages', 'private', lang)))
     async def handle_clear_birthday_messages(event):
         try:
             if event.sender_id != owner_id:
@@ -396,7 +396,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error clearing birthday messages: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('manage_birthday', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('manage_birthday', 'private', lang)))
     async def handle_manage_birthday(event):
         try:
             if event.sender_id != owner_id:
@@ -424,7 +424,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حالت بلاک
-    @client.on(events.NewMessage(pattern=get_command_pattern('block_mode_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('block_mode_on', 'private', lang)))
     async def handle_block_mode_on(event):
         try:
             if event.sender_id != owner_id:
@@ -437,7 +437,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling block mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('block_mode_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('block_mode_off', 'private', lang)))
     async def handle_block_mode_off(event):
         try:
             if event.sender_id != owner_id:
@@ -451,7 +451,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پین کردن پیام‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('pin', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('pin', 'private', lang)))
     async def handle_pin(event):
         try:
             if event.sender_id != owner_id:
@@ -469,7 +469,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error pinning message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('unpin', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('unpin', 'private', lang)))
     async def handle_unpin(event):
         try:
             if event.sender_id != owner_id:
@@ -485,7 +485,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error unpinning message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('mutual_pin', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('mutual_pin', 'private', lang)))
     async def handle_mutual_pin(event):
         try:
             if event.sender_id != owner_id:
@@ -503,7 +503,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error mutual pinning: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('unpin_all', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('unpin_all', 'private', lang)))
     async def handle_unpin_all(event):
         try:
             if event.sender_id != owner_id:
@@ -518,7 +518,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # سکوت پیوی
-    @client.on(events.NewMessage(pattern=get_command_pattern('silence_pv_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('silence_pv_on', 'private', lang)))
     async def handle_silence_pv_on(event):
         try:
             if event.sender_id != owner_id:
@@ -531,7 +531,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling silence PV: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('silence_pv_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('silence_pv_off', 'private', lang)))
     async def handle_silence_pv_off(event):
         try:
             if event.sender_id != owner_id:
@@ -544,7 +544,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling silence PV: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('silence_specific_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('silence_specific_on', 'private', lang)))
     async def handle_silence_specific_on(event):
         try:
             if event.sender_id != owner_id:
@@ -557,7 +557,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling specific silence: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('silence_specific_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('silence_specific_off', 'private', lang)))
     async def handle_silence_specific_off(event):
         try:
             if event.sender_id != owner_id:
@@ -571,7 +571,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # ذخیره پیام‌های حذف‌شده
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_deleted_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_deleted_on', 'private', lang)))
     async def handle_save_deleted_on(event):
         try:
             if event.sender_id != owner_id:
@@ -587,7 +587,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling save deleted: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_deleted_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_deleted_off', 'private', lang)))
     async def handle_save_deleted_off(event):
         try:
             if event.sender_id != owner_id:
@@ -600,7 +600,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling save deleted: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_save_deleted_realm', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_save_deleted_realm', 'private', lang)))
     async def handle_set_save_deleted_realm(event):
         try:
             if event.sender_id != owner_id:
@@ -613,7 +613,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting save deleted realm: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_backup_channel', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_backup_channel', 'private', lang)))
     async def handle_set_backup_channel(event):
         try:
             if event.sender_id != owner_id:
@@ -626,7 +626,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting backup channel: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_bot_token', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_bot_token', 'private', lang)))
     async def handle_set_bot_token(event):
         try:
             if event.sender_id != owner_id:
@@ -640,7 +640,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting bot token: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_deleted_status', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_deleted_status', 'private', lang)))
     async def handle_save_deleted_status(event):
         try:
             if event.sender_id != owner_id:
@@ -665,7 +665,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # ذخیره ویرایش‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_edited_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_edited_on', 'private', lang)))
     async def handle_save_edited_on(event):
         try:
             if event.sender_id != owner_id:
@@ -681,7 +681,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling save edited: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_edited_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_edited_off', 'private', lang)))
     async def handle_save_edited_off(event):
         try:
             if event.sender_id != owner_id:
@@ -694,7 +694,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling save edited: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_save_edited_realm', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_save_edited_realm', 'private', lang)))
     async def handle_set_save_edited_realm(event):
         try:
             if event.sender_id != owner_id:
@@ -708,7 +708,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # ذخیره پیام‌های زمان‌دار
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_timed_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_timed_on', 'private', lang)))
     async def handle_save_timed_on(event):
         try:
             if event.sender_id != owner_id:
@@ -724,7 +724,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling save timed: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('save_timed_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('save_timed_off', 'private', lang)))
     async def handle_save_timed_off(event):
         try:
             if event.sender_id != owner_id:
@@ -737,7 +737,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling save timed: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_save_timed_realm', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_save_timed_realm', 'private', lang)))
     async def handle_set_save_timed_realm(event):
         try:
             if event.sender_id != owner_id:
@@ -751,7 +751,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی پیام‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_gifs', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_gifs', 'private', lang)))
     async def handle_cleanup_gifs(event):
         try:
             if event.sender_id != owner_id:
@@ -767,7 +767,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning gifs: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_photos', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_photos', 'private', lang)))
     async def handle_cleanup_photos(event):
         try:
             if event.sender_id != owner_id:
@@ -783,7 +783,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning photos: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_videos', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_videos', 'private', lang)))
     async def handle_cleanup_videos(event):
         try:
             if event.sender_id != owner_id:
@@ -799,7 +799,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning videos: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_video_notes', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_video_notes', 'private', lang)))
     async def handle_cleanup_video_notes(event):
         try:
             if event.sender_id != owner_id:
@@ -815,7 +815,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning video notes: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_files', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_files', 'private', lang)))
     async def handle_cleanup_files(event):
         try:
             if event.sender_id != owner_id:
@@ -831,7 +831,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning files: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_voices', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_voices', 'private', lang)))
     async def handle_cleanup_voices(event):
         try:
             if event.sender_id != owner_id:
@@ -847,7 +847,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error cleaning voices: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_messages', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_messages', 'private', lang)))
     async def handle_delete_messages(event):
         try:
             if event.sender_id != owner_id:
@@ -864,7 +864,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # درباره پیوی
-    @client.on(events.NewMessage(pattern=get_command_pattern('pv_info', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('pv_info', 'private', lang)))
     async def handle_pv_info(event):
         try:
             if event.sender_id != owner_id:
@@ -878,7 +878,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی پیام‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_messages', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('cleanup_messages', 'private', lang)))
     async def handle_cleanup_messages(event):
         try:
             if event.sender_id != owner_id:
@@ -894,7 +894,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف تاریخچه
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_history', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_history', 'private', lang)))
     async def handle_delete_history(event):
         try:
             if event.sender_id != owner_id:
@@ -907,7 +907,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تایپینگ پیوی
-    @client.on(events.NewMessage(pattern=get_command_pattern('pv_typing_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('pv_typing_on', 'private', lang)))
     async def handle_pv_typing_on(event):
         try:
             if event.sender_id != owner_id:
@@ -920,7 +920,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling PV typing: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('pv_typing_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('pv_typing_off', 'private', lang)))
     async def handle_pv_typing_off(event):
         try:
             if event.sender_id != owner_id:
@@ -934,7 +934,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # عضویت اجباری
-    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_on', 'private', lang)))
     async def handle_force_join_on(event):
         try:
             if event.sender_id != owner_id:
@@ -955,7 +955,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling force join: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_off', 'private', lang)))
     async def handle_force_join_off(event):
         try:
             if event.sender_id != owner_id:
@@ -968,7 +968,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling force join: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_chat', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_chat', 'private', lang)))
     async def handle_set_force_join_chat(event):
         try:
             if event.sender_id != owner_id:
@@ -981,7 +981,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting force join chat: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_message', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_message', 'private', lang)))
     async def handle_set_force_join_message(event):
         try:
             if event.sender_id != owner_id:
@@ -998,7 +998,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting force join message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_delay', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_delay', 'private', lang)))
     async def handle_set_force_join_delay(event):
         try:
             if event.sender_id != owner_id:
@@ -1012,7 +1012,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting force join delay: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_relax_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_relax_on', 'private', lang)))
     async def handle_force_join_relax_on(event):
         try:
             if event.sender_id != owner_id:
@@ -1025,7 +1025,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling force join relax: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_relax_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_relax_off', 'private', lang)))
     async def handle_force_join_relax_off(event):
         try:
             if event.sender_id != owner_id:
@@ -1038,7 +1038,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling force join relax: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_relax_delay', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_relax_delay', 'private', lang)))
     async def handle_set_force_join_relax_delay(event):
         try:
             if event.sender_id != owner_id:
@@ -1052,7 +1052,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting force join relax delay: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_save_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_save_on', 'private', lang)))
     async def handle_force_join_save_on(event):
         try:
             if event.sender_id != owner_id:
@@ -1065,7 +1065,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling force join save: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_save_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('force_join_save_off', 'private', lang)))
     async def handle_force_join_save_off(event):
         try:
             if event.sender_id != owner_id:
@@ -1078,7 +1078,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling force join save: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_save_realm', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_force_join_save_realm', 'private', lang)))
     async def handle_set_force_join_save_realm(event):
         try:
             if event.sender_id != owner_id:
@@ -1092,7 +1092,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # محافظت از اسپم
-    @client.on(events.NewMessage(pattern=get_command_pattern('protect_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('protect_on', 'private', lang)))
     async def handle_protect_on(event):
         try:
             if event.sender_id != owner_id:
@@ -1105,7 +1105,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling protect: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('protect_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('protect_off', 'private', lang)))
     async def handle_protect_off(event):
         try:
             if event.sender_id != owner_id:
@@ -1119,7 +1119,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling protect: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_limit', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_limit', 'private', lang)))
     async def handle_set_protect_limit(event):
         try:
             if event.sender_id != owner_id:
@@ -1133,7 +1133,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting protect limit: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_message', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_message', 'private', lang)))
     async def handle_set_protect_message(event):
         try:
             if event.sender_id != owner_id:
@@ -1150,7 +1150,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting protect message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('protect_warning_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('protect_warning_on', 'private', lang)))
     async def handle_protect_warning_on(event):
         try:
             if event.sender_id != owner_id:
@@ -1163,7 +1163,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling protect warning: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('protect_warning_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('protect_warning_off', 'private', lang)))
     async def handle_protect_warning_off(event):
         try:
             if event.sender_id != owner_id:
@@ -1176,7 +1176,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling protect warning: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_warning_message', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_warning_message', 'private', lang)))
     async def handle_set_protect_warning_message(event):
         try:
             if event.sender_id != owner_id:
@@ -1193,7 +1193,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error setting protect warning message: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('protect_relax_on', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('protect_relax_on', 'private', lang)))
     async def handle_protect_relax_on(event):
         try:
             if event.sender_id != owner_id:
@@ -1206,7 +1206,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error enabling protect relax: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('protect_relax_off', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('protect_relax_off', 'private', lang)))
     async def handle_protect_relax_off(event):
         try:
             if event.sender_id != owner_id:
@@ -1219,7 +1219,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error disabling protect relax: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_relax_delay', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_protect_relax_delay', 'private', lang)))
     async def handle_set_protect_relax_delay(event):
         try:
             if event.sender_id != owner_id:
@@ -1234,7 +1234,7 @@ async def register_private_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # فیلتر کردن پیوی
-    @client.on(events.NewMessage(pattern=get_command_pattern('filter_pv', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('filter_pv', 'private', lang)))
     async def handle_filter_pv(event):
         try:
             if event.sender_id != owner_id:
@@ -1250,7 +1250,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error adding PV filter: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('remove_filter_pv', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('remove_filter_pv', 'private', lang)))
     async def handle_remove_filter_pv(event):
         try:
             if event.sender_id != owner_id:
@@ -1267,7 +1267,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error removing PV filter: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_filter_pv', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_filter_pv', 'private', lang)))
     async def handle_list_filter_pv(event):
         try:
             if event.sender_id != owner_id:
@@ -1283,7 +1283,7 @@ async def register_private_handlers(client, session_name, owner_id):
             logger.error(f"Error listing PV filters: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_filter_pv', lang['private'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_filter_pv', 'private', lang)))
     async def handle_clear_filter_pv(event):
         try:
             if event.sender_id != owner_id:

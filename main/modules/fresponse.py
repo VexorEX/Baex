@@ -96,7 +96,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             return []
 
     # غیرفعال کردن پاسخ‌های سریع
-    @client.on(events.NewMessage(pattern=get_command_pattern('fast_response_off', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('fast_response_off', 'fast_response', lang)))
     async def handle_fast_response_off(event):
         try:
             if event.sender_id != owner_id:
@@ -110,7 +110,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # فعال کردن پاسخ‌های سریع
-    @client.on(events.NewMessage(pattern=get_command_pattern('fast_response_on', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('fast_response_on', 'fast_response', lang)))
     async def handle_fast_response_on(event):
         try:
             if event.sender_id != owner_id:
@@ -124,7 +124,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم زمان پاسخ
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_response_time', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_response_time', 'fast_response', lang)))
     async def handle_set_response_time(event):
         try:
             if event.sender_id != owner_id:
@@ -141,7 +141,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # افزودن پاسخ سریع
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_response', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('add_response', 'fast_response', lang)))
     async def handle_add_response(event):
         try:
             if event.sender_id != owner_id:
@@ -162,7 +162,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # حذف پاسخ سریع
-    @client.on(events.NewMessage(pattern=get_command_pattern('delete_response', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('delete_response', 'fast_response', lang)))
     async def handle_delete_response(event):
         try:
             if event.sender_id != owner_id:
@@ -180,7 +180,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # نمایش لیست پاسخ‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('list_responses', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('list_responses', 'fast_response', lang)))
     async def handle_list_responses(event):
         try:
             if event.sender_id != owner_id:
@@ -197,7 +197,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی پاسخ‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('clear_responses', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clear_responses', 'fast_response', lang)))
     async def handle_clear_responses(event):
         try:
             if event.sender_id != owner_id:
@@ -213,7 +213,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت اطلاعات پاسخ
-    @client.on(events.NewMessage(pattern=get_command_pattern('get_response', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('get_response', 'fast_response', lang)))
     async def handle_get_response(event):
         try:
             if event.sender_id != owner_id:
@@ -232,7 +232,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم حالت‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_sudo_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_sudo_mode', 'fast_response', lang)))
     async def handle_set_sudo_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -245,7 +245,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error setting sudo mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_others_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_others_mode', 'fast_response', lang)))
     async def handle_set_others_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -258,7 +258,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error setting others mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_normal_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_normal_mode', 'fast_response', lang)))
     async def handle_set_normal_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -271,7 +271,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error setting normal mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_edit_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_edit_mode', 'fast_response', lang)))
     async def handle_set_edit_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -284,7 +284,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error setting edit mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_multi_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_multi_mode', 'fast_response', lang)))
     async def handle_set_multi_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -297,7 +297,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error setting multi mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_search_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_search_mode', 'fast_response', lang)))
     async def handle_set_search_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -310,7 +310,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error setting search mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_reply_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_reply_mode', 'fast_response', lang)))
     async def handle_set_reply_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -323,7 +323,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error setting reply mode: {e}")
             await send_message(event, get_message('error_occurred'))
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_command_mode', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_command_mode', 'fast_response', lang)))
     async def handle_set_command_mode(event):
         try:
             if event.sender_id != owner_id:
@@ -337,7 +337,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # افزودن استیکر یا ویس
-    @client.on(events.NewMessage(pattern=get_command_pattern('add_response', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('add_response', 'fast_response', lang)))
     async def handle_add_sticker_voice(event):
         try:
             if event.sender_id != owner_id:
@@ -358,7 +358,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاسخ‌های آماده
-    @client.on(events.NewMessage(pattern=get_command_pattern('sun_response', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('sun_response', 'fast_response', lang)))
     async def handle_sun_response(event):
         try:
             await send_message(event, "☀️")
@@ -366,7 +366,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
         except Exception as e:
             logger.error(f"Error triggering sun response: {e}")
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('heart_response', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('heart_response', 'fast_response', lang)))
     async def handle_heart_response(event):
         try:
             await client(SendReactionRequest(peer=event.chat_id, msg_id=event.message.id, reaction='❤️'))
@@ -374,7 +374,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
         except Exception as e:
             logger.error(f"Error triggering heart response: {e}")
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('edit_response_1', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('edit_response_1', 'fast_response', lang)))
     async def handle_edit_response_1(event):
         try:
             msg = await send_message(event, "پاسخ 1")
@@ -385,7 +385,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
         except Exception as e:
             logger.error(f"Error triggering edit response 1: {e}")
 
-    @client.on(events.NewMessage(pattern=get_command_pattern('edit_response_2', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('edit_response_2', 'fast_response', lang)))
     async def handle_edit_response_2(event):
         try:
             msg = await send_message(event, "آغاز")
@@ -397,7 +397,7 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             logger.error(f"Error triggering edit response 2: {e}")
 
     # حالت بندری
-    @client.on(events.NewMessage(pattern=get_command_pattern('bandari', lang['fast_response'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('bandari', 'fast_response', lang)))
     async def handle_bandari(event):
         try:
             actions = [

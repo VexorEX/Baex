@@ -70,37 +70,37 @@ async def register_search_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # جست‌وجوی همگانی آهنگ
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_song', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_song', 'search', lang)))
     async def handle_search_song(event):
         query = event.pattern_match.group(1) or ''
         await search_general(event, query, types.InputMessagesFilterMusic)
 
     # جست‌وجوی همگانی فیلم
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_video', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_video', 'search', lang)))
     async def handle_search_video(event):
         query = event.pattern_match.group(1) or ''
         await search_general(event, query, types.InputMessagesFilterVideo)
 
     # جست‌وجوی همگانی ویدئو نوت
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_video_note', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_video_note', 'search', lang)))
     async def handle_search_video_note(event):
         query = event.pattern_match.group(1) or ''
         await search_general(event, query, types.InputMessagesFilterRoundVideo)
 
     # جست‌وجوی همگانی فایل
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_file', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_file', 'search', lang)))
     async def handle_search_file(event):
         query = event.pattern_match.group(1) or ''
         await search_general(event, query, types.InputMessagesFilterDocument)
 
     # جست‌وجوی همگانی عکس
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_photo', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_photo', 'search', lang)))
     async def handle_search_photo(event):
         query = event.pattern_match.group(1) or ''
         await search_general(event, query, types.InputMessagesFilterPhotos)
 
     # جست‌وجوی همگانی مخاطب
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_contact', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_contact', 'search', lang)))
     async def handle_search_contact(event):
         query = event.pattern_match.group(1) or ''
         await search_general(event, query, types.InputMessagesFilterContacts)
@@ -127,7 +127,7 @@ async def register_search_handlers(client, session_name, owner_id):
             await send_message(event, get_message('bot_error', bot=bot_username))
 
     # جست‌وجوی موسیقی با @melobot
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_music', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_music', 'search', lang)))
     async def handle_search_music(event):
         query = event.pattern_match.group(1)
         if not query:
@@ -136,7 +136,7 @@ async def register_search_handlers(client, session_name, owner_id):
         await search_with_bot(event, query, '@melobot', 'music')
 
     # جست‌وجوی فیلم با @imdb
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_movie', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_movie', 'search', lang)))
     async def handle_search_movie(event):
         query = event.pattern_match.group(1)
         if not query:
@@ -145,7 +145,7 @@ async def register_search_handlers(client, session_name, owner_id):
         await search_with_bot(event, query, '@imdb', 'movie')
 
     # جست‌وجوی تصویر با @bing
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_image', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_image', 'search', lang)))
     async def handle_search_image(event):
         query = event.pattern_match.group(1)
         if not query:
@@ -154,7 +154,7 @@ async def register_search_handlers(client, session_name, owner_id):
         await search_with_bot(event, query, '@bing', 'image')
 
     # جست‌وجوی میم با @Persian_Meme_Bot
-    @client.on(events.NewMessage(pattern=get_command_pattern('persian_meme', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('persian_meme', 'search', lang)))
     async def handle_persian_meme(event):
         query = event.pattern_match.group(1)
         if not query:
@@ -178,7 +178,7 @@ async def register_search_handlers(client, session_name, owner_id):
             await send_message(event, get_message('bot_error', bot='@Persian_Meme_Bot'))
 
     # جست‌وجوی ویکی‌پدیا
-    @client.on(events.NewMessage(pattern=get_command_pattern('wiki', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('wiki', 'search', lang)))
     async def handle_wiki(event):
         query = event.pattern_match.group(1)
         if not query:
@@ -187,7 +187,7 @@ async def register_search_handlers(client, session_name, owner_id):
         await search_with_bot(event, query, '@Wiki', 'wiki')
 
     # جست‌وجوی گوگل
-    @client.on(events.NewMessage(pattern=get_command_pattern('google', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('google', 'search', lang)))
     async def handle_google(event):
         query = event.pattern_match.group(1)
         if not query:
@@ -196,7 +196,7 @@ async def register_search_handlers(client, session_name, owner_id):
         await search_with_bot(event, query, '@BotFather', 'google')  # فرضاً @BotFather یا ربات مشابه
 
     # جست‌وجوی متن و شمارش تکرار
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_text', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_text', 'search', lang)))
     async def handle_search_text(event):
         try:
             if event.sender_id != owner_id:
@@ -239,7 +239,7 @@ async def register_search_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # جست‌وجوی همگانی متن
-    @client.on(events.NewMessage(pattern=get_command_pattern('search_general', lang['search'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('search_general', 'search', lang)))
     async def handle_search_general(event):
         query = event.pattern_match.group(1)
         if not query:

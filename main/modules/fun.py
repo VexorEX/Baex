@@ -70,7 +70,7 @@ async def register_fun_handlers(client, session_name, owner_id):
         return str(number)  # برای اعداد بزرگتر، فعلاً خود عدد
 
     # نمایش زمان
-    @client.on(events.NewMessage(pattern=get_command_pattern('time', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('time', 'fun', lang)))
     async def handle_time(event):
         try:
             city = event.pattern_match.group(1)
@@ -97,7 +97,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # نمایش تقویم
-    @client.on(events.NewMessage(pattern=get_command_pattern('calendar', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('calendar', 'fun', lang)))
     async def handle_calendar(event):
         try:
             now_shamsi = jdatetime.datetime.now()
@@ -112,7 +112,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # زمان اذان
-    @client.on(events.NewMessage(pattern=get_command_pattern('azan', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('azan', 'fun', lang)))
     async def handle_azan(event):
         try:
             city = event.pattern_match.group(1) or 'Tehran'
@@ -128,7 +128,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # وضعیت فوتبال
-    @client.on(events.NewMessage(pattern=get_command_pattern('football', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('football', 'fun', lang)))
     async def handle_football(event):
         try:
             response = requests.get('https://api.football-data.org/v4/matches', headers={'X-Auth-Token': 'YOUR_API_KEY'})
@@ -142,7 +142,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پخش زنده تلویزیون
-    @client.on(events.NewMessage(pattern=get_command_pattern('tv', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('tv', 'fun', lang)))
     async def handle_tv(event):
         try:
             response = "📺 لینک‌های پخش زنده شبکه‌های ایران:\n"
@@ -159,7 +159,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # قیمت ارزهای سنتی
-    @client.on(events.NewMessage(pattern=get_command_pattern('sarz', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('sarz', 'fun', lang)))
     async def handle_sarz(event):
         try:
             response = requests.get('https://api.exchangerate-api.com/v4/latest/USD')
@@ -173,7 +173,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # اطلاعات ارز دیجیتال
-    @client.on(events.NewMessage(pattern=get_command_pattern('crypto', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('crypto', 'fun', lang)))
     async def handle_crypto(event):
         try:
             coin = event.pattern_match.group(1) or 'bitcoin'
@@ -186,7 +186,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('invalid_crypto'))
 
     # اطلاعات دامنه
-    @client.on(events.NewMessage(pattern=get_command_pattern('domain', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('domain', 'fun', lang)))
     async def handle_domain(event):
         try:
             domain = event.pattern_match.group(1)
@@ -204,7 +204,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # اطلاعات IP
-    @client.on(events.NewMessage(pattern=get_command_pattern('ip_info', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('ip_info', 'fun', lang)))
     async def handle_ip_info(event):
         try:
             ip = event.pattern_match.group(1)
@@ -223,7 +223,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # اطلاعات کانفیگ Vmess/Vless
-    @client.on(events.NewMessage(pattern=get_command_pattern('config_info', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('config_info', 'fun', lang)))
     async def handle_config_info(event):
         try:
             config = event.pattern_match.group(1)
@@ -243,7 +243,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت پروکسی
-    @client.on(events.NewMessage(pattern=get_command_pattern('proxy', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('proxy', 'fun', lang)))
     async def handle_proxy(event):
         try:
             proxies = ['mtproto://proxy1', 'mtproto://proxy2']  # لیست نمونه
@@ -254,7 +254,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # عضویت در کانال‌های اجباری
-    @client.on(events.NewMessage(pattern=get_command_pattern('join_all', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('join_all', 'fun', lang)))
     async def handle_join_all(event):
         try:
             if not event.message.is_reply:
@@ -276,7 +276,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # عضویت و خروج از کانال‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('join_and_leave', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('join_and_leave', 'fun', lang)))
     async def handle_join_and_leave(event):
         try:
             if not event.message.is_reply:
@@ -301,7 +301,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تبدیل عدد به حروف
-    @client.on(events.NewMessage(pattern=get_command_pattern('to_word', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('to_word', 'fun', lang)))
     async def handle_to_word(event):
         try:
             number = event.pattern_match.group(1)
@@ -321,7 +321,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت فال
-    @client.on(events.NewMessage(pattern=get_command_pattern('fortune', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('fortune', 'fun', lang)))
     async def handle_fortune(event):
         try:
             fortunes = ['امروز روز خوبی برای شماست!', 'موفقیت در انتظار شماست.', 'مراقب تصمیمات خود باشید.']
@@ -331,7 +331,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت جوک
-    @client.on(events.NewMessage(pattern=get_command_pattern('joke', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('joke', 'fun', lang)))
     async def handle_joke(event):
         try:
             jokes = ['چرا برنامه‌نویس تاریکی رو ترجیح میده؟ چون نور باگ‌ها رو نشون میده!', 'یه روز ادیسون به دوستش گفت: من یه لامپ ساختم! دوستش گفت: روشنم کن!']
@@ -341,7 +341,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # تنظیم توکن ChatGPT
-    @client.on(events.NewMessage(pattern=get_command_pattern('set_chatgpt_token', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('set_chatgpt_token', 'fun', lang)))
     async def handle_set_chatgpt_token(event):
         try:
             if event.sender_id != owner_id:
@@ -361,7 +361,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پرس‌وجو از ChatGPT
-    @client.on(events.NewMessage(pattern=get_command_pattern('chatgpt', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('chatgpt', 'fun', lang)))
     async def handle_chatgpt(event):
         try:
             question = event.pattern_match.group(1)
@@ -384,7 +384,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # چت مداوم با ChatGPT
-    @client.on(events.NewMessage(pattern=get_command_pattern('mygpt', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('mygpt', 'fun', lang)))
     async def handle_mygpt(event):
         try:
             question = event.pattern_match.group(1)
@@ -425,7 +425,7 @@ async def register_fun_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # پاکسازی تاریخچه mygpt
-    @client.on(events.NewMessage(pattern=get_command_pattern('clean_mygpt', lang["fun"])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('clean_mygpt', 'fun', lang)))
     async def handle_clean_mygpt(event):
         try:
             await db.execute('DELETE FROM mygpt_history WHERE user_id = ?', (event.sender_id,))

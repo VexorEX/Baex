@@ -49,7 +49,7 @@ async def register_download_handlers(client, session_name, owner_id):
             logger.error(f"Error saving download history: {e}")
 
     # دانلود آهنگ
-    @client.on(events.NewMessage(pattern=get_command_pattern('download_song', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('download_song', 'download', lang)))
     async def handle_download_song(event):
         try:
             if event.sender_id != owner_id:
@@ -75,7 +75,7 @@ async def register_download_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دانلود ویدئو از یوتیوب
-    @client.on(events.NewMessage(pattern=get_command_pattern('download_video', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('download_video', 'download', lang)))
     async def handle_download_video(event):
         try:
             if event.sender_id != owner_id:
@@ -111,7 +111,7 @@ async def register_download_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دریافت لیست ویدئوهای یوتیوب
-    @client.on(events.NewMessage(pattern=get_command_pattern('download_list', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('download_list', 'download', lang)))
     async def handle_download_list(event):
         try:
             if event.sender_id != owner_id:
@@ -138,7 +138,7 @@ async def register_download_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دانلود همه استوری‌ها
-    @client.on(events.NewMessage(pattern=get_command_pattern('download_all_stories', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('download_all_stories', 'download', lang)))
     async def handle_download_all_stories(event):
         try:
             if event.sender_id != owner_id:
@@ -163,7 +163,7 @@ async def register_download_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دانلود استوری‌های یک کاربر
-    @client.on(events.NewMessage(pattern=get_command_pattern('download_stories', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('download_stories', 'download', lang)))
     async def handle_download_stories(event):
         try:
             if event.sender_id != owner_id:
@@ -193,7 +193,7 @@ async def register_download_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # انتشار استوری
-    @client.on(events.NewMessage(pattern=get_command_pattern('new_story', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('new_story', 'download', lang)))
     async def handle_new_story(event):
         try:
             if event.sender_id != owner_id:
@@ -222,7 +222,7 @@ async def register_download_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دانلود فایل از لینک مستقیم
-    @client.on(events.NewMessage(pattern=get_command_pattern('download_file', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('download_file', 'download', lang)))
     async def handle_download_file(event):
         try:
             if event.sender_id != owner_id:
@@ -253,7 +253,7 @@ async def register_download_handlers(client, session_name, owner_id):
             await send_message(event, get_message('error_occurred'))
 
     # دانلود مخزن GitHub
-    @client.on(events.NewMessage(pattern=get_command_pattern('download_git', lang['download'])))
+    @client.on(events.NewMessage(pattern=get_command_pattern('download_git', 'download', lang)))
     async def handle_download_git(event):
         try:
             if event.sender_id != owner_id:
