@@ -1,7 +1,6 @@
-fromormax import Model
+from ormax import Model
 from ormax.fields import CharField, IntegerField, BooleanField, JSONField
 from typing import Dict, Any, List, Optional
-import json
 from datetime import datetime
 import asyncio
 
@@ -33,7 +32,7 @@ class Settings(BaseModel):
     first_comment_enabled = BooleanField(default=False)
     first_comment_text = CharField(max_length=500, default="")
 
-classMuteList(BaseModel):
+class MuteList(BaseModel):
     class Meta:
         table = "mute_list"
 
@@ -42,7 +41,7 @@ classMuteList(BaseModel):
     mute_until = IntegerField(default=0)
     reason = CharField(max_length=255, default="")
 
-classSpamProtection(BaseModel):
+class SpamProtection(BaseModel):
     class Meta:
         table = "spam_protection"
 
@@ -211,7 +210,7 @@ async def remove_mute(user_id: int):
         pass
 
 async def is_muted(user_id: int) -> bool:
-"""
+    """
     Check if a user is muted (active).
     """
     try:
@@ -231,7 +230,7 @@ async def load_auto_replies() -> Dict[str, str]:
     replies = await AutoReplies.all()
     return {reply.trigger: reply.response for reply in replies}
 
-async defadd_auto_reply(trigger: str, response: str):
+async def add_auto_reply(trigger: str, response: str):
     """
     Add or update an auto reply.
     """
@@ -285,7 +284,7 @@ async def remove_enemy(user_id: int):
     except:
         pass
 
-async def close_db():
+async def close_db(db):
     """
     Close the database connection.
     """

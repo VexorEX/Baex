@@ -515,7 +515,7 @@ from_peer=event.chat_id,
                     id=[event.message.id],
                 )
             )
-            await event.message.delete()
+            await  event.message.delete()
 
     @client.on(events.NewMessage(outgoing=True))
     async def handle_outgoing_message(event):
