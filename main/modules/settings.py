@@ -16,14 +16,12 @@ async def setup_settings(client, db_path):
     
     messages = load_json('msg.json')
     commands = load_json('cmd.json')
-    print(f"Debug: Loaded commands: {len(commands.get('fa', {}))} keys for lang fa")  # Debug
     async with aiosqlite.connect(db_path) as db:
         settings = await load_settings()
 
     lang = settings.get('lang', 'fa')
     if lang not in commands:
-        lang = 'en'  # Fallback to English
-        print(f"Debug: Fallback to lang 'en' (original: {lang})")
+        lang = 'en'
 
     def get_message(key, **kwargs):
         """Get formatted message for the current language."""

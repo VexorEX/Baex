@@ -237,6 +237,44 @@ bot.command('newself', (ctx) => {
     ctx.reply('لطفاً شماره تلفن خود را با دکمه زیر به اشتراک بگذارید: 📱', keyboard.reply_markup);
 });
 
+bot.command('stopself', (ctx) => {
+    const userId = ctx.from.id;
+    console.log(`Received /stopself command from user ${userId}`);
+    const result = stopSelfBot(userId);
+    ctx.reply(result.message);
+});
+
+// New command to stop all self-bots
+bot.command('stopall', (ctx) => {
+    console.log(`Received /stopall command from user ${ctx.from.id}`);
+    const result = stopAllSelfBots();
+    ctx.reply(result.message);
+});
+
+// New command to start all self-bots
+bot.command('startall', (ctx) => {
+    console.log(`Received /startall command from user ${ctx.from.id}`);
+    const result = startAllSelfBots();
+    ctx.reply(result.message);
+});
+
+// New command to restart all self-bots
+bot.command('restartall', (ctx) => {
+    console.log(`Received /restartall command from user ${ctx.from.id}`);
+    const result = restartAllSelfBots();
+    ctx.reply(result.message);
+});
+
+bot.command('status', (ctx) => {
+    const userId = ctx.from.id;
+    console.log(`Received /status command from user ${userId}`);
+    if (userProcesses.has(userId)) {
+        ctx.reply('Your self-bot is running.');
+    } else {
+        ctx.reply('Your self-bot is not running.');
+    }
+});
+
 bot.on('contact', (ctx) => {
     const userId = ctx.from.id;
     if (!pendingNewSelf.has(userId)) {
@@ -285,43 +323,6 @@ bot.on('text', (ctx) => {
     }
 });
 
-bot.command('stopself', (ctx) => {
-    const userId = ctx.from.id;
-    console.log(`Received /stopself command from user ${userId}`);
-    const result = stopSelfBot(userId);
-    ctx.reply(result.message);
-});
-
-// New command to stop all self-bots
-bot.command('stopall', (ctx) => {
-    console.log(`Received /stopall command from user ${ctx.from.id}`);
-    const result = stopAllSelfBots();
-    ctx.reply(result.message);
-});
-
-// New command to start all self-bots
-bot.command('startall', (ctx) => {
-    console.log(`Received /startall command from user ${ctx.from.id}`);
-    const result = startAllSelfBots();
-    ctx.reply(result.message);
-});
-
-// New command to restart all self-bots
-bot.command('restartall', (ctx) => {
-    console.log(`Received /restartall command from user ${ctx.from.id}`);
-    const result = restartAllSelfBots();
-    ctx.reply(result.message);
-});
-
-bot.command('status', (ctx) => {
-    const userId = ctx.from.id;
-    console.log(`Received /status command from user ${userId}`);
-    if (userProcesses.has(userId)) {
-        ctx.reply('Your self-bot is running.');
-    } else {
-        ctx.reply('Your self-bot is not running.');
-    }
-});
 
 // Launch the bot
 bot.launch()
