@@ -16,7 +16,7 @@ async def register_vars_handlers(client, session_name, owner_id):
     # Initialize Ormax database
     await init_ormax_db()
     db = await get_database(session_name)
-    settings = await load_settings(db)
+    settings = await load_settings()
     if not settings:
         logger.error("Failed to load settings for vars handlers")
         return
@@ -36,7 +36,7 @@ async def register_vars_handlers(client, session_name, owner_id):
     # متغیرهای پیش‌فرض
     if 'vars' not in settings:
         settings['vars'] = {'timezone': 'Asia/Tehran'}  # منطقه زمانی پیش‌فرض
-        await update_settings(db, settings)
+        await update_settings(settings)
 
     # لیست قلب‌های تصادفی
     hearts = ['❤️', '🧡', '💛', '💚', '💙', '💜', '💓', '💞', '💕', '💗']
@@ -123,7 +123,7 @@ async def register_vars_handlers(client, session_name, owner_id):
                 await send_message(event, get_message('invalid_timezone'))
                 return
             settings['vars']['timezone'] = timezone
-            await update_settings(db, settings)
+            await update_settings(settings)
             # Note: vars_settings table operations are not migrated to Ormax yet
             await send_message(event, get_message('timezone_set', timezone=timezone))
         except Exception as e:

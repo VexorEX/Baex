@@ -18,7 +18,7 @@ async def setup_settings(client, db_path):
     commands = load_json('cmd.json')
     print(f"Debug: Loaded commands: {len(commands.get('fa', {}))} keys for lang fa")  # Debug
     async with aiosqlite.connect(db_path) as db:
-        settings = await load_settings(db)
+        settings = await load_settings()
 
     lang = settings.get('lang', 'fa')
     if lang not in commands:
