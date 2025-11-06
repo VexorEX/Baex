@@ -8,7 +8,7 @@ import yt_dlp
 from git import Repo
 from zipfile import ZipFile
 from telethon import events, types
-from telethon.errors import FloodWaitError, PremiumRequiredError
+from telethon.errors import FloodWaitError, PremiumAccountRequiredError
 from utils import load_json, send_message, get_command_pattern, upload_to_backup_channel
 from models import get_database, load_settings, update_settings
 
@@ -274,7 +274,7 @@ async def register_download_handlers(client, session_name, owner_id):
                 await send_message(event, get_message("story_posted"))
                 os.remove(file_path)
                 await save_download_history(event.sender_id, "new_story", "story")
-            except PremiumRequiredError:
+            except PremiumAccountRequiredError:
                 await send_message(event, get_message("premium_required"))
             except Exception as e:
                 logger.error(f"Error posting story: {e}")
