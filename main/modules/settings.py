@@ -1,9 +1,9 @@
-fromtelethon import events, types
+from telethon import events, types
 from telethon.tl.functions.messages import ReadHistoryRequest, ForwardMessagesRequest
 from telethon.tl.functions.channels import JoinChannelRequest
 from telethon.tl.functions.account import UpdateStatusRequest
 from telethon.tl.types import SendMessageTypingAction, SendMessageUploadVideoAction
-fromdeep_translator import GoogleTranslator
+from deep_translator import GoogleTranslator
 from utils import load_json, send_message, get_language
 from models import load_settings, update_settings, init_db
 import aiosqlite
