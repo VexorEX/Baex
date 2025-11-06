@@ -16,8 +16,9 @@ async def init_db(db):
 async def load_settings(db=None):
     return await ormax_load_settings()
 
-async def update_settings(db=None, settings=None):
-    await ormax_update_settings(settings)
+async def update_settings(settings=None, db=None):
+    result = await ormax_update_settings(settings)
+    return result
 
 async def load_spam_protection(db=None, user_id=None):
     return await ormax_load_spam_protection(user_id)

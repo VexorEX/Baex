@@ -20,7 +20,7 @@ async def setup_settings(client, db_path):
 
     lang = settings.get("lang", "fa")
     if lang not in commands:
-       lang = "en"
+       lang ="en"
 
     def get_message(key, **kwargs):
         """Get formatted message for the current language."""
@@ -30,13 +30,13 @@ async def setup_settings(client, db_path):
                 lang not in messages
                 or "settings" not in messages[lang]
                 or key not in messages[lang]["settings"]
-            ):
+):
                 return f"[Message {key} not found]"
             return messages[lang]["settings"].get(key, "").format(**kwargs)
         except KeyError:
             # Fallback to English if the language key doesn't exist
             return (
-                messages.get("en", {}).get("settings", {}).get(key, "").format(**kwargs)
+                messages.get("en", {}).get("settings", {}).get(key,"").format(**kwargs)
             )
 
     def get_pattern(key):
@@ -48,21 +48,20 @@ async def setup_settings(client, db_path):
         if setting_key not in settings:
             settings[setting_key] = {}
         settings[setting_key][chat_id] = status == "روشن" or status == "on"
-        await update_settings("settings", settings)
+        await update_settings(settings)
         emoji = "✅" if settings[setting_key][chat_id] else "❌"
-        await send_message(
-            event, get_message(f"{setting_key}_toggle", status=status, emoji=emoji)
+        await send_message(event, get_message(f"{setting_key}_toggle", status=status, emoji=emoji)
         )
 
     async def toggle_global_setting(event, setting_key, status):
-        settings[setting_key] = status == "روشن" or status == "on"
-        await update_settings("settings", settings)
+        settings[setting_key]= status == "روشن" or status == "on"
+        await update_settings(settings)
         emoji = "✅" if settings[setting_key]else "❌"
         await send_message(
             event, get_message(f"{setting_key}_toggle", status=status, emoji=emoji)
         )
 
-    # Command handlers (all with get_pattern)
+    #Command handlers (all with get_pattern)
     @client.on(events.NewMessage(pattern=get_pattern("self_toggle")))
     async def handle_self_toggle(event):
         status =event.pattern_match.group(1)
@@ -78,7 +77,7 @@ async def setup_settings(client, db_path):
     async def handle_poker_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
-        await toggle_setting(event, "poker_enabled", chat_id, status)
+        await toggle_setting(event, "poker_enabled",chat_id, status)
 
     @client.on(events.NewMessage(pattern=get_pattern("poker_global_toggle")))
     async def handle_poker_global_toggle(event):
@@ -102,7 +101,7 @@ async def setup_settings(client, db_path):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
             settings["save_realm"] = reply_msg.chat_id
-            await update_settings("settings", settings)
+            await update_settings(settings)
             await send_message(event, get_message("save_realm_set"))
         else:
             await send_message(event, get_message("reply_to_message"))
@@ -112,7 +111,7 @@ async def setup_settings(client, db_path):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
             settings["save_pv_realm"] = reply_msg.chat_id
-            await update_settings("settings", settings)
+            await update_settings(settings)
             await send_message(event, get_message("save_pv_realm_set"))
         else:
             await send_message(event, get_message("reply_to_message"))
@@ -128,7 +127,7 @@ async def setup_settings(client, db_path):
         if event.is_reply:
             reply_msg = await event.get_reply_message()
             settings["save_profile_realm"] = reply_msg.chat_id
-            await update_settings("settings", settings)
+            await update_settings(settings)
             await send_message(event, get_message("save_profile_realm_set"))
         else:
             await send_message(event, get_message("reply_to_message"))
@@ -137,7 +136,7 @@ async def setup_settings(client, db_path):
     async def handle_typing_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
-        await toggle_setting(event, "typing_enabled", chat_id, status)
+        await toggle_setting(event, "typing_enabled", chat_id,status)
 
     @client.on(events.NewMessage(pattern=get_pattern("typing_global_toggle")))
     async def handle_typing_global_toggle(event):
@@ -173,7 +172,7 @@ async def setup_settings(client, db_path):
 
     @client.on(events.NewMessage(pattern=get_pattern("tick_pv_toggle")))
     async def handle_tick_pv_toggle(event):
-        status = event.pattern_match.group(1)
+        status =event.pattern_match.group(1)
         await toggle_global_setting(event, "tick_pv_enabled", status)
 
     @client.on(events.NewMessage(pattern=get_pattern("tick_channel_toggle")))
@@ -261,7 +260,7 @@ async def setup_settings(client, db_path):
     async def handle_auto_approve_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
-        await toggle_setting(event, "auto_approve_enabled", chat_id, status)
+        await toggle_setting(event, "auto_approve_enabled", chat_id,status)
 
     @client.on(events.NewMessage(pattern=get_pattern("anti_login_toggle")))
     async def handle_anti_login_toggle(event):
@@ -282,7 +281,7 @@ async def setup_settings(client, db_path):
     async def handle_emoji_toggle(event):
         status = event.pattern_match.group(1)
         chat_id = event.chat_id
-        await toggle_setting(event, "emoji_enabled", chat_id, status)
+        await toggle_setting(event,"emoji_enabled", chat_id, status)
 
     @client.on(events.NewMessage(pattern=get_pattern("emoji_global_toggle")))
     async def handle_emoji_global_toggle(event):
@@ -337,7 +336,7 @@ async def setup_settings(client, db_path):
 
     @client.on(events.NewMessage(pattern=get_pattern("font_en_global_toggle")))
     async def handle_font_en_global_toggle(event):
-        status = event.pattern_match.group(1)
+        status =event.pattern_match.group(1)
         await toggle_global_setting(event,"font_en_global_enabled", status)
 
     @client.on(events.NewMessage(pattern=get_pattern("font_fa_toggle")))
@@ -427,7 +426,7 @@ async def setup_settings(client, db_path):
             )
             if realm_id:
                 await client(
-                    ForwardMessagesRequest(
+                   ForwardMessagesRequest(
                         from_peer=event.chat_id, to_peer=realm_id, id=[message.id]
                     )
                 )
@@ -447,7 +446,7 @@ async def setup_settings(client, db_path):
                     event.chat_id, action=SendMessageUploadVideoAction()
                 )
             else:
-               await client.send_message(
+                await client.send_message(
                     event.chat_id, action=SendMessageTypingAction()
                 )
 
@@ -464,9 +463,9 @@ async def setup_settings(client, db_path):
         ):
             await client(ReadHistoryRequest(peer=event.chat_id))
 
-        # Tag handling
+       # Tag handling
         if (
-           settings["tag_global_enabled"]
+settings["tag_global_enabled"]
             or settings["tag_enabled"].get(chat_id, False)
         ) and message.mentioned:
             await client(ReadHistoryRequest(peer=event.chat_id))
@@ -484,7 +483,7 @@ async def setup_settings(client, db_path):
 
         # Reaction
         if settings["reaction_enabled"].get(chat_id, False):
-            await client.send_reaction(
+           await client.send_reaction(
                 event.chat_id, message.id, settings["reaction_text"]
             )
 
@@ -531,7 +530,7 @@ from_peer=event.chat_id,
         # Translate outgoing messages
         if settings["translate_enabled"].get(chat_id, False):
             translated = GoogleTranslator(
-                source="auto", target=settings["lang"]
+               source="auto", target=settings["lang"]
             ).translate(text)
             await event.message.edit(translated)
             text = translated
@@ -547,7 +546,7 @@ from_peer=event.chat_id,
         ):
             entities.append(types.MessageEntityUnderline(0, len(text)))
         if settings["code_global_enabled"] or settings["code_enabled"].get(
-            chat_id, False
+            chat_id,False
         ):
             entities.append(types.MessageEntityCode(0, len(text)))
         if settings["strikethrough_global_enabled"] or settings[
@@ -563,7 +562,7 @@ from_peer=event.chat_id,
         ):
             entities.append(types.MessageEntitySpoiler(0, len(text)))
 
-        # Font transformations (simplified, can be extended with custom mappings)
+# Font transformations (simplified, can be extended with custom mappings)
         if settings["font_en_global_enabled"] or settings["font_en_enabled"].get(
             chat_id, False
         ):
@@ -575,7 +574,7 @@ from_peer=event.chat_id,
         ):
             text = text.replace("ا", "آ").replace(
                 "ب", "پ"
-            )  # Add more mappings as needed
+            )  # Add more mappings asneeded
 
         # Hashtag
         if settings["hashtag_global_enabled"] or settings["hashtag_enabled"].get(

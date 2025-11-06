@@ -1,4 +1,4 @@
-from ormax import Model
+fromormax import Model
 from ormax.fields import CharField, IntegerField, BooleanField, JSONField
 from typing import Dict, Any, List, Optional
 import json
@@ -33,7 +33,7 @@ class Settings(BaseModel):
     first_comment_enabled = BooleanField(default=False)
     first_comment_text = CharField(max_length=500, default="")
 
-class MuteList(BaseModel):
+classMuteList(BaseModel):
     class Meta:
         table = "mute_list"
 
@@ -42,7 +42,7 @@ class MuteList(BaseModel):
     mute_until = IntegerField(default=0)
     reason = CharField(max_length=255, default="")
 
-class SpamProtection(BaseModel):
+classSpamProtection(BaseModel):
     class Meta:
         table = "spam_protection"
 
@@ -57,7 +57,7 @@ class AutoReplies(BaseModel):
     class Meta:
         table = "auto_replies"
 
-    id = IntegerField(primary_key=True, auto_increment=True)
+    id = IntegerField(primary_key=True,auto_increment=True)
     trigger = CharField(max_length=255, unique=True)
     response = CharField(max_length=1000)
 
@@ -66,8 +66,8 @@ class Enemies(BaseModel):
         table = "enemies"
 
     id = IntegerField(primary_key=True, auto_increment=True)
-    user_id = IntegerField(unique=True)
-    type = CharField(max_length=10, default="pv")  # pv or group
+    user_id =IntegerField(unique=True)
+    type= CharField(max_length=10, default="pv")  # pv or group
     group_id = IntegerField(default=0)
     reason = CharField(max_length=255, default="")
 
@@ -76,13 +76,13 @@ db = BaseModel.Meta.database
 
 async def init_db(db):
     """
-    Initialize the database with Ormax (creates tables automatically).
+    Initializethe database with Ormax (creates tables automatically).
     """
     await db.connect()
     await db.create_tables([Settings, MuteList, SpamProtection, AutoReplies, Enemies], safe=True)
     print("All tables initialized with Ormax.")
 
-async def load_settings() -> Dict[str, Any]:
+async def load_settings(db=None) -> Dict[str, Any]:
     """
     Load settings from the database.
     """
@@ -94,7 +94,7 @@ async def load_settings() -> Dict[str, Any]:
             id=1,
             lang="fa",
             welcome_enabled=False,
-            welcome_text="",
+welcome_text="",
             welcome_delete_time=0,
             clock_enabled=False,
             clock_location="name",
@@ -105,7 +105,7 @@ async def load_settings() -> Dict[str, Any]:
             action_types={},
             text_format_enabled=False,
             text_formats={},
-            locks={},
+locks={},
             antilog_enabled=False,
             first_comment_enabled=False,
             first_comment_text=""
@@ -123,7 +123,7 @@ async def load_settings() -> Dict[str, Any]:
         'clock_fonts': setting.clock_fonts or [],
         'clock_timezone': setting.clock_timezone,
         'action_enabled': setting.action_enabled,
-        'action_types': setting.action_types or {},
+       'action_types': setting.action_types or {},
         'text_format_enabled': setting.text_format_enabled,
         'text_formats': setting.text_formats or {},
         'locks': setting.locks or {},
@@ -132,7 +132,7 @@ async def load_settings() -> Dict[str, Any]:
         'first_comment_text': setting.first_comment_text
     }
 
-async def update_settings(settings: Dict[str, Any]):
+async def update_settings(settings: Dict[str, Any],db=None):
     """
     Update settings in the database.
     """
@@ -142,9 +142,15 @@ async def update_settings(settings: Dict[str, Any]):
             if hasattr(setting, key):
                 setattr(setting, key, value)
         await setting.save()
-    except:
+        return True
+    except Exception as e:
         # If not exists, create
-        await Settings.create(id=1, **settings)
+        try:
+            await Settings.create(id=1, **settings)
+            return True
+        except Exception as e2:
+            print(f"Error updating settings: {e2}")
+            return False
 
 async def load_spam_protection(user_id: int) -> Dict[str, Any]:
     """
@@ -166,7 +172,7 @@ async def load_spam_protection(user_id: int) -> Dict[str, Any]:
         'messages': spam.messages or [],
         'mute_until': spam.mute_until,
         'violations': spam.violations,
-        'last_violation': spam.last_violation
+        'last_violation':spam.last_violation
     }
 
 async def update_spam_protection(spam_data: Dict[str, Any]):
@@ -184,7 +190,7 @@ async def update_spam_protection(spam_data: Dict[str, Any]):
 
 async def add_mute(user_id: int, mute_until: int = 0, reason: str = ""):
     """
-    Add or update a mute for a user.
+    Add or updatea mute for a user.
     """
     try:
         mute = await MuteList.get(user_id=user_id)
@@ -205,7 +211,7 @@ async def remove_mute(user_id: int):
         pass
 
 async def is_muted(user_id: int) -> bool:
-    """
+"""
     Check if a user is muted (active).
     """
     try:
@@ -213,7 +219,7 @@ async def is_muted(user_id: int) -> bool:
         if mute.mute_until > int(asyncio.get_event_loop().time() * 1000):
             return True
         else:
-            await mute.delete()  # Expired, remove
+            await mute.delete()# Expired, remove
             return False
     except:
         return False
@@ -225,7 +231,7 @@ async def load_auto_replies() -> Dict[str, str]:
     replies = await AutoReplies.all()
     return {reply.trigger: reply.response for reply in replies}
 
-async def add_auto_reply(trigger: str, response: str):
+async defadd_auto_reply(trigger: str, response: str):
     """
     Add or update an auto reply.
     """
@@ -246,7 +252,7 @@ async def remove_auto_reply(trigger: str):
     except:
         pass
 
-async def load_enemies(type_filter: Optional[str] = None) -> List[Dict[str, Any]]:
+async def load_enemies(type_filter: Optional[str] = None) -> List[Dict[str,Any]]:
     """
     Load enemies list (pv or group).
     """
@@ -261,7 +267,7 @@ async def add_enemy(user_id: int, enemy_type: str = 'pv', group_id: int = 0, rea
     Add or update an enemy.
     """
     try:
-        enemy = await Enemies.get(user_id=user_id)
+        enemy= await Enemies.get(user_id=user_id)
         enemy.type = enemy_type
         enemy.group_id = group_id
         enemy.reason = reason
