@@ -29,7 +29,13 @@ async def register_convert_handlers(client, session_name, owner_id):
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
-        return messages[lang]['convert'].get(key, '').format(**kwargs)
+        data = messages.get(lang) or messages.get('fa') or messages.get('en') or {}
+        section = data.get('convert', {})
+        text = section.get(key) or key
+        try:
+            return text.format(**kwargs)
+        except Exception:
+            return text
 
     # تنظیمات اولیه convert
     if 'convert' not in settings:
