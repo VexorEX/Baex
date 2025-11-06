@@ -1,6 +1,7 @@
 from ormax import Model
 from ormax.fields import CharField, IntegerField, BooleanField, JSONField
 from typing import Dict, Any, List, Optional
+import json
 from datetime import datetime
 import asyncio
 
@@ -56,7 +57,7 @@ class AutoReplies(BaseModel):
     class Meta:
         table = "auto_replies"
 
-    id = IntegerField(primary_key=True,auto_increment=True)
+    id = IntegerField(primary_key=True, auto_increment=True)
     trigger = CharField(max_length=255, unique=True)
     response = CharField(max_length=1000)
 
@@ -65,8 +66,8 @@ class Enemies(BaseModel):
         table = "enemies"
 
     id = IntegerField(primary_key=True, auto_increment=True)
-    user_id =IntegerField(unique=True)
-    type= CharField(max_length=10, default="pv")  # pv or group
+    user_id = IntegerField(unique=True)
+    type = CharField(max_length=10, default="pv")  # pv or group
     group_id = IntegerField(default=0)
     reason = CharField(max_length=255, default="")
 
@@ -75,7 +76,7 @@ db = BaseModel.Meta.database
 
 async def init_db(db):
     """
-    Initializethe database with Ormax (creates tables automatically).
+    Initialize the database with Ormax (creates tables automatically).
     """
     await db.connect()
     await db.create_tables([Settings, MuteList, SpamProtection, AutoReplies, Enemies], safe=True)
@@ -93,7 +94,7 @@ async def load_settings(db=None) -> Dict[str, Any]:
             id=1,
             lang="fa",
             welcome_enabled=False,
-welcome_text="",
+            welcome_text="",
             welcome_delete_time=0,
             clock_enabled=False,
             clock_location="name",
@@ -104,7 +105,7 @@ welcome_text="",
             action_types={},
             text_format_enabled=False,
             text_formats={},
-locks={},
+            locks={},
             antilog_enabled=False,
             first_comment_enabled=False,
             first_comment_text=""
@@ -122,7 +123,7 @@ locks={},
         'clock_fonts': setting.clock_fonts or [],
         'clock_timezone': setting.clock_timezone,
         'action_enabled': setting.action_enabled,
-       'action_types': setting.action_types or {},
+        'action_types': setting.action_types or {},
         'text_format_enabled': setting.text_format_enabled,
         'text_formats': setting.text_formats or {},
         'locks': setting.locks or {},
@@ -131,7 +132,7 @@ locks={},
         'first_comment_text': setting.first_comment_text
     }
 
-async def update_settings(settings: Dict[str, Any],db=None):
+async def update_settings(settings: Dict[str, Any], db=None):
     """
     Update settings in the database.
     """
@@ -171,7 +172,7 @@ async def load_spam_protection(user_id: int) -> Dict[str, Any]:
         'messages': spam.messages or [],
         'mute_until': spam.mute_until,
         'violations': spam.violations,
-        'last_violation':spam.last_violation
+        'last_violation': spam.last_violation
     }
 
 async def update_spam_protection(spam_data: Dict[str, Any]):
@@ -189,7 +190,7 @@ async def update_spam_protection(spam_data: Dict[str, Any]):
 
 async def add_mute(user_id: int, mute_until: int = 0, reason: str = ""):
     """
-    Add or updatea mute for a user.
+    Add or update a mute for a user.
     """
     try:
         mute = await MuteList.get(user_id=user_id)
@@ -218,7 +219,7 @@ async def is_muted(user_id: int) -> bool:
         if mute.mute_until > int(asyncio.get_event_loop().time() * 1000):
             return True
         else:
-            await mute.delete()# Expired, remove
+            await mute.delete()  # Expired, remove
             return False
     except:
         return False
@@ -251,7 +252,7 @@ async def remove_auto_reply(trigger: str):
     except:
         pass
 
-async def load_enemies(type_filter: Optional[str] = None) -> List[Dict[str,Any]]:
+async def load_enemies(type_filter: Optional[str] = None) -> List[Dict[str, Any]]:
     """
     Load enemies list (pv or group).
     """
@@ -266,7 +267,7 @@ async def add_enemy(user_id: int, enemy_type: str = 'pv', group_id: int = 0, rea
     Add or update an enemy.
     """
     try:
-        enemy= await Enemies.get(user_id=user_id)
+        enemy = await Enemies.get(user_id=user_id)
         enemy.type = enemy_type
         enemy.group_id = group_id
         enemy.reason = reason
