@@ -1,4 +1,4 @@
-import json, os, pytz
+import json, os
 import logging
 
 from deep_translator import GoogleTranslator
@@ -29,34 +29,18 @@ def load_data(filename, default=None):
         return default or {}
 
 def load_json(filename,default=None):
-    """
-Load JSON file with fallback paths.
-    First tries absolute path from main folder, then tries relative path.
-    """
-    # Absolute path from main folder (original approach)
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../main'))
+    # Absolute path from main folder - updated to match current file structure
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), './modules'))  # Point to modules folder
     file_path = os.path.join(main_dir, filename)
-    
-    # Try absolute path first
     if os.path.exists(file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            print(f"Loaded {filename}: {len(data)} keys") # Debug
+            print(f"Loaded {filename}: {len(data)} keys")  # Debug
             return data
         except Exception as e:
             print(f"Warning: Failed to load {file_path}, error: {e}")
-    
-    # Fallback to relative path
-    if os.path.exists(filename):
-        try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return data if data else (default or {})
-        except Exception as e:
-            print(f"Warning: Failed to load {filename} with relative path, error: {e}")
-    
-    print(f"Warning: {filename} not found in any path, returning default")
+    print(f"Warning: {file_path} not found, returning default")
     return default or {}
 
 def get_message(key, lang='fa', **kwargs):
@@ -88,12 +72,12 @@ def translate_text(text, dest='fa'):
     try:
         translator= GoogleTranslator(source='auto', target=dest)
         return translator.translate(text)
-    except:
+    except Exception:
         return get_message('error_occurred', lang='fa')
 
 async def send_message(event, text, parse_mode=None, reply_markup=None,**kwargs):
     """
-ارسال پیام با پشتیبانی از parse_mode و reply_markup
+    ارسال پیام با پشتیبانی از parse_mode و reply_markup
     """
     try:
         if isinstance(event, int):  # اگر event یک chat_id است
@@ -107,7 +91,7 @@ async def send_message(event, text, parse_mode=None, reply_markup=None,**kwargs)
 
 def get_language(settings, default='fa'):
     """
-   دریافت زبان از تنظیماتیا مقدار پیش‌فرض
+  دریافت زبان از تنظیماتیا مقدار پیش‌فرض
     """
     return settings.get('lang', default)
 
