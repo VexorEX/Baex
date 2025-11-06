@@ -93,6 +93,7 @@ async def register_profile_handlers(client, session_name, owner_id):
             await event.reply("checked")
         except Exception as e:
             logger.error(f"Error toggling name: {e}")
+        return
 
     @client.on(events.NewMessage(pattern=get_command_pattern('name_toggle', lang)))
     async def toggle_name(event):
