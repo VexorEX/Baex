@@ -72,7 +72,7 @@ async def setup_settings(client, db_path):
     @client.on(events.NewMessage(pattern=get_pattern("self_global_toggle")))
     async def handle_self_global_toggle(event):
         status = event.pattern_match.group(1)
-       await toggle_global_setting(event, "self_global_enabled", status)
+        await toggle_global_setting(event, "self_global_enabled", status)
 
     @client.on(events.NewMessage(pattern=get_pattern("poker_toggle")))
     async def handle_poker_toggle(event):
