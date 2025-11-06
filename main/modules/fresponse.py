@@ -24,7 +24,11 @@ async def register_fast_response_handlers(client, session_name, owner_id):
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
-        return messages[lang]['fast_response'].get(key, '').format(**kwargs)
+        try:
+            return messages[lang]['fast_response'].get(key, '').format(**kwargs)
+        except KeyError:
+            # Fallback to English if the language key doesn't exist
+            return messages.get('en', {}).get('fast_response', {}).get(key, '').format(**kwargs)
 
     # تنظیمات اولیه fast_response
     if 'fast_response' not in settings:

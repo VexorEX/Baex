@@ -20,7 +20,11 @@ async def register_search_handlers(client, session_name, owner_id):
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
-        return messages[lang]['search'].get(key, '').format(**kwargs)
+        try:
+            return messages[lang]['search'].get(key, '').format(**kwargs)
+        except KeyError:
+            # Fallback to English if the language key doesn't exist
+            return messages.get('en', {}).get('search', {}).get(key, '').format(**kwargs)
 
     # ایجاد جدول برای تاریخچه جست‌وجو (در صورت پشتیبانی DB)
     has_db_exec = hasattr(db, 'execute')

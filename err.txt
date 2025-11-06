@@ -1,0 +1,1056 @@
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 414, in handle_list_friend_insults
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error clearing friend insults: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_clear_friend_insults
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 429, in handle_clear_friend_insults
+    await send_message(event, get_message('friend_insults_cleared'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 432, in handle_clear_friend_insults
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error uploading insults: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_upload_insult
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 450, in handle_upload_insult
+    await send_message(event, get_message('no_file'))
+                              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 453, in handle_upload_insult
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error uploading friend insults: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_upload_friend_insult
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 471, in handle_upload_friend_insult
+    await send_message(event, get_message('no_file'))
+                              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 474, in handle_upload_friend_insult
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error setting delay: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_set_delay
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 483, in handle_set_delay
+    delay = int(event.pattern_match.group(1))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 492, in handle_set_delay
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error enabling delay: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_delay_on
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 503, in handle_delay_on
+    await send_message(event, get_message('delay_enabled'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 506, in handle_delay_on
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error disabling delay: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_delay_off
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 517, in handle_delay_off
+    await send_message(event, get_message('delay_disabled'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 520, in handle_delay_off
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error setting pause: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_set_pause
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 529, in handle_set_pause
+    match = re.match(r'(\d+)-(\d+)', event.pattern_match.group(1))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 539, in handle_set_pause
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error enabling delete enemy message: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_delete_enemy_message_on
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 550, in handle_delete_enemy_message_on
+    await send_message(event, get_message('delete_enemy_message_enabled'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 553, in handle_delete_enemy_message_on
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error disabling delete enemy message: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_delete_enemy_message_off
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 564, in handle_delete_enemy_message_off
+    await send_message(event, get_message('delete_enemy_message_disabled'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 567, in handle_delete_enemy_message_off
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error setting signature: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_set_signature
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 576, in handle_set_signature
+    signature = event.pattern_match.group(1)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 582, in handle_set_signature
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error deleting signature: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_delete_signature
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 593, in handle_delete_signature
+    await send_message(event, get_message('signature_deleted'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 596, in handle_delete_signature
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error setting friend signature: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_set_friend_signature
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 605, in handle_set_friend_signature
+    signature = event.pattern_match.group(1)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 611, in handle_set_friend_signature
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error deleting friend signature: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_delete_friend_signature
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 622, in handle_delete_friend_signature
+    await send_message(event, get_message('friend_signature_deleted'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 625, in handle_delete_friend_signature
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error listing all: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_list_all
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 651, in handle_list_all
+    await send_message(event, get_message('no_lists'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 654, in handle_list_all
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error clearing all enemies: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_clear_all_enemies
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 663, in handle_clear_all_enemies
+    user_id = event.pattern_match.group(1) or (event.message.reply_to_msg_id and (await event.get_reply_message()).sender_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 672, in handle_clear_all_enemies
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.enemy:Error getting enemy info: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_get_enemy
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/enemy.py", line 681, in handle_get_enemy
+    user_id = event.pattern_match.group(1) or (event.message.reply_to_msg_id and (await event.get_reply_message()).sender_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/enemy.py", line 695, in handle_get_enemy
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/enemy.py", line 26, in get_message
+    return messages[lang]['enemy'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error creating demo: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_to_demo
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 83, in handle_to_demo
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 98, in handle_to_demo
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error creating long demo: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_to_long_demo
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 108, in handle_to_long_demo
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 123, in handle_to_long_demo
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error cutting media: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_cut
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 133, in handle_cut
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 167, in handle_cut
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error rotating left: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_rotate_left
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 177, in handle_rotate_left
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 192, in handle_rotate_left
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error rotating right: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_rotate_right
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 201, in handle_rotate_right
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 216, in handle_rotate_right
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error rotating up: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_rotate_up
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 225, in handle_rotate_up
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 240, in handle_rotate_up
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error rotating 45: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_rotate_45
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 249, in handle_rotate_45
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 264, in handle_rotate_45
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying black and white: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_black_white
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 274, in handle_black_white
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 289, in handle_black_white
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying negative: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_negative
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 298, in handle_negative
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 314, in handle_negative
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying RGB: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_to_rgb
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 323, in handle_to_rgb
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 338, in handle_to_rgb
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying green: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_to_green
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 347, in handle_to_green
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 365, in handle_to_green
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying blue: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_to_blue
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 374, in handle_to_blue
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 392, in handle_to_blue
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying red: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_to_red
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 401, in handle_to_red
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 419, in handle_to_red
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying blur: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_blur
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 428, in handle_blur
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 443, in handle_blur
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error sharpening image: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_sharpen
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 452, in handle_sharpen
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 467, in handle_sharpen
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error resizing height: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_resize_height
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 477, in handle_resize_height
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 498, in handle_resize_height
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error resizing: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_resize
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 508, in handle_resize
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 528, in handle_resize
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error setting logo: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_set_logo
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 538, in handle_set_logo
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 554, in handle_set_logo
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying logo: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_apply_logo
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 564, in handle_apply_logo
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 591, in handle_apply_logo
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error replacing text: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_replace_text
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 601, in handle_replace_text
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 617, in handle_replace_text
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error quick editing text: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_quick_edit
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 627, in handle_quick_edit
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 650, in handle_quick_edit
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.edit:Error applying watermark: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_watermark
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/edit.py", line 660, in handle_watermark
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/edit.py", line 699, in handle_watermark
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/edit.py", line 31, in get_message
+    return messages[lang]['edit'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error downloading song: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_download_song
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 63, in handle_download_song
+    query = event.pattern_match.group(1)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 80, in handle_download_song
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error downloading video: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_download_video
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 89, in handle_download_video
+    url = event.pattern_match.group(1) or (event.message.is_reply and (await event.get_reply_message()).text)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 116, in handle_download_video
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error getting video list: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_download_list
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 125, in handle_download_list
+    query = event.pattern_match.group(1)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 143, in handle_download_list
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error downloading all stories: 'TelegramClient' object has no attribute 'get_stories'
+ERROR:telethon.client.updates:Unhandled exception on handle_download_all_stories
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 152, in handle_download_all_stories
+    stories = await client.get_stories(None)
+                    ^^^^^^^^^^^^^^^^^^
+AttributeError: 'TelegramClient' object has no attribute 'get_stories'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 168, in handle_download_all_stories
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error downloading user stories: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_download_stories
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 177, in handle_download_stories
+    username = event.pattern_match.group(1)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 198, in handle_download_stories
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error in new story: 'fa'
+ERROR:telethon.client.updates:Unhandled exception on handle_new_story
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 208, in handle_new_story
+    await send_message(event, get_message('reply_required'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 227, in handle_new_story
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error downloading file: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_download_file
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 236, in handle_download_file
+    url = event.pattern_match.group(1) or (event.message.is_reply and (await event.get_reply_message()).text)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 258, in handle_download_file
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:modules.download:Error downloading git repo: no such group
+ERROR:telethon.client.updates:Unhandled exception on handle_download_git
+Traceback (most recent call last):
+  File "/root/Baex/main/modules/download.py", line 267, in handle_download_git
+    url = event.pattern_match.group(1) or (event.message.is_reply and (await event.get_reply_message()).text)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: no such group
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/download.py", line 291, in handle_download_git
+    await send_message(event, get_message('error_occurred'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/Baex/main/modules/download.py", line 29, in get_message
+    return messages[lang]['download'].get(key, '').format(**kwargs)
+           ~~~~~~~~^^^^^^
+KeyError: 'fa'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:modules.convert:Error converting date: no such group
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:modules.convert:Error converting to QR: no such group
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+ERROR:utils:Error sending message: MessageMethods.send_message() got an unexpected keyword argument 'reply_markup'
+hhhhhhhhhhhhhhERROR:telethon.client.updates:Unhandled exception on handle_user_update
+Traceback (most recent call last):
+  File "/root/venv/lib/python3.12/site-packages/telethon/client/updates.py", line 570, in _dispatch_update
+    await callback(event)
+  File "/root/Baex/main/modules/settings.py", line 446, in handle_user_update
+    if settings['save_profile_enabled'].get(event.chat_id, False) and settings['save_profile_realm']:
+       ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'save_profile_enabled'
+

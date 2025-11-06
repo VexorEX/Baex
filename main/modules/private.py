@@ -25,7 +25,11 @@ async def register_private_handlers(client, session_name, owner_id):
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
-        return messages[lang]['private'].get(key, '').format(**kwargs)
+        try:
+            return messages[lang]['private'].get(key, '').format(**kwargs)
+        except KeyError:
+            # Fallback to English if the language key doesn't exist
+            return messages.get('en', {}).get('private', {}).get(key, '').format(**kwargs)
 
     # تنظیمات اولیه private
     if 'private_settings' not in settings:

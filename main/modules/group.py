@@ -29,7 +29,11 @@ async def register_group_handlers(client, session_name, owner_id):
         lang = 'en'  # Fallback
 
     def get_message(key, **kwargs):
-        return messages[lang]['group'].get(key, '').format(**kwargs)
+        try:
+            return messages[lang]['group'].get(key, '').format(**kwargs)
+        except KeyError:
+            # Fallback to English if the language key doesn't exist
+            return messages.get('en', {}).get('group', {}).get(key, '').format(**kwargs)
 
     # تنظیمات اولیه group
     if 'group_settings' not in settings:

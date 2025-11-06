@@ -30,7 +30,11 @@ async def register_fun_handlers(client, session_name, owner_id):
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
-        return messages[lang]['fun'].get(key, '').format(**kwargs)
+        try:
+            return messages[lang]['fun'].get(key, '').format(**kwargs)
+        except KeyError:
+            # Fallback to English if the language key doesn't exist
+            return messages.get('en', {}).get('fun', {}).get(key, '').format(**kwargs)
 
     # ایجاد جداول برای تنظیمات (در صورت پشتیبانی DB)
     has_db_exec = hasattr(db, 'execute')

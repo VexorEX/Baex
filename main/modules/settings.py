@@ -27,10 +27,14 @@ async def setup_settings(client, db_path):
 
     def get_message(key, **kwargs):
         """Get formatted message for the current language."""
-        # Fallback if lang or key missing
-        if lang not in messages or 'settings' not in messages[lang] or key not in messages[lang]['settings']:
-            return f"[Message {key} not found]"
-        return messages[lang]['settings'].get(key, '').format(**kwargs)
+        try:
+            # Fallback if lang or key missing
+            if lang not in messages or 'settings' not in messages[lang] or key not in messages[lang]['settings']:
+                return f"[Message {key} not found]"
+            return messages[lang]['settings'].get(key, '').format(**kwargs)
+        except KeyError:
+            # Fallback to English if the language key doesn't exist
+            return messages.get('en', {}).get('settings', {}).get(key, '').format(**kwargs)
 
     def get_pattern(key):
         """Safe get for command pattern with fallback."""
