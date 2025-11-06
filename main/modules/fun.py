@@ -32,22 +32,25 @@ async def register_fun_handlers(client, session_name, owner_id):
     def get_message(key, **kwargs):
         return messages[lang]['fun'].get(key, '').format(**kwargs)
 
-    # ایجاد جداول برای تنظیمات
-    await db.execute('''
-        CREATE TABLE IF NOT EXISTS fun_settings (
-            key TEXT PRIMARY KEY,
-            value TEXT
-        )
-    ''')
-    await db.execute('''
-        CREATE TABLE IF NOT EXISTS mygpt_history (
-            user_id INTEGER,
-            message TEXT,
-            role TEXT,
-            timestamp INTEGER
-        )
-    ''')
-    await db.commit()
+    # ایجاد جداول برای تنظیمات (در صورت پشتیبانی DB)
+    has_db_exec = hasattr(db, 'execute')
+    if has_db_exec:
+        await db.execute('''
+            CREATE TABLE IF NOT EXISTS fun_settings (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            )
+        ''')
+        await db.execute('''
+            CREATE TABLE IF NOT EXISTS mygpt_history (
+                user_id INTEGER,
+                message TEXT,
+                role TEXT,
+                timestamp INTEGER
+            )
+        ''')
+        if hasattr(db, 'commit'):
+            await db.commit()
 
     # تنظیمات اولیه fun
     if 'fun' not in settings:
@@ -353,8 +356,10 @@ async def register_fun_handlers(client, session_name, owner_id):
                 return
             settings['fun']['chatgpt_token'] = token
             await update_settings(db, settings)
-            await db.execute('INSERT OR REPLACE INTO fun_settings (key, value) VALUES (?, ?)', ('chatgpt_token', token))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('INSERT OR REPLACE INTO fun_settings (key, value) VALUES (?, ?)', ('chatgpt_token', token))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             await send_message(event, get_message('token_set'))
         except Exception as e:
             logger.error(f"Error setting ChatGPT token: {e}")
@@ -395,18 +400,19 @@ async def register_fun_handlers(client, session_name, owner_id):
             if not token:
                 await send_message(event, get_message('no_token_set'))
                 return
-            # ذخیره پیام کاربر
-            await db.execute(
-                'INSERT INTO mygpt_history (user_id, message, role, timestamp) VALUES (?, ?, ?, ?)',
-                (event.sender_id, question, 'user', int(datetime.now().timestamp()))
-            )
-            # دریافت تاریخچه چت
-            cursor = await db.execute(
-                'SELECT message, role FROM mygpt_history WHERE user_id = ? ORDER BY timestamp',
-                (event.sender_id,)
-            )
-            history = await cursor.fetchall()
-            await cursor.close()
+            # اگر DB در دسترس نیست، پاسخ ساده بدون تاریخچه
+            history = []
+            if has_db_exec:
+                await db.execute(
+                    'INSERT INTO mygpt_history (user_id, message, role, timestamp) VALUES (?, ?, ?, ?)',
+                    (event.sender_id, question, 'user', int(datetime.now().timestamp()))
+                )
+                cursor = await db.execute(
+                    'SELECT message, role FROM mygpt_history WHERE user_id = ? ORDER BY timestamp',
+                    (event.sender_id,)
+                )
+                history = await cursor.fetchall()
+                await cursor.close()
             client_openai = AsyncOpenAI(api_key=token)
             messages = [{"role": role, "content": msg} for msg, role in history]
             response = await client_openai.chat.completions.create(
@@ -414,11 +420,13 @@ async def register_fun_handlers(client, session_name, owner_id):
                 messages=messages
             )
             answer = response.choices[0].message.content
-            await db.execute(
-                'INSERT INTO mygpt_history (user_id, message, role, timestamp) VALUES (?, ?, ?, ?)',
-                (event.sender_id, answer, 'assistant', int(datetime.now().timestamp()))
-            )
-            await db.commit()
+            if has_db_exec:
+                await db.execute(
+                    'INSERT INTO mygpt_history (user_id, message, role, timestamp) VALUES (?, ?, ?, ?)',
+                    (event.sender_id, answer, 'assistant', int(datetime.now().timestamp()))
+                )
+                if hasattr(db, 'commit'):
+                    await db.commit()
             await send_message(event, f"🤖 پاسخ ChatGPT: {answer}")
         except Exception as e:
             logger.error(f"Error in mygpt: {e}")
@@ -428,8 +436,13 @@ async def register_fun_handlers(client, session_name, owner_id):
     @client.on(events.NewMessage(pattern=get_command_pattern('clean_mygpt', 'fun', lang)))
     async def handle_clean_mygpt(event):
         try:
-            await db.execute('DELETE FROM mygpt_history WHERE user_id = ?', (event.sender_id,))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM mygpt_history WHERE user_id = ?', (event.sender_id,))
+                if hasattr(db, 'commit'):
+                    await db.commit()
+            else:
+                # بدون DB فقط پیام تایید بده
+                pass
             await send_message(event, get_message('mygpt_cleared'))
         except Exception as e:
             logger.error(f"Error cleaning mygpt history: {e}")

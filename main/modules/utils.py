@@ -29,11 +29,38 @@ def load_data(filename, default=None):
         return default or {}
 
 def load_json(filename, default=None):
+    """
+    Load a JSON file trying multiple likely locations:
+    - Absolute path as given
+    - CWD-relative (as given)
+    - Next to this utils.py (main/modules/<filename>)
+    - One directory up (main/<filename>)
+    Returns default ({} by default) if not found or on error.
+    """
+    candidates = []
     try:
-        with open(filename, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return data if data else (default or {})
-    except Exception as e:
+        if os.path.isabs(filename):
+            candidates.append(filename)
+        else:
+            # as given (CWD relative)
+            candidates.append(filename)
+            base_dir = os.path.dirname(__file__)  # .../main/modules
+            # next to utils.py (main/modules)
+            candidates.append(os.path.join(base_dir, filename))
+            # parent directory (main)
+            candidates.append(os.path.join(os.path.dirname(base_dir), filename))
+
+        for path in candidates:
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                return data if data else (default or {})
+            except FileNotFoundError:
+                continue
+            except Exception:
+                continue
+        return default or {}
+    except Exception:
         return default or {}
 
 def get_message(key, lang='fa', **kwargs):
