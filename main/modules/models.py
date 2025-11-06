@@ -74,7 +74,7 @@ class Enemies(BaseModel):
 # Global DB instance
 db = BaseModel.Meta.database
 
-async def init_db():
+async def init_db(db):
     """
     Initialize the database with Ormax (creates tables automatically).
     """

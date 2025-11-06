@@ -104,7 +104,7 @@ async def register_profile_handlers(client, session_name, owner_id):
     # Initialize the database
     from models import init_db
 
-    await init_db()
+    await init_db(db)
 
     settings = await load_settings()
     if not settings:
