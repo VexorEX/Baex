@@ -28,23 +28,28 @@ async def register_download_handlers(client, session_name, owner_id):
     def get_message(key, **kwargs):
         return messages[lang]['download'].get(key, '').format(**kwargs)
 
-    # ایجاد جدول برای تاریخچه دانلود
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS download_history (
+    # ایجاد جدول برای تاریخچه دانلود (در صورت پشتیبانی DB)
+    has_db_exec = hasattr(db, 'execute')
+    if has_db_exec:
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS download_history (
                                                                      id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                                      user_id INTEGER,
                                                                      query TEXT,
                                                                      type TEXT,
                                                                      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-                     )
-                     ''')
-    await db.commit()
+                         )
+                         ''')
+        if hasattr(db, 'commit'):
+            await db.commit()
 
     async def save_download_history(user_id, query, download_type):
         try:
-            await db.execute('INSERT INTO download_history (user_id, query, type) VALUES (?, ?, ?)',
-                             (user_id, query, download_type))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('INSERT INTO download_history (user_id, query, type) VALUES (?, ?, ?)',
+                                 (user_id, query, download_type))
+                if hasattr(db, 'commit'):
+                    await db.commit()
         except Exception as e:
             logger.error(f"Error saving download history: {e}")
 

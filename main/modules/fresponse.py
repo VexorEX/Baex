@@ -36,27 +36,32 @@ async def register_fast_response_handlers(client, session_name, owner_id):
         }
         await update_settings(db, settings)
 
-    # ایجاد جدول برای پاسخ‌های سریع
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS fast_responses (
+    # ایجاد جدول برای پاسخ‌های سریع (در صورت پشتیبانی DB)
+    has_db_exec = hasattr(db, 'execute')
+    if has_db_exec:
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS fast_responses (
                                                                    word TEXT,
                                                                    response TEXT,
                                                                    mode TEXT,
                                                                    sticker TEXT,
                                                                    voice TEXT,
                                                                    PRIMARY KEY (word, mode)
-                         )
-                     ''')
-    await db.commit()
+                           )
+                         ''')
+        if hasattr(db, 'commit'):
+            await db.commit()
 
     async def save_response(word, response, mode, sticker=None, voice=None):
         """ذخیره پاسخ سریع در پایگاه داده"""
         try:
-            await db.execute('''
-                INSERT OR REPLACE INTO fast_responses (word, response, mode, sticker, voice)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (word, str(response), mode, sticker, voice))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('''
+                    INSERT OR REPLACE INTO fast_responses (word, response, mode, sticker, voice)
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (word, str(response), mode, sticker, voice))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['fast_response']['responses'][word] = {'response': response, 'mode': mode, 'sticker': sticker, 'voice': voice}
             await update_settings(db, settings)
         except Exception as e:
@@ -65,10 +70,16 @@ async def register_fast_response_handlers(client, session_name, owner_id):
     async def get_response(word, mode):
         """دریافت پاسخ سریع از پایگاه داده"""
         try:
-            cursor = await db.execute('SELECT response, sticker, voice FROM fast_responses WHERE word = ? AND mode = ?', (word, mode))
-            result = await cursor.fetchone()
-            await cursor.close()
-            return result
+            if has_db_exec:
+                cursor = await db.execute('SELECT response, sticker, voice FROM fast_responses WHERE word = ? AND mode = ?', (word, mode))
+                result = await cursor.fetchone()
+                await cursor.close()
+                return result
+            # بدون DB → از settings درون حافظه
+            data = settings['fast_response']['responses'].get(word)
+            if data and data.get('mode') == mode:
+                return (data.get('response'), data.get('sticker'), data.get('voice'))
+            return None
         except Exception as e:
             logger.error(f"Error getting response: {e}")
             return None
@@ -76,8 +87,10 @@ async def register_fast_response_handlers(client, session_name, owner_id):
     async def delete_response(word, mode):
         """حذف پاسخ سریع"""
         try:
-            await db.execute('DELETE FROM fast_responses WHERE word = ? AND mode = ?', (word, mode))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM fast_responses WHERE word = ? AND mode = ?', (word, mode))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             if word in settings['fast_response']['responses']:
                 del settings['fast_response']['responses'][word]
                 await update_settings(db, settings)
@@ -87,10 +100,13 @@ async def register_fast_response_handlers(client, session_name, owner_id):
     async def list_responses():
         """لیست تمام پاسخ‌های سریع"""
         try:
-            cursor = await db.execute('SELECT word, response, mode FROM fast_responses')
-            rows = await cursor.fetchall()
-            await cursor.close()
-            return [(row[0], row[1], row[2]) for row in rows]
+            if has_db_exec:
+                cursor = await db.execute('SELECT word, response, mode FROM fast_responses')
+                rows = await cursor.fetchall()
+                await cursor.close()
+                return [(row[0], row[1], row[2]) for row in rows]
+            # بدون DB از settings استفاده کن
+            return [(w, d.get('response'), d.get('mode')) for w, d in settings['fast_response']['responses'].items()]
         except Exception as e:
             logger.error(f"Error listing responses: {e}")
             return []
@@ -203,8 +219,10 @@ async def register_fast_response_handlers(client, session_name, owner_id):
             if event.sender_id != owner_id:
                 await send_message(event, get_message('unauthorized'))
                 return
-            await db.execute('DELETE FROM fast_responses')
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM fast_responses')
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['fast_response']['responses'] = {}
             await update_settings(db, settings)
             await send_message(event, get_message('responses_cleared'))

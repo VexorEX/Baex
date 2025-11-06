@@ -39,20 +39,25 @@ async def register_convert_handlers(client, session_name, owner_id):
         }
         await update_settings(db, settings)
 
-    # ایجاد جدول برای تنظیمات تبدیل
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS convert_settings (
+    # ایجاد جدول برای تنظیمات تبدیل (در صورت پشتیبانی DB)
+    has_db_exec = hasattr(db, 'execute')
+    if has_db_exec:
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS convert_settings (
                                                                      key TEXT PRIMARY KEY,
                                                                      value TEXT
-                     )
-                     ''')
-    await db.commit()
+                         )
+                         ''')
+        if hasattr(db, 'commit'):
+            await db.commit()
 
     async def save_cover(cover_path):
         """ذخیره کاور پیش‌فرض"""
         try:
-            await db.execute('INSERT OR REPLACE INTO convert_settings (key, value) VALUES (?, ?)', ('cover', cover_path))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('INSERT OR REPLACE INTO convert_settings (key, value) VALUES (?, ?)', ('cover', cover_path))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['convert']['cover'] = cover_path
             await update_settings(db, settings)
         except Exception as e:
@@ -61,10 +66,12 @@ async def register_convert_handlers(client, session_name, owner_id):
     async def get_cover():
         """دریافت کاور پیش‌فرض"""
         try:
-            cursor = await db.execute('SELECT value FROM convert_settings WHERE key = ?', ('cover',))
-            result = await cursor.fetchone()
-            await cursor.close()
-            return result[0] if result else None
+            if has_db_exec:
+                cursor = await db.execute('SELECT value FROM convert_settings WHERE key = ?', ('cover',))
+                result = await cursor.fetchone()
+                await cursor.close()
+                return result[0] if result else None
+            return settings['convert'].get('cover')
         except Exception as e:
             logger.error(f"Error getting cover: {e}")
             return None

@@ -52,34 +52,39 @@ async def register_enemy_handlers(client, session_name, owner_id):
         }
         await update_settings(db, settings)
 
-    # ایجاد جدول برای دشمنان و فحش‌ها
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS enemies (
+    # ایجاد جدول برای دشمنان و فحش‌ها (در صورت پشتیبانی DB)
+    has_db_exec = hasattr(db, 'execute')
+    if has_db_exec:
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS enemies (
                                                             user_id INTEGER,
                                                             mode TEXT,
                                                             chat_id INTEGER,
                                                             last_insult REAL,
                                                             PRIMARY KEY (user_id, mode, chat_id)
                          )
-                     ''')
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS insults (
+                         ''')
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS insults (
                                                             text TEXT,
                                                             type TEXT,  -- 'enemy' یا 'friend'
                                                             PRIMARY KEY (text, type)
                          )
-                     ''')
-    await db.commit()
+                         ''')
+        if hasattr(db, 'commit'):
+            await db.commit()
 
     async def add_enemy(user_id, mode, chat_id=None):
         """اضافه کردن دشمن"""
         try:
             timestamp = datetime.now().timestamp()
-            await db.execute('''
-                INSERT OR REPLACE INTO enemies (user_id, mode, chat_id, last_insult)
-                VALUES (?, ?, ?, ?)
-            ''', (user_id, mode, chat_id, timestamp))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('''
+                    INSERT OR REPLACE INTO enemies (user_id, mode, chat_id, last_insult)
+                    VALUES (?, ?, ?, ?)
+                ''', (user_id, mode, chat_id, timestamp))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['enemy']['enemies'][mode][user_id] = {'chat_id': chat_id, 'last_insult': timestamp}
             await update_settings(db, settings)
         except Exception as e:
@@ -88,8 +93,10 @@ async def register_enemy_handlers(client, session_name, owner_id):
     async def remove_enemy(user_id, mode, chat_id=None):
         """حذف دشمن"""
         try:
-            await db.execute('DELETE FROM enemies WHERE user_id = ? AND mode = ? AND (chat_id = ? OR chat_id IS NULL)', (user_id, mode, chat_id))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM enemies WHERE user_id = ? AND mode = ? AND (chat_id = ? OR chat_id IS NULL)', (user_id, mode, chat_id))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             if user_id in settings['enemy']['enemies'][mode]:
                 del settings['enemy']['enemies'][mode][user_id]
                 await update_settings(db, settings)
@@ -99,8 +106,10 @@ async def register_enemy_handlers(client, session_name, owner_id):
     async def add_insult(text, insult_type='enemy'):
         """اضافه کردن فحش"""
         try:
-            await db.execute('INSERT OR REPLACE INTO insults (text, type) VALUES (?, ?)', (text, insult_type))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('INSERT OR REPLACE INTO insults (text, type) VALUES (?, ?)', (text, insult_type))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             if insult_type == 'enemy':
                 settings['enemy']['insults'].append(text)
             else:
@@ -112,8 +121,10 @@ async def register_enemy_handlers(client, session_name, owner_id):
     async def remove_insult(text, insult_type='enemy'):
         """حذف فحش"""
         try:
-            await db.execute('DELETE FROM insults WHERE text = ? AND type = ?', (text, insult_type))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM insults WHERE text = ? AND type = ?', (text, insult_type))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             if insult_type == 'enemy':
                 settings['enemy']['insults'] = [i for i in settings['enemy']['insults'] if i != text]
             else:
@@ -125,10 +136,13 @@ async def register_enemy_handlers(client, session_name, owner_id):
     async def get_enemies(mode):
         """دریافت لیست دشمنان"""
         try:
-            cursor = await db.execute('SELECT user_id, chat_id FROM enemies WHERE mode = ?', (mode,))
-            rows = await cursor.fetchall()
-            await cursor.close()
-            return [(row[0], row[1]) for row in rows]
+            if has_db_exec:
+                cursor = await db.execute('SELECT user_id, chat_id FROM enemies WHERE mode = ?', (mode,))
+                rows = await cursor.fetchall()
+                await cursor.close()
+                return [(row[0], row[1]) for row in rows]
+            # بدون DB: از settings استفاده کن
+            return [(uid, data.get('chat_id')) for uid, data in settings['enemy']['enemies'].get(mode, {}).items()]
         except Exception as e:
             logger.error(f"Error getting enemies: {e}")
             return []
@@ -136,10 +150,15 @@ async def register_enemy_handlers(client, session_name, owner_id):
     async def get_insults(insult_type='enemy'):
         """دریافت لیست فحش‌ها"""
         try:
-            cursor = await db.execute('SELECT text FROM insults WHERE type = ?', (insult_type,))
-            rows = await cursor.fetchall()
-            await cursor.close()
-            return [row[0] for row in rows]
+            if has_db_exec:
+                cursor = await db.execute('SELECT text FROM insults WHERE type = ?', (insult_type,))
+                rows = await cursor.fetchall()
+                await cursor.close()
+                return [row[0] for row in rows]
+            # بدون DB: از settings استفاده کن
+            if insult_type == 'enemy':
+                return list(settings['enemy']['insults'])
+            return list(settings['enemy']['friend_insults'])
         except Exception as e:
             logger.error(f"Error getting insults: {e}")
             return []
@@ -218,8 +237,10 @@ async def register_enemy_handlers(client, session_name, owner_id):
                 await send_message(event, get_message('unauthorized'))
                 return
             mode = event.pattern_match.group(1)
-            await db.execute('DELETE FROM enemies WHERE mode = ?', (mode,))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM enemies WHERE mode = ?', (mode,))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['enemy']['enemies'][mode] = {}
             await update_settings(db, settings)
             await send_message(event, get_message(f'enemy_{mode}_cleared'))
@@ -273,8 +294,10 @@ async def register_enemy_handlers(client, session_name, owner_id):
                 await send_message(event, get_message('unauthorized'))
                 return
             mode = event.pattern_match.group(1)
-            await db.execute('DELETE FROM enemies WHERE mode = ?', (mode,))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM enemies WHERE mode = ?', (mode,))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['enemy']['friends'][mode] = {}
             await update_settings(db, settings)
             await send_message(event, get_message(f'friend_{mode}_cleared'))
@@ -334,8 +357,10 @@ async def register_enemy_handlers(client, session_name, owner_id):
             if event.sender_id != owner_id:
                 await send_message(event, get_message('unauthorized'))
                 return
-            await db.execute('DELETE FROM insults WHERE type = ?', ('enemy',))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM insults WHERE type = ?', ('enemy',))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['enemy']['insults'] = []
             await update_settings(db, settings)
             await send_message(event, get_message('insults_cleared'))
@@ -395,8 +420,10 @@ async def register_enemy_handlers(client, session_name, owner_id):
             if event.sender_id != owner_id:
                 await send_message(event, get_message('unauthorized'))
                 return
-            await db.execute('DELETE FROM insults WHERE type = ?', ('friend',))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('DELETE FROM insults WHERE type = ?', ('friend',))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['enemy']['friend_insults'] = []
             await update_settings(db, settings)
             await send_message(event, get_message('friend_insults_cleared'))

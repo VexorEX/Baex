@@ -35,20 +35,25 @@ async def register_edit_handlers(client, session_name, owner_id):
         settings['edit'] = {'logo': None}  # مسیر لوگوی پیش‌فرض
         await update_settings(db, settings)
 
-    # ایجاد جدول برای تنظیمات ویرایش
-    await db.execute('''
-                     CREATE TABLE IF NOT EXISTS edit_settings (
+    # ایجاد جدول برای تنظیمات ویرایش (در صورت پشتیبانی DB)
+    has_db_exec = hasattr(db, 'execute')
+    if has_db_exec:
+        await db.execute('''
+                         CREATE TABLE IF NOT EXISTS edit_settings (
                                                                   key TEXT PRIMARY KEY,
                                                                   value TEXT
-                     )
-                     ''')
-    await db.commit()
+                         )
+                         ''')
+        if hasattr(db, 'commit'):
+            await db.commit()
 
     async def save_logo(logo_path):
         """ذخیره لوگوی پیش‌فرض"""
         try:
-            await db.execute('INSERT OR REPLACE INTO edit_settings (key, value) VALUES (?, ?)', ('logo', logo_path))
-            await db.commit()
+            if has_db_exec:
+                await db.execute('INSERT OR REPLACE INTO edit_settings (key, value) VALUES (?, ?)', ('logo', logo_path))
+                if hasattr(db, 'commit'):
+                    await db.commit()
             settings['edit']['logo'] = logo_path
             await update_settings(db, settings)
         except Exception as e:
@@ -57,10 +62,12 @@ async def register_edit_handlers(client, session_name, owner_id):
     async def get_logo():
         """دریافت لوگوی پیش‌فرض"""
         try:
-            cursor = await db.execute('SELECT value FROM edit_settings WHERE key = ?', ('logo',))
-            result = await cursor.fetchone()
-            await cursor.close()
-            return result[0] if result else None
+            if has_db_exec:
+                cursor = await db.execute('SELECT value FROM edit_settings WHERE key = ?', ('logo',))
+                result = await cursor.fetchone()
+                await cursor.close()
+                return result[0] if result else None
+            return settings['edit'].get('logo')
         except Exception as e:
             logger.error(f"Error getting logo: {e}")
             return None
