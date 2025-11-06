@@ -91,6 +91,7 @@ async def register_profile_handlers(client, session_name, owner_id):
     async def check(event):
         try:
             await event.reply("checked")
+            print("checked")
         except Exception as e:
             logger.error(f"Error toggling name: {e}")
         return

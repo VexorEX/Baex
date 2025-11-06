@@ -30,7 +30,7 @@ def load_data(filename, default=None):
 
 def load_json(filename,default=None):
     # Absolute path from main folder - updated to match current file structure
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), './modules'))  # Point to modules folder
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../main/modules'))  # Point to modules folder
     file_path = os.path.join(main_dir, filename)
     if os.path.exists(file_path):
         try:
