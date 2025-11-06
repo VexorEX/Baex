@@ -275,7 +275,7 @@ bot.command('status', (ctx) => {
     }
 });
 
-bot.on('contact', (ctx) => {
+bot.on('contact', async (ctx,next) => {
     const userId = ctx.from.id;
     if (!pendingNewSelf.has(userId)) {
         return ctx.reply('ابتدا /newself را ارسال کنید.');
@@ -301,9 +301,10 @@ bot.on('contact', (ctx) => {
         const codeKeyboard = Markup.keyboard([Markup.button.text('🔑 Send Code')]).oneTime().resize();
         ctx.reply('✅ self-bot راه‌اندازی شد. حالا کد SMS را مستقیماً ارسال کنید. 🔑', codeKeyboard.reply_markup);
     }
+    await next()
 });
 
-bot.on('text', (ctx) => {
+bot.on('text', async (ctx,next) => {
     const userId = ctx.from.id;
     const text = ctx.message.text.trim();
     if (pendingCode.has(userId)) {
@@ -321,6 +322,7 @@ bot.on('text', (ctx) => {
         const result = savePasswordAndRestart(userId, text);
         ctx.reply(result.message);
     }
+    await next()
 });
 
 
