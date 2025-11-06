@@ -143,6 +143,82 @@ function savePasswordAndRestart(userId, password) {
     return { success: true, message: 'رمز ذخیره شد و self-bot دوباره راه‌اندازی شد.' };
 }
 
+// Function to start all self-bots
+function startAllSelfBots() {
+    const usersDir = path.join(__dirname, 'users');
+    if (!fs.existsSync(usersDir)) {
+        return { success: false, message: 'No users directory found.' };
+    }
+
+    const users = fs.readdirSync(usersDir);
+    let startedCount = 0;
+    let errorCount = 0;
+
+    for (const userId of users) {
+        try {
+            const userDir = path.join(usersDir, userId);
+            const credPath = path.join(userDir, 'credentials.json');
+            
+            if (fs.existsSync(credPath)) {
+                const result = startSelfBot(parseInt(userId), userDir);
+                if (result.success) {
+                    startedCount++;
+                } else {
+                    errorCount++;
+                }
+            }
+        } catch (err) {
+            console.error(`Error starting self-bot for user ${userId}:`, err);
+            errorCount++;
+        }
+    }
+
+    return { 
+        success: true, 
+        message: `Started ${startedCount} self-bots. ${errorCount} errors occurred.` 
+    };
+}
+
+// Function to stop all self-bots
+function stopAllSelfBots() {
+    let stoppedCount = 0;
+    let errorCount = 0;
+
+    for (const userId of userProcesses.keys()) {
+        try {
+            const result = stopSelfBot(userId);
+            if (result.success) {
+                stoppedCount++;
+            } else {
+                errorCount++;
+            }
+        } catch (err) {
+            console.error(`Error stopping self-bot for user ${userId}:`, err);
+            errorCount++;
+        }
+    }
+
+    return { 
+        success: true, 
+        message: `Stopped ${stoppedCount} self-bots. ${errorCount} errors occurred.` 
+    };
+}
+
+// Function to restart all self-bots
+function restartAllSelfBots() {
+    const stopResult = stopAllSelfBots();
+    // Give some time for processes to fully stop
+    setTimeout(() => {
+        const startResult = startAllSelfBots();
+        console.log(`Restart completed: ${startResult.message}`);
+    }, 2000);
+    
+    return { 
+        success: true, 
+        message: `Restart initiated. Stopping ${stopResult.message}` 
+    };
+}
+
 // Bot commands
 bot.start((ctx) => {
     ctx.reply('Welcome! Use /newself <api_id> <api_hash> to create your self-bot and then share your contact.');
@@ -213,6 +289,27 @@ bot.command('stopself', (ctx) => {
     const userId = ctx.from.id;
     console.log(`Received /stopself command from user ${userId}`);
     const result = stopSelfBot(userId);
+    ctx.reply(result.message);
+});
+
+// New command to stop all self-bots
+bot.command('stopall', (ctx) => {
+    console.log(`Received /stopall command from user ${ctx.from.id}`);
+    const result = stopAllSelfBots();
+    ctx.reply(result.message);
+});
+
+// New command to start all self-bots
+bot.command('startall', (ctx) => {
+    console.log(`Received /startall command from user ${ctx.from.id}`);
+    const result = startAllSelfBots();
+    ctx.reply(result.message);
+});
+
+// New command to restart all self-bots
+bot.command('restartall', (ctx) => {
+    console.log(`Received /restartall command from user ${ctx.from.id}`);
+    const result = restartAllSelfBots();
     ctx.reply(result.message);
 });
 
