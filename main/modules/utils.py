@@ -106,16 +106,16 @@ def translate_text(text, dest='fa'):
     except:
         return get_message('error_occurred', lang='fa')
 
-async def send_message(event, text, parse_mode=None, reply_markup=None, **kwargs):
+async def send_message(event, text, parse_mode=None, buttons=None, **kwargs):
     """
-    ارسال پیام با پشتیبانی از parse_mode و reply_markup
+    ارسال پیام با پشتیبانی از parse_mode و buttons (بدون reply_markup برای Telethon)
     """
     try:
-        if isinstance(event, int):  # اگر event یک chat_id است
-            await event.send_message(text, parse_mode=parse_mode, reply_markup=reply_markup, **kwargs)
-        else:
-            await event.respond(text, parse_mode=parse_mode, reply_markup=reply_markup, **kwargs)
-        return True
+        if hasattr(event, 'respond'):
+            await event.respond(text, parse_mode=parse_mode, buttons=buttons, **kwargs)
+            return True
+        # fallback
+        return False
     except Exception as e:
         logger.error(f"Error sending message: {e}")
         return False

@@ -28,11 +28,13 @@ async def register_edit_handlers(client, session_name, owner_id):
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
+        data = messages.get(lang) or messages.get('fa') or messages.get('en') or {}
+        section = data.get('edit', {})
+        text = section.get(key) or key
         try:
-            return messages[lang]['edit'].get(key, '').format(**kwargs)
-        except KeyError:
-            # Fallback to English if the language key doesn't exist
-            return messages.get('en', {}).get('edit', {}).get(key, '').format(**kwargs)
+            return text.format(**kwargs)
+        except Exception:
+            return text
 
     # تنظیمات اولیه edit
     if 'edit' not in settings:

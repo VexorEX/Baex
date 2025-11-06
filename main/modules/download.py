@@ -26,11 +26,13 @@ async def register_download_handlers(client, session_name, owner_id):
     commands = load_json('cmd.json')
 
     def get_message(key, **kwargs):
+        data = messages.get(lang) or messages.get('fa') or messages.get('en') or {}
+        section = data.get('download', {})
+        text = section.get(key) or key
         try:
-            return messages[lang]['download'].get(key, '').format(**kwargs)
-        except KeyError:
-            # Fallback to English if the language key doesn't exist
-            return messages.get('en', {}).get('download', {}).get(key, '').format(**kwargs)
+            return text.format(**kwargs)
+        except Exception:
+            return text
 
     # ایجاد جدول برای تاریخچه دانلود (در صورت پشتیبانی DB)
     has_db_exec = hasattr(db, 'execute')

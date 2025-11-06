@@ -28,17 +28,36 @@ def load_data(filename, default=None):
         print(f"Error loading {filename}: {e}")
         return default or {}
 
-def load_json(filename):
-    # Absolute path from main folder
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../main'))  # Go to root/Baex
-    file_path = os.path.join(main_dir, filename)  # e.g., /root/Baex/cmd.json
+def load_json(filename,default=None):
+    """
+Load JSON file with fallback paths.
+    First tries absolute path from main folder, then tries relative path.
+    """
+    # Absolute path from main folder (original approach)
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../main'))
+    file_path = os.path.join(main_dir, filename)
+    
+    # Try absolute path first
     if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        print(f"Loaded {filename}: {len(data)} keys")  # Debug
-        return data
-    print(f"Warning: {file_path} not found, returning ()")
-    return {}
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            print(f"Loaded {filename}: {len(data)} keys") # Debug
+            return data
+        except Exception as e:
+            print(f"Warning: Failed to load {file_path}, error: {e}")
+    
+    # Fallback to relative path
+    if os.path.exists(filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return data if data else (default or {})
+        except Exception as e:
+            print(f"Warning: Failed to load {filename} with relative path, error: {e}")
+    
+    print(f"Warning: {filename} not found in any path, returning default")
+    return default or {}
 
 def get_message(key, lang='fa', **kwargs):
     messages = load_json('msg.json')
@@ -74,11 +93,11 @@ def translate_text(text, dest='fa'):
 
 async def send_message(event, text, parse_mode=None, reply_markup=None,**kwargs):
     """
-    ارسال پیام با پشتیبانی از parse_mode و reply_markup
+ارسال پیام با پشتیبانی از parse_mode و reply_markup
     """
     try:
         if isinstance(event, int):  # اگر event یک chat_id است
-            await event.send_message(text, parse_mode=parse_mode, reply_markup=reply_markup, **kwargs)
+            await event.send_message(text, parse_mode=parse_mode, reply_markup=reply_markup,**kwargs)
         else:
             await event.respond(text, parse_mode=parse_mode, reply_markup=reply_markup, **kwargs)
         return True
@@ -88,7 +107,7 @@ async def send_message(event, text, parse_mode=None, reply_markup=None,**kwargs)
 
 def get_language(settings, default='fa'):
     """
-    دریافت زبان از تنظیماتیا مقدار پیش‌فرض
+   دریافت زبان از تنظیماتیا مقدار پیش‌فرض
     """
     return settings.get('lang', default)
 
