@@ -41,8 +41,19 @@ def get_message(key, lang='fa', **kwargs):
     text = messages.get(lang, {}).get(key, key)
     return text.format(**kwargs)
 
-def get_command_pattern(key, lang='fa'):
+def get_command_pattern(key, section=None, lang='fa'):
+    """
+    Fetch a command regex pattern from cmd.json.
+
+    Supports two calling styles:
+    - New: get_command_pattern(key, section, lang)
+    - Legacy: get_command_pattern(key, lang) → section is None
+    """
     commands = load_json('cmd.json', {})
+    # New style with explicit section
+    if section is not None:
+        return commands.get(lang, {}).get(section, {}).get(key, '')
+    # Legacy style where only key and lang were provided
     return commands.get(lang, {}).get(key, '')
 
 def get_persian_date():
