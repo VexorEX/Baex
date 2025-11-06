@@ -36,7 +36,6 @@ def load_json(filename,default=None):
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            print(f"Loaded {filename}: {len(data)} keys")  # Debug
             return data
         except Exception as e:
             print(f"Warning: Failed to load {file_path}, error: {e}")
