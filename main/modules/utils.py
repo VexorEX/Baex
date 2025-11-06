@@ -79,9 +79,9 @@ def get_command_pattern(key, section=None, lang='fa'):
     commands = load_json('cmd.json', {})
     # New style with explicit section
     if section is not None:
-        return commands.get(lang, {}).get(section, {}).get(key, '')
+        return commands.get(lang, {}).get(section, {}).get(key, r'^(?!)$')
     # Legacy style where only key and lang were provided
-    return commands.get(lang, {}).get(key, '')
+    return commands.get(lang, {}).get(key, r'^(?!)$')
 
 def get_persian_date():
     try:
