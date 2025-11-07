@@ -11,7 +11,7 @@ if main_path not in sys.path:
     sys.path.insert(0, main_path)
 
 # ابزارها و هندلرها (بعد از init DB importمی‌شن تا DB آماده باشه)
-from modules.utils import load_json, is_command_message  # Import utils برای چک command
+from utils import load_json, is_command_message  # Import utils برای چک command
 
 # ذخیره credentials
 async def save_credentials(credentials, filename):
