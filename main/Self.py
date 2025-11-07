@@ -1,8 +1,6 @@
-import asyncio, json, os, sys
+import asyncio, json, os, sys, sqlite3, aiosqlite
 from datetime import datetime
-import sqlite3
-import aiosqlite
-from telethon import TelegramClient, connection
+from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
 # مسیرها
@@ -114,8 +112,7 @@ async def main():
     init_sqlite_db(db_path)
     print("✅ دیتابیس SQLite مقداردهی شد (WAL mode enabled).")
 
-    proxy= ("54.38.136.78", 4044, "eeff0ce99b756ea156e1774d930f40bd21")
-    client = TelegramClient(session_name, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate, proxy=proxy)
+    client = TelegramClient(session_name, api_id, api_hash)
 
     try:
         await client.connect()
