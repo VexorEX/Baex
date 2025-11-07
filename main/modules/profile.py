@@ -3,19 +3,20 @@ import logging
 import os
 import random
 from datetime import datetime
+
 import pytz
+from models import get_database, load_settings, update_settings
 from telethon import events
 from telethon.tl.functions.account import (
     UpdateProfileRequest,
     UpdateStatusRequest,
     UpdateUsernameRequest,
 )
-from telethon.tl.functions.photos import UploadProfilePhotoRequest, DeletePhotosRequest
 from telethon.tl.functions.channels import (
     UpdateUsernameRequest as UpdateChannelUsername,
 )
-from models import load_settings, update_settings, get_database
-from utils import get_message, get_command_pattern
+from telethon.tl.functions.photos import DeletePhotosRequest, UploadProfilePhotoRequest
+from utils import get_command_pattern, get_message
 
 BASE_DIR = os.path.dirname(__file__)
 logger = logging.getLogger(__name__)
@@ -112,7 +113,7 @@ async def register_profile_handlers(client, session_name, owner_id):
         await db.close()
         return
 
-    lang = settings["lang"]
+    lang = settings.get("lang", "fa")
 
     # Initialize profile settings if not present
     if "profile_settings" not in settings:
@@ -129,11 +130,28 @@ async def register_profile_handlers(client, session_name, owner_id):
         }
         await update_settings(settings)
 
+    # Ensure profile_settings exists with default values
+    profile_settings = settings.get("profile_settings", {})
+    if not isinstance(profile_settings, dict):
+        profile_settings = {
+            "name_enabled": False,
+            "bio_enabled": False,
+            "status_enabled": False,
+            "online_enabled": False,
+            "title_enabled": False,
+            "names": [],
+            "bios": [],
+            "statuses": [],
+            "title": [],
+        }
+        settings["profile_settings"] = profile_settings
+
     # Start the profile update loop if any feature is enabled
+    profile_settings = settings.get("profile_settings", {})
     if (
-        settings["profile_settings"]["name_enabled"]
-        or settings["profile_settings"]["bio_enabled"]
-        or settings["profile_settings"]["title_enabled"]
+        profile_settings.get("name_enabled", False)
+        or profile_settings.get("bio_enabled", False)
+        or profile_settings.get("title_enabled", False)
     ):
         asyncio.create_task(update_profile_loop(client, settings, owner_id))
 

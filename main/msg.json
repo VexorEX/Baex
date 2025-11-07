@@ -1,0 +1,466 @@
+{
+    "fa": {
+        "profile": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "check": "ربات در حال کار است!",
+            "error_occurred": "خطایی رخ داده است.",
+
+            "name_toggle": "وضعیت چرخش نام: {status} {emoji}",
+            "name_added": "نام '{name}' با موفقیت اضافه شد.",
+            "name_deleted": "نام '{name}' با موفقیت حذف شد.",
+            "name_not_found": "نام '{name}' یافت نشد.",
+            "names_cleared": "تمام نام‌ها پاک شدند.",
+            "no_names": "هیچ نامی ثبت نشده است.",
+            "names_list": "لیست نام‌ها:\n{names}",
+
+            "bio_toggle": "وضعیت چرخش بیو: {status} {emoji}",
+            "bio_added": "بیو '{bio}' با موفقیت اضافه شد.",
+            "bio_deleted": "بیو '{bio}' با موفقیت حذف شد.",
+            "bio_not_found": "بیو '{bio}' یافت نشد.",
+            "bios_cleared": "تمام بیوها پاک شدند.",
+            "no_bios": "هیچ بیویی ثبت نشده است.",
+            "bios_list": "لیست بیوها:\n{bios}",
+
+            "status_toggle": "وضعیت چرخش استاتوس: {status} {emoji}",
+            "status_added": "استاتوس '{status}' با موفقیت اضافه شد.",
+            "status_deleted": "استاتوس '{status}' با موفقیت حذف شد.",
+            "status_not_found": "استاتوس '{status}' یافت نشد.",
+            "statuses_cleared": "تمام استاتوس‌ها پاک شدند.",
+            "no_statuses": "هیچ استاتوسی ثبت نشده است.",
+            "statuses_list": "لیست استاتوس‌ها:\n{statuses}",
+
+            "online_toggle": "وضعیت آنلاین: {status} {emoji}",
+
+            "title_toggle": "وضعیت چرخش عنوان: {status} {emoji}",
+            "title_added": "عنوان '{title}' با موفقیت اضافه شد.",
+            "title_deleted": "عنوان '{title}' با موفقیت حذف شد.",
+            "title_not_found": "عنوان '{title}' یافت نشد.",
+            "titles_cleared": "تمام عناوین پاک شدند.",
+            "no_titles": "هیچ عنوانی ثبت نشده است.",
+            "titles_list": "لیست عناوین:\n{titles}",
+
+            "profile_deleted": "تنظیمات پروفایل با موفقیت ریست شد."
+        },
+        "settings": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "reply_to_message": "لطفاً روی پیامی ریپلای کنید.",
+            "error_occurred": "خطایی رخ داده است.",
+
+            "self_toggle": "وضعیت سلف: {status} {emoji}",
+            "self_global_toggle": "وضعیت سلف سراسری: {status} {emoji}",
+
+            "save_profile_toggle": "وضعیت ذخیره پروفایل: {status} {emoji}",
+            "save_profile_realm_set": "کانال مقصد برای ذخیره پروفایل تنظیم شد.",
+            "save_realm_set": "کانال مقصد برای ذخیره پیام‌ها تنظیم شد.",
+            "save_toggle": "وضعیت ذخیره: {status} {emoji}",
+            "save_pv_toggle": "وضعیت ذخیره پیوی: {status} {emoji}",
+            "save_pv_realm_set": "کانال مقصد برای ذخیره پیام‌های خصوصی تنظیم شد.",
+
+            "typing_toggle": "وضعیت تایپ: {status} {emoji}",
+            "typing_global_toggle": "وضعیت تایپ سراسری: {status} {emoji}",
+
+            "action_toggle": "وضعیت اکشن: {status} {emoji}",
+            "action_global_toggle": "وضعیت اکشن سراسری: {status} {emoji}",
+
+            "tick_toggle": "وضعیت تیک: {status} {emoji}",
+            "tick_global_toggle": "وضعیت تیک سراسری: {status} {emoji}",
+            "tick_group_toggle": "وضعیت تیک گروه: {status} {emoji}",
+            "tick_pv_toggle": "وضعیت تیک خصوصی: {status} {emoji}",
+            "tick_channel_toggle": "وضعیت تیک کانال: {status} {emoji}",
+
+            "tag_toggle": "وضعیت تگ: {status} {emoji}",
+            "tag_global_toggle": "وضعیت تگ سراسری: {status} {emoji}",
+
+            "translate_mode_toggle": "وضعیت حالت ترجمه: {status} {emoji}",
+            "translate_mode_realm_set": "کانال مقصد برای حالت ترجمه تنظیم شد.",
+            "translate_toggle": "وضعیت ترجمه: {status} {emoji}",
+
+            "set_language": "زبان تنظیم شد: {lang}",
+            "list_languages": "لیست زبان‌ها:\n{languages}",
+
+            "hashtag_toggle": "وضعیت هشتگ: {status} {emoji}",
+            "hashtag_global_toggle": "وضعیت هشتگ سراسری: {status} {emoji}",
+
+            "signature_toggle": "وضعیت امضا: {status} {emoji}",
+            "signature_global_toggle": "وضعیت امضا سراسری: {status} {emoji}",
+            "signature_set": "متن امضا تنظیم شد: {signature}",
+
+            "auto_approve_toggle": "وضعیت تایید خودکار: {status} {emoji}",
+
+            "anti_login_toggle": "وضعیت ضد لاگین: {status} {emoji}",
+            "anti_login_realm_set": "کانال مقصد برای ضد لاگین تنظیم شد.",
+
+            "emoji_toggle": "وضعیت ایموجی: {status} {emoji}",
+            "emoji_global_toggle": "وضعیت ایموجی سراسری: {status} {emoji}",
+            "emoji_set": "ایموجی تنظیم شد: {emoji}",
+
+            "bold_toggle": "وضعیت بولد: {status} {emoji}",
+            "bold_global_toggle": "وضعیت بولد سراسری: {status} {emoji}",
+
+            "underline_toggle": "وضعیت آندرلاین: {status} {emoji}",
+            "underline_global_toggle": "وضعیت آندرلاین سراسری: {status} {emoji}",
+
+            "code_toggle": "وضعیت کد: {status} {emoji}",
+            "code_global_toggle": "وضعیت کد سراسری: {status} {emoji}",
+
+            "font_en_toggle": "وضعیت فونت انگلیسی: {status} {emoji}",
+            "font_en_global_toggle": "وضعیت فونت انگلیسی سراسری: {status} {emoji}",
+
+            "font_fa_toggle": "وضعیت فونت فارسی: {status} {emoji}",
+            "font_fa_global_toggle": "وضعیت فونت فارسی سراسری: {status} {emoji}",
+
+            "strikethrough_toggle": "وضعیت استریک: {status} {emoji}",
+            "strikethrough_global_toggle": "وضعیت استریک سراسری: {status} {emoji}",
+
+            "italic_toggle": "وضعیت ایتالیک: {status} {emoji}",
+            "italic_global_toggle": "وضعیت ایتالیک سراسری: {status} {emoji}",
+
+            "spoiler_toggle": "وضعیت اسپویلر: {status} {emoji}",
+            "spoiler_global_toggle": "وضعیت اسپویلر سراسری: {status} {emoji}",
+
+            "reaction_toggle": "وضعیت ری اکشن: {status} {emoji}",
+            "reaction_set": "ری اکشن تنظیم شد: {reaction}"
+        },
+        "manage": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "error_occurred": "خطایی رخ داده است.",
+            "reply_to_message": "لطفاً روی پیامی ریپلای کنید.",
+
+            "comment_toggle": "وضعیت کامنت: {status} {emoji}",
+            "monitor_user_toggle": "وضعیت مانیتورینگ کاربر: {status} {emoji}",
+            "save_reads_toggle": "وضعیت ذخیره خواندنی‌ها: {status} {emoji}",
+            "save_stories_toggle": "وضعیت ذخیره استوری: {status} {emoji}",
+            "add_time": "زمان '{time}' با موفقیت اضافه شد.",
+            "delete_time": "زمان '{time}' با موفقیت حذف شد."
+        },
+        "vars": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "timezone_set": "منطقه زمانی تنظیم شد: {timezone}"
+        },
+        "enemy": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "enemy_set": "کاربر '{username}' به لیست دشمنان اضافه شد.",
+            "enemy_deleted": "کاربر '{username}' از لیست دشمنان حذف شد.",
+            "enemies_cleared": "لیست دشمنان پاک شد.",
+            "friend_set": "کاربر '{username}' به لیست دوستان اضافه شد.",
+            "friend_deleted": "کاربر '{username}' از لیست دوستان حذف شد.",
+            "friends_cleared": "لیست دوستان پاک شد."
+        },
+        "download": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "no_query": "لطفاً عبارت جستجو را وارد کنید.",
+            "song_downloaded": "آهنگ '{query}' دانلود شد.",
+            "no_song_found": "آهنگی برای '{query}' یافت نشد.",
+            "flood_wait": "لطفاً {seconds} ثانیه صبر کنید.",
+            "invalid_url": "لینک نامعتبر است.",
+            "file_too_large": "فایل بسیار بزرگ است (حداکثر 200 مگابایت).",
+            "video_downloaded": "ویدیو '{title}' دانلود شد.",
+            "download_failed": "دانلود ناموفق بود.",
+            "no_videos_found": "هیچ ویدیویی برای '{query}' یافت نشد.",
+            "video_list": "لیست {count} ویدیو برای '{query}':",
+            "no_stories_found": "هیچ استوری‌ای یافت نشد.",
+            "all_stories_downloaded": "تمام استوری‌ها دانلود شدند ({count} عدد).",
+            "no_stories_found_for_user": "هیچ استوری‌ای برای کاربر {username} یافت نشد.",
+            "stories_downloaded": "استوری‌های کاربر {username} دانلود شدند ({count} عدد).",
+            "story_posted": "استوری ارسال شد.",
+            "premium_required": "این ویژگی نیاز به اکانت پرمیوم دارد.",
+            "reply_required": "لطفاً روی پیامی ریپلای کنید.",
+            "no_media": "هیچ مدیایی یافت نشد.",
+            "no_username": "لطفاً نام کاربری را وارد کنید.",
+            "file_downloaded": "فایل '{file_name}' دانلود شد.",
+            "git_downloaded": "مخزن '{repo_name}' دانلود شد.",
+            "invalid_git_url": "لینک GitHub نامعتبر است."
+        },
+        "convert": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "no_photo": "هیچ عکسی یافت نشد.",
+            "no_backup_channel": "کانال پشتیبان تنظیم نشده است.",
+            "cover_set": "کاور تنظیم شد.",
+            "reply_required": "لطفاً روی پیامی ریپلای کنید.",
+            "no_audio": "هیچ آهنگی یافت نشد.",
+            "no_cover_set": "هیچ کاوری تنظیم نشده است.",
+            "cover_added": "کاور به آهنگ اضافه شد.",
+            "no_media": "هیچ مدیایی یافت نشد.",
+            "cover_extracted": "کاور استخراج شد.",
+            "no_cover_found": "هیچ کاوری یافت نشد.",
+            "background_removed": "پس‌زمینه حذف شد.",
+            "no_sticker": "هیچ استیکری یافت نشد.",
+            "converted_to_photo": "تبدیل به عکس انجام شد.",
+            "no_video_or_sticker": "هیچ ویدیو یا استیکری یافت نشد.",
+            "converted_to_gif": "تبدیل به GIF انجام شد.",
+            "converted_to_sticker": "تبدیل به استیکر انجام شد.",
+            "converted_to_file": "تبدیل به فایل انجام شد.",
+            "no_audio_or_video": "هیچ آهنگ یا ویدیویی یافت نشد.",
+            "converted_to_voice": "تبدیل به ویس انجام شد.",
+            "no_voice_or_video": "هیچ ویس یا ویدیویی یافت نشد.",
+            "converted_to_audio": "تبدیل به آهنگ انجام شد.",
+            "name_edited": "نام ویرایش شد: {name}",
+            "duration_edited": "مدت زمان ویرایش شد: {duration} ثانیه",
+            "invalid_date_format": "فرمت تاریخ نامعتبر است.",
+            "date_converted": "تاریخ تبدیل شد: شمسی {jalali} - میلادی {gregorian}",
+            "no_zip_file": "هیچ فایل زیپی یافت نشد.",
+            "file_too_large": "فایل بسیار بزرگ است (حداکثر 300 مگابایت).",
+            "file_extracted": "فایل '{file_name}' استخراج شد.",
+            "file_not_found": "فایل '{file_name}' یافت نشد.",
+            "all_files_extracted": "تمام فایل‌ها استخراج شدند ({count} فایل).",
+            "no_text": "لطفاً متنی وارد کنید.",
+            "converted_to_qr": "تبدیل به QR کد انجام شد.",
+            "no_qr_found": "هیچ QR کدی یافت نشد.",
+            "qr_read": "متن QR کد: {text}",
+            "no_video": "هیچ ویدیویی یافت نشد.",
+            "converted_to_video_note": "تبدیل به ویدیو نوت انجام شد.",
+            "no_video_note": "هیچ ویدیو نوتی یافت نشد.",
+            "converted_to_video": "تبدیل به ویدیو انجام شد.",
+            "rembg_not_available": "ماژول rembg نصب نشده است.",
+            "pyzbar_not_available": "ماژول pyzbar نصب نشده است."
+        },
+        "edit": {
+            "unauthorized": "شما اجازه استفاده از این دستور را ندارید!",
+            "reply_required": "لطفاً روی پیامی ریپلای کنید.",
+            "no_audio": "هیچ آهنگی یافت نشد.",
+            "no_photo": "هیچ عکسی یافت نشد.",
+            "no_video": "هیچ ویدیویی یافت نشد.",
+            "no_media": "هیچ مدیایی یافت نشد.",
+            "demo_created": "دموی {duration} ثانیه‌ای ساخته شد.",
+            "image_edited": "عکس ویرایش شد.",
+            "video_edited": "ویدیو ویرایش شد.",
+            "audio_edited": "آهنگ ویرایش شد.",
+            "logo_set": "لوگو تنظیم شد.",
+            "logo_applied": "لوگو اعمال شد.",
+            "text_replaced": "متن جایگزین شد.",
+            "watermark_added": "واترمارک اضافه شد."
+        }
+    },
+    "en": {
+        "profile": {
+            "unauthorized": "You don't have permission to use this command!",
+            "check": "Bot is working!",
+            "error_occurred": "An error occurred.",
+
+            "name_toggle": "Name rotation status: {status} {emoji}",
+            "name_added": "Name '{name}' added successfully.",
+            "name_deleted": "Name '{name}' deleted successfully.",
+            "name_not_found": "Name '{name}' not found.",
+            "names_cleared": "All names cleared.",
+            "no_names": "No names registered.",
+            "names_list": "Names list:\n{names}",
+
+            "bio_toggle": "Bio rotation status: {status} {emoji}",
+            "bio_added": "Bio '{bio}' added successfully.",
+            "bio_deleted": "Bio '{bio}' deleted successfully.",
+            "bio_not_found": "Bio '{bio}' not found.",
+            "bios_cleared": "All bios cleared.",
+            "no_bios": "No bios registered.",
+            "bios_list": "Bios list:\n{bios}",
+
+            "status_toggle": "Status rotation status: {status} {emoji}",
+            "status_added": "Status '{status}' added successfully.",
+            "status_deleted": "Status '{status}' deleted successfully.",
+            "status_not_found": "Status '{status}' not found.",
+            "statuses_cleared": "All statuses cleared.",
+            "no_statuses": "No statuses registered.",
+            "statuses_list": "Statuses list:\n{statuses}",
+
+            "online_toggle": "Online status: {status} {emoji}",
+
+            "title_toggle": "Title rotation status: {status} {emoji}",
+            "title_added": "Title '{title}' added successfully.",
+            "title_deleted": "Title '{title}' deleted successfully.",
+            "title_not_found": "Title '{title}' not found.",
+            "titles_cleared": "All titles cleared.",
+            "no_titles": "No titles registered.",
+            "titles_list": "Titles list:\n{titles}",
+
+            "profile_deleted": "Profile settings reset successfully."
+        },
+        "settings": {
+            "unauthorized": "You don't have permission to use this command!",
+            "reply_to_message": "Please reply to a message.",
+            "error_occurred": "An error occurred.",
+
+            "self_toggle": "Self status: {status} {emoji}",
+            "self_global_toggle": "Global self status: {status} {emoji}",
+
+            "save_profile_toggle": "Profile save status: {status} {emoji}",
+            "save_profile_realm_set": "Destination channel for profile save set.",
+            "save_realm_set": "Destination channel for message save set.",
+            "save_toggle": "Save status: {status} {emoji}",
+            "save_pv_toggle": "Private save status: {status} {emoji}",
+            "save_pv_realm_set": "Destination channel for private message save set.",
+
+            "typing_toggle": "Typing status: {status} {emoji}",
+            "typing_global_toggle": "Global typing status: {status} {emoji}",
+
+            "action_toggle": "Action status: {status} {emoji}",
+            "action_global_toggle": "Global action status: {status} {emoji}",
+
+            "tick_toggle": "Tick status: {status} {emoji}",
+            "tick_global_toggle": "Global tick status: {status} {emoji}",
+            "tick_group_toggle": "Group tick status: {status} {emoji}",
+            "tick_pv_toggle": "Private tick status: {status} {emoji}",
+            "tick_channel_toggle": "Channel tick status: {status} {emoji}",
+
+            "tag_toggle": "Tag status: {status} {emoji}",
+            "tag_global_toggle": "Global tag status: {status} {emoji}",
+
+            "translate_mode_toggle": "Translate mode status: {status} {emoji}",
+            "translate_mode_realm_set": "Destination channel for translate mode set.",
+            "translate_toggle": "Translate status: {status} {emoji}",
+
+            "set_language": "Language set to: {lang}",
+            "list_languages": "Languages list:\n{languages}",
+
+            "hashtag_toggle": "Hashtag status: {status} {emoji}",
+            "hashtag_global_toggle": "Global hashtag status: {status} {emoji}",
+
+            "signature_toggle": "Signature status: {status} {emoji}",
+            "signature_global_toggle": "Global signature status: {status} {emoji}",
+            "signature_set": "Signature text set: {signature}",
+
+            "auto_approve_toggle": "Auto approve status: {status} {emoji}",
+
+            "anti_login_toggle": "Anti login status: {status} {emoji}",
+            "anti_login_realm_set": "Destination channel for anti login set.",
+
+            "emoji_toggle": "Emoji status: {status} {emoji}",
+            "emoji_global_toggle": "Global emoji status: {status} {emoji}",
+            "emoji_set": "Emoji set: {emoji}",
+
+            "bold_toggle": "Bold status: {status} {emoji}",
+            "bold_global_toggle": "Global bold status: {status} {emoji}",
+
+            "underline_toggle": "Underline status: {status} {emoji}",
+            "underline_global_toggle": "Global underline status: {status} {emoji}",
+
+            "code_toggle": "Code status: {status} {emoji}",
+            "code_global_toggle": "Global code status: {status} {emoji}",
+
+            "font_en_toggle": "English font status: {status} {emoji}",
+            "font_en_global_toggle": "Global English font status: {status} {emoji}",
+
+            "font_fa_toggle": "Persian font status: {status} {emoji}",
+            "font_fa_global_toggle": "Global Persian font status: {status} {emoji}",
+
+            "strikethrough_toggle": "Strikethrough status: {status} {emoji}",
+            "strikethrough_global_toggle": "Global strikethrough status: {status} {emoji}",
+
+            "italic_toggle": "Italic status: {status} {emoji}",
+            "italic_global_toggle": "Global italic status: {status} {emoji}",
+
+            "spoiler_toggle": "Spoiler status: {status} {emoji}",
+            "spoiler_global_toggle": "Global spoiler status: {status} {emoji}",
+
+            "reaction_toggle": "Reaction status: {status} {emoji}",
+            "reaction_set": "Reaction set: {reaction}"
+        },
+        "manage": {
+            "unauthorized": "You don't have permission to use this command!",
+            "error_occurred": "An error occurred.",
+            "reply_to_message": "Please reply to a message.",
+
+            "comment_toggle": "Comment status: {status} {emoji}",
+            "monitor_user_toggle": "User monitoring status: {status} {emoji}",
+            "save_reads_toggle": "Save reads status: {status} {emoji}",
+            "save_stories_toggle": "Save stories status: {status} {emoji}",
+            "add_time": "Time '{time}' added successfully.",
+            "delete_time": "Time '{time}' deleted successfully."
+        },
+        "vars": {
+            "unauthorized": "You don't have permission to use this command!",
+            "timezone_set": "Timezone set to: {timezone}"
+        },
+        "enemy": {
+            "unauthorized": "You don't have permission to use this command!",
+            "enemy_set": "User '{username}' added to enemies list.",
+            "enemy_deleted": "User '{username}' removed from enemies list.",
+            "enemies_cleared": "Enemies list cleared.",
+            "friend_set": "User '{username}' added to friends list.",
+            "friend_deleted": "User '{username}' removed from friends list.",
+            "friends_cleared": "Friends list cleared."
+        },
+        "download": {
+            "unauthorized": "You don't have permission to use this command!",
+            "no_query": "Please enter a search query.",
+            "song_downloaded": "Song '{query}' downloaded.",
+            "no_song_found": "No song found for '{query}'.",
+            "flood_wait": "Please wait {seconds} seconds.",
+            "invalid_url": "Invalid URL.",
+            "file_too_large": "File too large (max 200 MB).",
+            "video_downloaded": "Video '{title}' downloaded.",
+            "download_failed": "Download failed.",
+            "no_videos_found": "No videos found for '{query}'.",
+            "video_list": "List of {count} videos for '{query}':",
+            "no_stories_found": "No stories found.",
+            "all_stories_downloaded": "All stories downloaded ({count} items).",
+            "no_stories_found_for_user": "No stories found for user {username}.",
+            "stories_downloaded": "User {username} stories downloaded ({count} items).",
+            "story_posted": "Story posted.",
+            "premium_required": "This feature requires premium account.",
+            "reply_required": "Please reply to a message.",
+            "no_media": "No media found.",
+            "no_username": "Please enter a username.",
+            "file_downloaded": "File '{file_name}' downloaded.",
+            "git_downloaded": "Repository '{repo_name}' downloaded.",
+            "invalid_git_url": "Invalid GitHub URL."
+        },
+        "convert": {
+            "unauthorized": "You don't have permission to use this command!",
+            "no_photo": "No photo found.",
+            "no_backup_channel": "Backup channel not set.",
+            "cover_set": "Cover set.",
+            "reply_required": "Please reply to a message.",
+            "no_audio": "No audio found.",
+            "no_cover_set": "No cover set.",
+            "cover_added": "Cover added to audio.",
+            "no_media": "No media found.",
+            "cover_extracted": "Cover extracted.",
+            "no_cover_found": "No cover found.",
+            "background_removed": "Background removed.",
+            "no_sticker": "No sticker found.",
+            "converted_to_photo": "Converted to photo.",
+            "no_video_or_sticker": "No video or sticker found.",
+            "converted_to_gif": "Converted to GIF.",
+            "converted_to_sticker": "Converted to sticker.",
+            "converted_to_file": "Converted to file.",
+            "no_audio_or_video": "No audio or video found.",
+            "converted_to_voice": "Converted to voice.",
+            "no_voice_or_video": "No voice or video found.",
+            "converted_to_audio": "Converted to audio.",
+            "name_edited": "Name edited: {name}",
+            "duration_edited": "Duration edited: {duration} seconds",
+            "invalid_date_format": "Invalid date format.",
+            "date_converted": "Date converted: Persian {jalali} - Gregorian {gregorian}",
+            "no_zip_file": "No zip file found.",
+            "file_too_large": "File too large (max 300 MB).",
+            "file_extracted": "File '{file_name}' extracted.",
+            "file_not_found": "File '{file_name}' not found.",
+            "all_files_extracted": "All files extracted ({count} files).",
+            "no_text": "Please enter text.",
+            "converted_to_qr": "Converted to QR code.",
+            "no_qr_found": "No QR code found.",
+            "qr_read": "QR code text: {text}",
+            "no_video": "No video found.",
+            "converted_to_video_note": "Converted to video note.",
+            "no_video_note": "No video note found.",
+            "converted_to_video": "Converted to video.",
+            "rembg_not_available": "rembg module not installed.",
+            "pyzbar_not_available": "pyzbar module not installed."
+        },
+        "edit": {
+            "unauthorized": "You don't have permission to use this command!",
+            "reply_required": "Please reply to a message.",
+            "no_audio": "No audio found.",
+            "no_photo": "No photo found.",
+            "no_video": "No video found.",
+            "no_media": "No media found.",
+            "demo_created": "Demo of {duration} seconds created.",
+            "image_edited": "Image edited.",
+            "video_edited": "Video edited.",
+            "audio_edited": "Audio edited.",
+            "logo_set": "Logo set.",
+            "logo_applied": "Logo applied.",
+            "text_replaced": "Text replaced.",
+            "watermark_added": "Watermark added."
+        }
+    }
+}
