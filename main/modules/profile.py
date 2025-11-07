@@ -5,7 +5,7 @@ import random
 from datetime import datetime
 
 import pytz
-from ..models import get_database, load_settings, update_settings
+from main.models import get_database, load_settings, update_settings
 from telethon import events
 from telethon.tl.functions.account import (
     UpdateProfileRequest,
@@ -16,7 +16,7 @@ from telethon.tl.functions.channels import (
     UpdateUsernameRequest as UpdateChannelUsername,
 )
 from telethon.tl.functions.photos import DeletePhotosRequest, UploadProfilePhotoRequest
-from ..utils import get_command_pattern, get_message
+from main.utils import get_command_pattern, get_message
 
 BASE_DIR = os.path.dirname(__file__)
 logger = logging.getLogger(__name__)
