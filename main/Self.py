@@ -1,6 +1,6 @@
 import asyncio, json, os, sys, sqlite3, aiosqlite
 from datetime import datetime
-from telethon import TelegramClient
+from telethon import TelegramClient, events
 from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, PhoneCodeInvalidError
 
 # مسیرها
@@ -11,6 +11,7 @@ if main_path not in sys.path:
     sys.path.insert(0, main_path)
 
 # ابزارها و هندلرها (بعد از init DB importمی‌شن تا DB آماده باشه)
+from modules.utils import load_json, is_command_message  # Import utils برای چک command
 
 # ذخیره credentials
 async def save_credentials(credentials, filename):
@@ -189,6 +190,14 @@ async def main():
     me = await client.get_me()
     print(f"🚀 سلف‌بات راه‌اندازی شد برای: {me.first_name}")
 
+    # تغییر 1: ارسال پیام به owner که self run شده
+    if owner_id:
+        try:
+            await client.send_message(owner_id, f"✅ سلف‌بات راه‌اندازی شد برای {me.first_name} (Session: {session_name})")
+            print(f"✅ پیام راه‌اندازی به owner ({owner_id}) ارسال شد.")
+        except Exception as e:
+            print(f"⚠️ خطا در ارسال پیام به owner: {e}")
+
     # اتصال async به دیتابیس
     async with aiosqlite.connect(db_path) as db:
         await db.commit()
@@ -220,6 +229,20 @@ async def main():
     # await register_edit_handlers(client, session_name, owner_id)
     # await register_download_handlers(client, session_name, owner_id)
     # await register_convert_handlers(client, session_name, owner_id)
+
+    # تغییر 2: Handler برای print هر پیام incoming (بدون تداخل با commands)
+    @client.on(events.NewMessage(incoming=True))
+    async def log_incoming_messages(event):
+        text = event.message.text
+        if text:  # فقط اگر متن داشته باشه
+            # Skip اگر command باشه (از utils)
+            commands = load_json("cmd.json")
+            lang = "fa"  # یا از settings بگیر
+            if await is_command_message(text, lang, commands):
+                return  # Skip commands برای جلوگیری از تداخل
+            # Print پیام (chat_id, sender, text)
+            sender = await event.get_sender()
+            print(f"📨 Incoming [{event.chat_id} from {sender.first_name if sender else 'Unknown'}]: {text}")
 
     print("✅ سلف‌بات کاملاً راه‌اندازی شد")
     try:
