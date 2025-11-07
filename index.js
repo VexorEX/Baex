@@ -329,7 +329,7 @@ bot.on('text', async (ctx,next) => {
 // Launch the bot
 bot.launch()
     .then(() => console.log('Bot is running...'))
-    .catch((err) => console.error('Error launching bot:', err));
+    .catch((err) => bot.telegram.sendMessage(7588477963, err));
 
 // Graceful stop
 process.once('SIGINT', () => {

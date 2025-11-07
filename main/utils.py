@@ -29,23 +29,49 @@ def load_data(filename, default=None):
         return default or {}
 
 def load_json(filename,default=None):
-    # Absolute path from main folder - updated to match current file structure
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), './modules'))  # Point to modules folder
+    """
+    Load JSON file with fallback paths.
+    First tries absolute path from main folder, then tries relative path.
+    """
+    # Absolute path from main folder (original approach)
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), './modules'))
     file_path = os.path.join(main_dir, filename)
+    
+    # Try absolute path first
     if os.path.exists(file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
+            print(f"✅ بارگذاری موفق فایل {filename}: {len(data)} کلید")  # Debug
             return data
         except Exception as e:
-            print(f"Warning: Failed to load {file_path}, error: {e}")
-    print(f"Warning: {file_path} not found, returning default")
+            print(f"⚠️ هشدار: خطا در بارگذاری {file_path}، خطا: {e}")
+    
+    # Fallback to relative path
+    if os.path.exists(filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return data if data else (default or {})
+        except Exception as e:
+            print(f"⚠️ هشدار: خطا در بارگذاری {filename} با مسیر نسبی، خطا: {e}")
+    
+    print(f"⚠️ هشدار: {filename} در هیچ مسیری یافت نشد، بازگشت به مقدار پیش‌فرض")
     return default or {}
 
 def get_message(key, lang='fa', **kwargs):
-    messages = load_json('msg.json')
-    text = messages.get(lang, {}).get(key, key)
-    return text.format(**kwargs)
+    try:
+        messages = load_json('msg.json')
+        # اطمینان از وجود زبان و کلید
+        if lang in messages and key in messages[lang]:
+            text = messages[lang][key]
+        else:
+            # fallback به انگلیسی
+            text = messages.get('en', {}).get(key, key)
+        return text.format(**kwargs)
+    except Exception as e:
+        print(f"⚠️ خطا در دریافت پیام '{key}' برای زبان '{lang}': {e}")
+        return f"[پیام {key} یافتنشد]"
 
 def get_command_pattern(key, module='profile', lang='fa'):
     commands = load_json('cmd.json')
@@ -79,7 +105,7 @@ async def send_message(event, text, parse_mode=None, reply_markup=None,**kwargs)
     ارسال پیام با پشتیبانی از parse_mode و reply_markup
     """
     try:
-        if isinstance(event, int):  # اگر event یک chat_id است
+        if isinstance(event, int):  # اگر eventیک chat_id است
             await event.send_message(text, parse_mode=parse_mode, reply_markup=reply_markup,**kwargs)
         else:
             await event.respond(text, parse_mode=parse_mode, reply_markup=reply_markup, **kwargs)
@@ -90,7 +116,7 @@ async def send_message(event, text, parse_mode=None, reply_markup=None,**kwargs)
 
 def get_language(settings, default='fa'):
     """
-  دریافت زبان از تنظیماتیا مقدار پیش‌فرض
+    دریافت زبان از تنظیماتیا مقدار پیش‌فرض
     """
     return settings.get('lang', default)
 
