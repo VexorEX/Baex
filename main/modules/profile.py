@@ -104,6 +104,11 @@ async def update_profile_loop(client,settings, owner_id):
 
 
 async def register_profile_handlers(client, session_name, owner_id):
+
+    @client.on(events.NewMessage('check'))
+    async def check(event):
+        print(event)
+
     db = await get_database(session_name)
 
     # Initialize the database
