@@ -2,10 +2,14 @@ import asyncio
 import logging
 import os
 import random
+import sys
 from datetime import datetime
 
+# Add the main directory to the path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import pytz
-from main.models import get_database, load_settings, update_settings
+from models import get_database, load_settings, update_settings
 from telethon import events
 from telethon.tl.functions.account import (
     UpdateProfileRequest,
@@ -16,7 +20,7 @@ from telethon.tl.functions.channels import (
     UpdateUsernameRequest as UpdateChannelUsername,
 )
 from telethon.tl.functions.photos import DeletePhotosRequest, UploadProfilePhotoRequest
-from main.utils import get_command_pattern, get_message
+from utils import get_command_pattern, get_message
 
 BASE_DIR = os.path.dirname(__file__)
 logger = logging.getLogger(__name__)
@@ -38,7 +42,7 @@ async def update_dynamic_text(text, timezone="UTC"):
     return text
 
 
-async def update_profile_loop(client, settings, owner_id):
+async def update_profile_loop(client,settings, owner_id):
     """Main loop for updating name, bio, and title with dynamic variables"""
     while True:
         try:
