@@ -16,7 +16,7 @@ from telethon.tl.functions.channels import (
     UpdateUsernameRequest as UpdateChannelUsername,
 )
 from telethon.tl.functions.photos import DeletePhotosRequest, UploadProfilePhotoRequest
-from utils import get_command_pattern, get_message
+from ..utils import get_command_pattern, get_message
 
 BASE_DIR = os.path.dirname(__file__)
 logger = logging.getLogger(__name__)
@@ -103,7 +103,7 @@ async def register_profile_handlers(client, session_name, owner_id):
     db = await get_database(session_name)
 
     # Initialize the database
-    from models import init_db
+    from ..models import init_db
 
     await init_db(db)
 
