@@ -1,12 +1,7 @@
-import json
-import logging
-import os
-
-import pytz
+import json,logging,os
 from deep_translator import GoogleTranslator
 
 logger = logging.getLogger(__name__)
-
 
 def save_data(filename, data):
     try:
@@ -17,8 +12,6 @@ def save_data(filename, data):
     except Exception as e:
         print(f"Error saving {filename}: {e}")
         return False
-
-
 def load_data(filename, default=None):
     try:
         print(f"Attempting to load file: {os.path.abspath(filename)}")
@@ -31,8 +24,6 @@ def load_data(filename, default=None):
     except Exception as e:
         print(f"Error loading {filename}: {e}")
         return default or {}
-
-
 def load_json(filename, default=None):
     """
     Load a JSON file trying multiple likely locations:
@@ -67,14 +58,10 @@ def load_json(filename, default=None):
         return default or {}
     except Exception:
         return default or {}
-
-
 def get_message(key, lang="fa", **kwargs):
     messages = load_json("msg.json", {})
     text = messages.get(lang, {}).get(key, key)
     return text.format(**kwargs)
-
-
 def get_command_pattern(key, section=None, lang="fa"):
     """
     Fetch a command regex pattern from cmd.json.
@@ -89,8 +76,6 @@ def get_command_pattern(key, section=None, lang="fa"):
         return commands.get(lang, {}).get(section, {}).get(key, r"^(?!)$")
     # Legacy style where only key and lang were provided
     return commands.get(lang, {}).get(key, r"^(?!)$")
-
-
 def get_persian_date():
     try:
         import jdatetime
@@ -99,8 +84,6 @@ def get_persian_date():
         return now.strftime("%Y/%m/%d")
     except ImportError:
         return "نیاز به نصب jdatetime"
-
-
 def format_duration(seconds):
     if seconds < 60:
         return f"{seconds} ثانیه"
@@ -108,16 +91,12 @@ def format_duration(seconds):
         return f"{seconds // 60} دقیقه"
     else:
         return f"{seconds // 3600} ساعت"
-
-
 def translate_text(text, dest="fa"):
     try:
         translator = GoogleTranslator(source="auto", target=dest)
         return translator.translate(text)
     except:
         return get_message("error_occurred", lang="fa")
-
-
 async def send_message(event, text, parse_mode=None, buttons=None, **kwargs):
     """
     ارسال پیام با پشتیبانی از parse_mode و buttons (بدون reply_markup برای Telethon)
@@ -131,15 +110,11 @@ async def send_message(event, text, parse_mode=None, buttons=None, **kwargs):
     except Exception as e:
         logger.error(f"Error sending message: {e}")
         return False
-
-
 def get_language(settings, default="fa"):
     """
     دریافت زبان از تنظیمات یا مقدار پیش‌فرض
     """
     return settings.get("lang", default)
-
-
 async def is_command_message(message_text, lang, commands_data=None):
     """
     بررسی می‌کند که آیا متن پیام با الگوی هر command منطبق است یا نه
@@ -161,8 +136,6 @@ async def is_command_message(message_text, lang, commands_data=None):
                 if pattern and re.match(pattern, message_text.strip(), re.IGNORECASE):
                     return True
     return False
-
-
 async def upload_to_backup_channel(client, channel_id, file_path, caption=None):
     """
     آپلود فایل به کانال پشتیبان و برگرداندن ID فایل
@@ -176,8 +149,6 @@ async def upload_to_backup_channel(client, channel_id, file_path, caption=None):
     except Exception as e:
         logger.error(f"Error uploading to backup channel: {e}")
         return None
-
-
 def command_handler(commands_data, lang="fa"):
     """
     Decorator برای command handlerها که از اجرای تکراری جلوگیری می‌کند
