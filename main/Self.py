@@ -70,7 +70,7 @@ def init_sqlite_db(db_path):
                    )
                    ''')
     # بررسی وجود رکورد با id=1
-    cursor.execute('SELECT idFROM settings WHERE id = 1')
+    cursor.execute('SELECT id FROM settings WHERE id = 1')
     if cursor.fetchone() is None:
         cursor.execute('INSERT INTO settings (id) VALUES (1)')
     conn.commit()
