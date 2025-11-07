@@ -199,31 +199,31 @@ async def main():
 
     # import modules بعد از init DB
     from modules.profile import register_profile_handlers
-    from modules.settings import setup_settings
-    from modules.manage import register_manage_handlers
-    from modules.group import register_group_handlers
-    from modules.convert import register_convert_handlers
-    from modules.download import register_download_handlers
-    from modules.edit import register_edit_handlers
-    from modules.enemy import register_enemy_handlers
-    from modules.fresponse import register_fast_response_handlers
-    from modules.fun import register_fun_handlers
-    from modules.private import register_private_handlers
-    from modules.vars import register_vars_handlers
+    # from modules.settings import setup_settings
+    # from modules.manage import register_manage_handlers
+    # from modules.group import register_group_handlers
+    # from modules.convert import register_convert_handlers
+    # from modules.download import register_download_handlers
+    # from modules.edit import register_edit_handlers
+    # from modules.enemy import register_enemy_handlers
+    # from modules.fresponse import register_fast_response_handlers
+    # from modules.fun import register_fun_handlers
+    # from modules.private import register_private_handlers
+    # from modules.vars import register_vars_handlers
 
     # ثبت هندلرها
     await register_profile_handlers(client, session_name, owner_id)
-    await setup_settings(client, db_path)
-    await register_manage_handlers(client, session_name, owner_id)
-    await register_group_handlers(client, session_name, owner_id)
-    await register_vars_handlers(client, session_name, owner_id)
-    await register_private_handlers(client, session_name, owner_id)
-    await register_fun_handlers(client, session_name, owner_id)
-    await register_fast_response_handlers(client, session_name, owner_id)
-    await register_enemy_handlers(client, session_name, owner_id)
-    await register_edit_handlers(client, session_name, owner_id)
-    await register_download_handlers(client, session_name, owner_id)
-    await register_convert_handlers(client, session_name, owner_id)
+    # await setup_settings(client, db_path)
+    # await register_manage_handlers(client, session_name, owner_id)
+    # await register_group_handlers(client, session_name, owner_id)
+    # await register_vars_handlers(client, session_name, owner_id)
+    # await register_private_handlers(client, session_name, owner_id)
+    # await register_fun_handlers(client, session_name, owner_id)
+    # await register_fast_response_handlers(client, session_name, owner_id)
+    # await register_enemy_handlers(client, session_name, owner_id)
+    # await register_edit_handlers(client, session_name, owner_id)
+    # await register_download_handlers(client, session_name, owner_id)
+    # await register_convert_handlers(client, session_name, owner_id)
 
     print("✅ سلف‌بات کاملاً راه‌اندازی شد")
     try:
