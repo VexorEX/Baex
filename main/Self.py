@@ -5,7 +5,7 @@ from telethon.errors import SessionPasswordNeededError, PhoneCodeExpiredError, P
 
 # مسیرها
 current_dir = os.path.dirname(__file__)
-root_dir = os.path.abspath(os.path.join(current_dir, '../../'))
+root_dir = os.path.abspath(os.path.join(current_dir, '../../../'))
 main_path = os.path.join(root_dir, 'main')
 if main_path not in sys.path:
     sys.path.insert(0, main_path)
