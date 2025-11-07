@@ -5,7 +5,7 @@ import random
 from datetime import datetime
 
 import pytz
-from models import get_database, load_settings, update_settings
+from ..models import get_database, load_settings, update_settings
 from telethon import events
 from telethon.tl.functions.account import (
     UpdateProfileRequest,
