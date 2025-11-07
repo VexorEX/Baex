@@ -203,7 +203,7 @@ async def main():
         await db.commit()
 
     # import modules بعد از init DB
-    from modules.profile import register_profile_handlers
+    # from modules.profile import register_profile_handlers
     # from modules.settings import setup_settings
     # from modules.manage import register_manage_handlers
     # from modules.group import register_group_handlers
@@ -217,7 +217,7 @@ async def main():
     # from modules.vars import register_vars_handlers
 
     # ثبت هندلرها
-    await register_profile_handlers(client, session_name, owner_id)
+    # await register_profile_handlers(client, session_name, owner_id)
     # await setup_settings(client, db_path)
     # await register_manage_handlers(client, session_name, owner_id)
     # await register_group_handlers(client, session_name, owner_id)
