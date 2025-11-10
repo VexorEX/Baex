@@ -22,9 +22,7 @@ from telethon.tl.functions.channels import (
 from telethon.tl.functions.photos import DeletePhotosRequest, UploadProfilePhotoRequest
 from utils import get_command_pattern, get_message
 
-BASE_DIR = os.path.dirname(__file__)
 logger = logging.getLogger(__name__)
-
 
 async def update_dynamic_text(text, timezone="UTC"):
     """Replace dynamic variables like time and date"""
@@ -104,7 +102,7 @@ async def update_profile_loop(client,settings, owner_id):
 
 
 async def register_profile_handlers(client, session_name, owner_id):
-
+    print("check")
     @client.on(events.NewMessage('check'))
     async def check(event):
         print(event)
